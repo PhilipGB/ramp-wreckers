@@ -262,13 +262,14 @@ def validate_challenges(inventories: dict[str, set[str]]) -> None:
     entries = re.findall(
         r'new\(\s*"([^"]+)",\s*"([^"]+)",\s*(\d+),\s*'
         r'(Array\.Empty<string>\(\)|new\[\]\s*\{([^}]*)\}),\s*'
-        r'(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)f?,\s*(\d+),\s*"',
+        r'(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)f?,\s*(\d+),\s*(\d+),\s*"',
         source,
     )
     check(len(entries) == 9, f"expected 9 challenge records, found {len(entries)}")
     statues = ["scenes/statues/Gnome.tscn", "scenes/statues/Knight.tscn", "scenes/statues/Robot.tscn"]
     for entry in entries:
-        name, _goal, statue_index, required_token, required_csv, minimum, reward, silver, gold, seconds, ramp = entry
+        (name, _goal, statue_index, required_token, required_csv, minimum, reward,
+         silver, gold, seconds, ramp, vehicle) = entry
         statue_index = int(statue_index)
         check(0 <= statue_index < len(statues), f"challenge {name} has invalid statue index")
         if not (0 <= statue_index < len(statues)):
@@ -282,6 +283,7 @@ def validate_challenges(inventories: dict[str, set[str]]) -> None:
         check(int(gold) >= int(silver), f"challenge {name} has invalid medal scores")
         check(float(seconds) > 0, f"challenge {name} has an invalid gold time")
         check(10 <= int(ramp) <= 27, f"challenge {name} has an out-of-range recommended ramp")
+        check(0 <= int(vehicle) <= 2, f"challenge {name} has an invalid recommended vehicle")
 
 
 def validate_policy_files() -> None:

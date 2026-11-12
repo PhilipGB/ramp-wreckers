@@ -137,6 +137,13 @@ public partial class VehicleController : RigidBody3D
                          Input.GetActionStrength("drive_reverse");
         float steer = Input.GetActionStrength("steer_right") -
                       Input.GetActionStrength("steer_left");
+
+        // A sleeping RigidBody ignores ApplyCentralForce, so a wedged car that
+        // dozed off with the throttle held would stay stuck forever. Any active
+        // driver input wakes the body again.
+        if (Sleeping && (MathF.Abs(throttle) > 0.01f || MathF.Abs(steer) > 0.01f))
+            Sleeping = false;
+
         float engine = 1f + UpgradeEngineLevel * 0.14f;
         float grip = Grip * (1f + UpgradeGripLevel * 0.22f);
 

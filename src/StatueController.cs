@@ -30,6 +30,7 @@ public partial class StatueController : Node3D
     private readonly Dictionary<ulong, PendingVehicleContact> _pendingContacts = new();
     private readonly HashSet<string> _priorityParts = new(StringComparer.Ordinal);
     private readonly Dictionary<ulong, ulong> _lastVehicleImpactMsec = new();
+    private readonly Dictionary<ulong, ulong> _lastBlockedCoreMsec = new();
     private bool _collapsed;
     private float _lean;
     private bool _graphValidated;
@@ -161,7 +162,27 @@ public partial class StatueController : Node3D
             // before the deferred grouped resolution runs.
             ulong now = Time.GetTicksMsec();
             if (_lastVehicleImpactMsec.TryGetValue(id, out ulong last) && now - last < 550)
-                return;
+            {
+                // A genuine follow-through strike on the exposed core right
+                // after its protector peeled is still that same crash, not a
+                // new run. Let the physically-overlapping core contact resolve
+                // immediately with its own (second) impact energy.
+                bool exposedCoreFollowThrough =
+                    part.PartId == "Core" && now - last < 220 &&
+                    _parts.TryGetValue("Armour", out StatuePart? peeled) &&
+                    peeled.IsBroken && part.IsVehicleOverlapping(vehicle);
+                // The bumper usually clips the (slightly taller) core volume a
+                // frame or two before it reaches the chest plate, and that
+                // blocked bounce must not mask the plate strike that follows.
+                // The plate contact itself already comes from the armour's own
+                // physical hit volume, so no extra overlap query is needed.
+                bool plateAfterBlockedCore =
+                    part.PartId == "Armour" &&
+                    _lastBlockedCoreMsec.TryGetValue(id, out ulong blockedAt) &&
+                    now - blockedAt < 220;
+                if (!exposedCoreFollowThrough && !plateAfterBlockedCore)
+                    return;
+            }
             pending = new PendingVehicleContact(vehicle, energy, speed, direction, hitPoint);
             _pendingContacts[id] = pending;
             Callable.From(() => ResolveVehicleContact(id)).CallDeferred();
@@ -216,6 +237,8 @@ public partial class StatueController : Node3D
         // group, but the core must be contacted again after it is exposed.
         bool armourAlreadyBroken = !_parts.TryGetValue("Armour", out StatuePart? armourPart) ||
                                 armourPart.IsBroken || armourPart.IsLoose;
+        int brokenBefore = _broken.Count;
+        bool coreContacted = candidates.Any(c => c.PartId == "Core");
         foreach (StatuePart part in selected)
         {
             if (part.IsBroken)
@@ -243,6 +266,19 @@ public partial class StatueController : Node3D
 
         // The cooldown starts after the grouped contact has resolved. The same
         // physics step can still add all of its contacts to this group above.
+        // A group that only touched the still-armoured core (blocked by the
+        // protector, or filtered out by a named-target challenge) is not a
+        // resolved impact: no smash recoil (that would jolt the car away before
+        // it reaches the plate), the full gate stays so this contact cannot
+        // spam chips and flashes, and the plate strike that follows a frame or
+        // two later is explicitly allowed through below.
+        bool brokeAny = _broken.Count > brokenBefore;
+        if (!brokeAny && coreContacted)
+        {
+            _lastVehicleImpactMsec[vehicleId] = Time.GetTicksMsec();
+            _lastBlockedCoreMsec[vehicleId] = Time.GetTicksMsec();
+            return;
+        }
         _lastVehicleImpactMsec[vehicleId] = Time.GetTicksMsec();
         pending.Vehicle.RegisterStatueSmash(pending.Energy, pending.Direction);
     }
@@ -462,6 +498,7 @@ public partial class StatueController : Node3D
         _pending.Clear();
         _pendingContacts.Clear();
         _lastVehicleImpactMsec.Clear();
+        _lastBlockedCoreMsec.Clear();
         _lean = 0f;
         _collapsed = false;
     }

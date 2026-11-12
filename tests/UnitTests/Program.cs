@@ -89,7 +89,7 @@ internal static class Program
             "chest armour alone does not masquerade as reactor-core progress");
 
         var mixed = new WreckChallenge("Mixed", "Break the hat and three parts", 0,
-            new[] { "Hat" }, 3, 1, 1, 2, 10f, 16, "test");
+            new[] { "Hat" }, 3, 1, 1, 2, 10f, 16, 0, "test");
         ObjectiveProgress mixedProgress = ObjectiveProgressRules.Evaluate(mixed,
             new HashSet<string> { "Hat", "Torso" });
         Check(mixedProgress.RequiredComplete && !mixedProgress.TotalComplete &&
@@ -99,6 +99,11 @@ internal static class Program
 
         Check(ChallengeCatalog.All.All(c => c.RecommendedRampDegrees is >= 10 and <= 27),
             "all authored suggested ramps stay in the physical 10-27 range");
+        Check(ChallengeCatalog.All.All(c => c.RecommendedVehicle is >= 0 and <= 2),
+            "all authored recommended vehicles name a real vehicle");
+        Check(ChallengeCatalog.TryValidate(out List<string> catalogErrors),
+            "challenge catalog validates vehicle, ramp and part references ("
+            + string.Join("; ", catalogErrors) + ")");
     }
 
     private static void TestImpactModel()

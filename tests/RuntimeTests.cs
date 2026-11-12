@@ -42,6 +42,7 @@ public partial class RuntimeTests : Node
             TestSaveSystem();
             await TestRampGeometry();
             await TestInputSmoke();
+            await TestFeedbackPersistence();
             await TestProgressDisplay();
             await TestSolidCollisionPresentation();
             await TestContactAggregation();
@@ -424,6 +425,79 @@ public partial class RuntimeTests : Node
         await RemoveNode(main);
     }
 
+    private async Task TestFeedbackPersistence()
+    {
+        GameRoot main = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameRoot>();
+        AddChild(main);
+        await WaitPhysics(4);
+
+        // Broke profile: locked monster truck, no paint, far too few coins.
+        main.Profile.Data.Coins = 50;
+        main.Profile.Data.VehiclesUnlocked[2] = false;
+        main.Profile.Data.PaintUnlocked = false;
+        main.Profile.Data.EngineLevel = 0;
+
+        await TapKey(Key.G);
+        Check(main.TestGarageOpen, "garage opens for feedback tests");
+        Label hint = main.GetNode<Label>("Hud/Garage/GarageVBox/GarageHint");
+
+        main.GetNode<Button>("Hud/Garage/GarageVBox/VehicleRow/MonsterButton")
+            .EmitSignal(BaseButton.SignalName.Pressed);
+        Check(hint.Text.Contains("Need 600"),
+            $"failed monster purchase names the missing coins (\"{hint.Text.Trim()}\")");
+
+        // The original bug: RefreshGarage() overwrote the purchase notice on
+        // the next forced HUD refresh. SelectVehicle on a locked vehicle is
+        // exactly that path.
+        main.TestSelectVehicle(2);
+        Check(hint.Text.Contains("Need 600"),
+            "failed-purchase feedback survives a forced HUD refresh");
+        Check(main.Profile.Data.Coins == 50, "no coins were charged for a failed purchase");
+
+        main.GetNode<Button>("Hud/Garage/GarageVBox/UpgradeRow/EngineButton")
+            .EmitSignal(BaseButton.SignalName.Pressed);
+        Check(hint.Text.Contains("Need 350"),
+            $"failed engine upgrade names the missing coins (\"{hint.Text.Trim()}\")");
+
+        // Reopening the garage clears the stale notice instead of keeping it forever.
+        await TapKey(Key.G);
+        await TapKey(Key.G);
+        Check(!hint.Text.Contains("Need 350"),
+            "stale purchase notice clears when the garage reopens");
+
+        // Close the garage again: gameplay keys are gated while it is open.
+        await TapKey(Key.G);
+        Check(!main.TestGarageOpen, "garage closed for gameplay feedback tests");
+
+        // Locked paint: pressing P must explain how to unlock it.
+        await TapKey(Key.P);
+        Check(main.TestStatus.Contains("Paint is locked"),
+            $"locked paint explains how to unlock (\"{main.TestStatus}\")");
+
+        // Recommendation line is visible in campaign and names vehicle + ramp.
+        main.TestSelectChallenge(1);
+        await WaitPhysics(6);
+        Label recommend = main.GetNode<Label>("Hud/ObjectivePanel/ObjectiveVBox/Recommendation");
+        Check(recommend.Visible, "recommendation line is visible in campaign");
+        Check(recommend.Text.Contains("Rally Car") && recommend.Text.Contains("27"),
+            $"recommendation names vehicle and ramp (\"{recommend.Text}\")");
+
+        // A locked recommended vehicle tells the player how to get it.
+        // Robot Wreck (index 8) is the challenge that recommends the monster.
+        main.TestSelectChallenge(8);
+        await WaitPhysics(6);
+        Check(recommend.Visible && recommend.Text.Contains("Monster Truck") &&
+              recommend.Text.Contains("garage"),
+            $"locked recommendation points at the garage (\"{recommend.Text}\")");
+
+        // Free Smash hides the recommendation.
+        await TapKey(Key.F);
+        Check(!recommend.Visible, "recommendation line hides in Free Smash");
+        await TapKey(Key.F);
+
+        await RemoveNode(main);
+    }
+
     private async Task TapKey(Key key)
     {
         Input.ParseInputEvent(new InputEventKey
@@ -568,7 +642,9 @@ public partial class RuntimeTests : Node
                 await WaitPhysics(40);
                 Check(armour.IsBroken && !core.IsBroken,
                     "protected core contact cannot break the core in the armour group");
-                // After the 550 ms cooldown, a fresh core contact is required.
+                // The cooldown is wall-clock based; a frame-count wait can race
+                // it when physics pacing jitters. Wait real time explicitly.
+                await ToSignal(GetTree().CreateTimer(0.7), SceneTreeTimer.SignalName.Timeout);
                 statue.ReportVehicleContact(core, car, 40000f, 30f,
                     Vector3.Back, core.GlobalPosition);
                 await WaitPhysics(5);
@@ -649,12 +725,12 @@ public partial class RuntimeTests : Node
     }
 
 
-    private static readonly int[] RouteVehicles = { 1, 0, 1, 1, 0, 1, 2, 2, 0 };
-
     /// <summary>
     /// All nine objectives through ordinary driving only: spawn, throttle,
     /// ramp, real Area3D/impact contacts, reverse for a second pass where the
     /// objective needs it. No ResolveImpact, teleport or forced impulse.
+    /// The vehicle comes from the catalog itself, so this test also proves the
+    /// in-game recommendation is a route that genuinely works.
     /// </summary>
     private async Task TestPhysicalChallengeRoutes()
     {
@@ -666,7 +742,8 @@ public partial class RuntimeTests : Node
         for (int challengeIndex = 0; challengeIndex < ChallengeCatalog.All.Length; challengeIndex++)
         {
             WreckChallenge challenge = ChallengeCatalog.All[challengeIndex];
-            main.TestSelectVehicle(RouteVehicles[challengeIndex]);
+            int recommendedVehicle = challenge.RecommendedVehicle;
+            main.TestSelectVehicle(recommendedVehicle);
             main.TestSelectChallenge(challengeIndex);
             await WaitPhysics(18);
             VehicleController? car = main.CurrentVehicle;
@@ -702,7 +779,7 @@ public partial class RuntimeTests : Node
                       statue.BrokenPartIds.Contains("Core"),
                     "Core Shot route peeled armour first and then broke the exposed core");
             GD.Print($"[ROUTE] challenge={challengeIndex + 1} {challenge.Name} " +
-                     $"vehicle={RouteVehicles[challengeIndex]} ramp={challenge.RecommendedRampDegrees} " +
+                     $"vehicle={challenge.RecommendedVehicle} ramp={challenge.RecommendedRampDegrees} " +
                      $"passes={passes} score={main.TestRunScore} " +
                      $"broken={string.Join(",", statue.BrokenPartIds)} complete={complete}");
         }

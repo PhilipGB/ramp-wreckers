@@ -40,6 +40,7 @@ public partial class GameRoot : Node3D
     private Label _modeLabel = null!;
     private Label _challengeLabel = null!;
     private Label _goalLabel = null!;
+    private Label _recommendLabel = null!;
     private Label _requiredLabel = null!;
     private Label _totalLabel = null!;
     private ProgressBar _requiredBar = null!;
@@ -65,6 +66,7 @@ public partial class GameRoot : Node3D
     private Button _gripButton = null!;
     private Button _paintButton = null!;
     private Label _garageHint = null!;
+    private string _garageNotice = string.Empty;
     private Button _qualityButton = null!;
     private Button _volumeButton = null!;
 
@@ -130,6 +132,7 @@ public partial class GameRoot : Node3D
         _modeLabel = GetNode<Label>("Hud/ObjectivePanel/ObjectiveVBox/ModeRow/Mode");
         _challengeLabel = GetNode<Label>("Hud/ObjectivePanel/ObjectiveVBox/Challenge");
         _goalLabel = GetNode<Label>("Hud/ObjectivePanel/ObjectiveVBox/Goal");
+        _recommendLabel = GetNode<Label>("Hud/ObjectivePanel/ObjectiveVBox/Recommendation");
         _requiredLabel = GetNode<Label>("Hud/ObjectivePanel/ObjectiveVBox/Required");
         _requiredBar = GetNode<ProgressBar>("Hud/ObjectivePanel/ObjectiveVBox/RequiredBar");
         _totalLabel = GetNode<Label>("Hud/ObjectivePanel/ObjectiveVBox/Total");
@@ -291,13 +294,20 @@ public partial class GameRoot : Node3D
             _profile.TrySave();
             _message = $"Camera: {CameraName(_cameraPreset)}";
         }
-        if (Input.IsActionJustPressed("paint") && _profile.Data.PaintUnlocked)
+        if (Input.IsActionJustPressed("paint"))
         {
-            _profile.Data.PaintIndex = (_profile.Data.PaintIndex + 1) % 6;
-            _vehicle?.ApplyProfile(_profile.Data.EngineLevel, _profile.Data.GripLevel,
-                _profile.Data.PaintIndex, true);
-            _profile.TrySave();
-            _message = "Paint: " + VehicleController.PaintName(_profile.Data.PaintIndex);
+            if (_profile.Data.PaintUnlocked)
+            {
+                _profile.Data.PaintIndex = (_profile.Data.PaintIndex + 1) % 6;
+                _vehicle?.ApplyProfile(_profile.Data.EngineLevel, _profile.Data.GripLevel,
+                    _profile.Data.PaintIndex, true);
+                _profile.TrySave();
+                _message = "Paint: " + VehicleController.PaintName(_profile.Data.PaintIndex);
+            }
+            else
+            {
+                _message = $"Paint is locked — unlock it in the garage (G) for {GameProfile.PaintCost} Wreck Coins.";
+            }
         }
         if (Input.IsActionJustPressed("quality_toggle"))
             CycleQuality();
@@ -854,6 +864,7 @@ public partial class GameRoot : Node3D
             _modeLabel.Text = "FREE SMASH";
             _challengeLabel.Text = $"Target: {StatueCatalog.Names[_statueIndex]}";
             _goalLabel.Text = "Smash everything. No rewards, no pressure. J/K changes statue.";
+            _recommendLabel.Visible = false;
             _requiredLabel.Text = $"PARTS BROKEN   {_statue.BrokenCount}";
             _requiredBar.MaxValue = Mathf.Max(1, _statue.PartCount);
             _requiredBar.Value = _statue.BrokenCount;
@@ -866,6 +877,12 @@ public partial class GameRoot : Node3D
             _modeLabel.Text = $"CAMPAIGN  {_challengeIndex + 1}/9";
             _challengeLabel.Text = $"{challenge.Name}  —  {challenge.StatueName}";
             _goalLabel.Text = challenge.Goal;
+            _recommendLabel.Visible = true;
+            _recommendLabel.Text =
+                $"Recommended: {challenge.RecommendedVehicleName} · {challenge.RecommendedRampDegrees:0}° ramp" +
+                (!_profile.Data.VehiclesUnlocked[challenge.RecommendedVehicle]
+                    ? $"  (buy it in the garage, G)"
+                    : "");
             ObjectiveProgress progress = _statue.GetObjectiveProgress(challenge);
             if (progress.RequiredTotal > 0)
             {
@@ -900,7 +917,8 @@ public partial class GameRoot : Node3D
             _ => "☆☆☆",
         };
         _statsLabel.Text =
-            $"{_profile.Data.Coins} coins   ·   {stars} {medal}   ·   Ramp {_rampDegrees:0}°";
+            $"{_profile.Data.Coins} coins   ·   {stars} {medal}   ·   Ramp {_rampDegrees:0}°" +
+            $"   ·   ~{EstimatedLaunch():0.0} m launch";
         _statusLabel.Text = _message;
 
         if (_vehicle != null)
@@ -925,8 +943,7 @@ public partial class GameRoot : Node3D
     {
         if (_profile == null)
             return;
-        bool[] unlocked = _profile.Data.VehiclesUnlocked;
-        _rallyButton.Text = unlocked[0]
+        bool[] unlocked = _profile.Data.VehiclesUnlocked;        _rallyButton.Text = unlocked[0]
             ? (_vehicleIndex == 0 ? "Rally Car  ·  SELECTED" : "Rally Car")
             : "Rally Car  ·  LOCKED";
         _pickupButton.Text = unlocked[1]
@@ -957,9 +974,16 @@ public partial class GameRoot : Node3D
             : "Quality  ·  PERFORMANCE";
         _volumeButton.Text = $"Volume  ·  {VolumePercent()}%";
         _garageCoins.Text = $"WRECK COINS   {_profile.Data.Coins}";
-        _garageHint.Text =
-            $"This run: {_runScore} score  ·  {_runTime:0.0}s  ·  ramp {_rampDegrees:0}°.  " +
-            "Use the mouse or 1–3 to choose a vehicle. Free Smash never grants coins.";
+        // Purchase notices must survive HUD refreshes so insufficient-coin
+        // feedback is actually visible. Clearing happens when the garage opens.
+        _garageHint.Text = string.IsNullOrEmpty(_garageNotice)
+            ? $"This run: {_runScore} score  ·  {_runTime:0.0}s  ·  ramp {_rampDegrees:0}°.  " +
+              "Use the mouse or 1–3 to choose a vehicle. Free Smash never grants coins."
+            : _garageNotice;
+        _garageHint.AddThemeColorOverride("font_color",
+            string.IsNullOrEmpty(_garageNotice)
+                ? new Color(0.82f, 0.92f, 0.96f)
+                : new Color(1.0f, 0.62f, 0.42f));
     }
 
     private void ConnectGarageButtons()
@@ -997,7 +1021,7 @@ public partial class GameRoot : Node3D
             return;
         }
         PurchaseResult result = _profile.TryUnlockMonster();
-        _garageHint.Text = result.Message;
+        _garageNotice = result.Message;
         if (result.Success)
         {
             bool saved = _profile.TrySave();
@@ -1017,7 +1041,7 @@ public partial class GameRoot : Node3D
     private void OnEngineButton()
     {
         PurchaseResult result = _profile.TryUpgradeEngine();
-        _garageHint.Text = result.Message;
+        _garageNotice = result.Message;
         if (result.Success)
         {
             bool saved = _profile.TrySave();
@@ -1033,7 +1057,7 @@ public partial class GameRoot : Node3D
     private void OnGripButton()
     {
         PurchaseResult result = _profile.TryUpgradeGrip();
-        _garageHint.Text = result.Message;
+        _garageNotice = result.Message;
         if (result.Success)
         {
             bool saved = _profile.TrySave();
@@ -1049,7 +1073,7 @@ public partial class GameRoot : Node3D
     private void OnPaintButton()
     {
         PurchaseResult result = _profile.TryUnlockPaint();
-        _garageHint.Text = result.Message;
+        _garageNotice = result.Message;
         if (result.Success)
         {
             bool saved = _profile.TrySave();
@@ -1120,6 +1144,7 @@ public partial class GameRoot : Node3D
         {
             Input.MouseMode = Input.MouseModeEnum.Visible;
             _orbiting = false;
+            _garageNotice = string.Empty;
             RefreshGarage();
         }
     }

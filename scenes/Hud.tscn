@@ -245,6 +245,12 @@ theme_override_font_sizes/font_size = 15
 text = "Break any 2 gnome pieces"
 autowrap_mode = 3
 
+[node name="Recommendation" type="Label" parent="ObjectivePanel/ObjectiveVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.56, 0.93, 0.62, 1)
+theme_override_font_sizes/font_size = 14
+text = "Recommended: Pickup Truck · 10° ramp"
+
 [node name="Required" type="Label" parent="ObjectivePanel/ObjectiveVBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.13, 0.86, 0.93, 1)

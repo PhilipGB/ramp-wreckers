@@ -13,7 +13,7 @@
 [ext_resource type="PackedScene" path="res://art/meshes/statues/robot/Armour.glb" id="11"]
 
 [sub_resource type="BoxShape3D" id="PedestalShape"]
-size = Vector3(4.8, 0.64, 4.4)
+size = Vector3(4.8, 0.64, 2.4)
 
 [sub_resource type="BoxShape3D" id="ShapeLeftLeg"]
 size = Vector3(1.44, 2.31, 1.46)
@@ -35,6 +35,9 @@ size = Vector3(1.06, 1.86, 1.07)
 
 [sub_resource type="BoxShape3D" id="ShapeCore"]
 size = Vector3(1.64, 1.26, 0.74)
+
+[sub_resource type="BoxShape3D" id="ShapeCoreHit"]
+size = Vector3(2.2, 2.0, 0.4)
 
 [sub_resource type="BoxShape3D" id="ShapeArmour"]
 size = Vector3(2.16, 1.6, 0.36)
@@ -253,7 +256,7 @@ max_contacts_reported = 16
 continuous_cd = true
 script = ExtResource("2")
 PartId = "Core"
-BreakThreshold = 90.0
+BreakThreshold = 20.0
 ScoreValue = 145
 SupportedByCsv = "Torso"
 ProtectedByCsv = "Armour"
@@ -278,8 +281,8 @@ collision_mask = 2
 monitorable = false
 
 [node name="HitShape" type="CollisionShape3D" parent="Core/HitArea"]
-position = Vector3(0, 0, 1.35)
-shape = SubResource("ShapeCore")
+position = Vector3(0, 0, 1.62)
+shape = SubResource("ShapeCoreHit")
 
 [node name="Armour" type="RigidBody3D" parent="."]
 position = Vector3(0, 4.54, 1.22)
