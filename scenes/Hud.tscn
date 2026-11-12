@@ -1,11 +1,11 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=15 format=3]
 
-[sub_resource type="StyleBoxFlat" id="InfoStyle"]
-bg_color = Color(0.04, 0.075, 0.12, 0.92)
-content_margin_left = 18.0
-content_margin_top = 13.0
-content_margin_right = 18.0
-content_margin_bottom = 13.0
+[sub_resource type="StyleBoxFlat" id="PanelInfo"]
+bg_color = Color(0.018, 0.045, 0.075, 0.94)
+content_margin_left = 20.0
+content_margin_top = 14.0
+content_margin_right = 20.0
+content_margin_bottom = 14.0
 corner_radius_top_left = 12
 corner_radius_top_right = 12
 corner_radius_bottom_right = 12
@@ -14,109 +14,307 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.98, 0.79, 0.34, 0.35)
+border_color = Color(0.12, 0.78, 0.9, 0.9)
 
-[sub_resource type="StyleBoxFlat" id="SpeedStyle"]
-bg_color = Color(0.04, 0.075, 0.12, 0.9)
-content_margin_left = 16.0
-content_margin_top = 7.0
-content_margin_right = 16.0
-content_margin_bottom = 7.0
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-
-[sub_resource type="StyleBoxFlat" id="ControlsStyle"]
-bg_color = Color(0.04, 0.075, 0.12, 0.86)
-content_margin_left = 12.0
-content_margin_right = 12.0
+[sub_resource type="StyleBoxFlat" id="PanelChip"]
+bg_color = Color(0.018, 0.045, 0.075, 0.92)
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
 corner_radius_top_left = 9
 corner_radius_top_right = 9
 corner_radius_bottom_right = 9
 corner_radius_bottom_left = 9
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.12, 0.78, 0.9, 0.55)
 
-[sub_resource type="StyleBoxFlat" id="GarageStyle"]
-bg_color = Color(0.035, 0.06, 0.10, 0.98)
-content_margin_left = 22.0
+[sub_resource type="StyleBoxFlat" id="PanelSpeed"]
+bg_color = Color(0.018, 0.045, 0.075, 0.92)
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.12, 0.78, 0.9, 0.8)
+
+[sub_resource type="StyleBoxFlat" id="PanelBanner"]
+bg_color = Color(0.018, 0.045, 0.075, 0.94)
+content_margin_left = 18.0
+content_margin_top = 10.0
+content_margin_right = 18.0
+content_margin_bottom = 10.0
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1.0, 0.67, 0.2, 0.9)
+
+[sub_resource type="StyleBoxFlat" id="PanelGarage"]
+bg_color = Color(0.014, 0.032, 0.058, 0.985)
+content_margin_left = 24.0
 content_margin_top = 18.0
-content_margin_right = 22.0
+content_margin_right = 24.0
 content_margin_bottom = 18.0
 corner_radius_top_left = 16
 corner_radius_top_right = 16
 corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.98, 0.79, 0.34, 0.7)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.12, 0.78, 0.9, 0.75)
+
+[sub_resource type="StyleBoxFlat" id="PanelHelp"]
+bg_color = Color(0.014, 0.032, 0.058, 0.985)
+content_margin_left = 26.0
+content_margin_top = 20.0
+content_margin_right = 26.0
+content_margin_bottom = 20.0
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.12, 0.78, 0.9, 0.75)
+
+[sub_resource type="StyleBoxFlat" id="BtnNormal"]
+bg_color = Color(0.04, 0.085, 0.13, 1)
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.12, 0.55, 0.66, 0.8)
+
+[sub_resource type="StyleBoxFlat" id="BtnHover"]
+bg_color = Color(0.035, 0.12, 0.17, 1)
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.18, 0.9, 1.0, 1)
+
+[sub_resource type="StyleBoxFlat" id="BtnPressed"]
+bg_color = Color(0.06, 0.25, 0.29, 1)
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 1.0, 0.95, 1)
+
+[sub_resource type="StyleBoxFlat" id="BtnDisabled"]
+bg_color = Color(0.025, 0.045, 0.07, 1)
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.18, 0.25, 0.3, 0.7)
+
+[sub_resource type="StyleBoxFlat" id="BarBackground"]
+bg_color = Color(0.012, 0.03, 0.05, 0.95)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.12, 0.55, 0.66, 0.45)
+
+[sub_resource type="StyleBoxFlat" id="BarFill"]
+bg_color = Color(0.05, 0.82, 0.92, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="BarFillGold"]
+bg_color = Color(1.0, 0.62, 0.16, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="Theme" id="HudTheme"]
+Button/colors/font_color = Color(0.82, 0.92, 0.96, 1)
+Button/colors/font_hover_color = Color(0.95, 1.0, 1.0, 1)
+Button/colors/font_pressed_color = Color(1.0, 0.86, 0.55, 1)
+Button/colors/font_disabled_color = Color(0.36, 0.44, 0.49, 1)
+Button/font_sizes/font_size = 16
+Button/styles/normal = SubResource("BtnNormal")
+Button/styles/hover = SubResource("BtnHover")
+Button/styles/pressed = SubResource("BtnPressed")
+Button/styles/disabled = SubResource("BtnDisabled")
+Label/colors/font_color = Color(0.82, 0.92, 0.96, 1)
+ProgressBar/styles/background = SubResource("BarBackground")
+ProgressBar/styles/fill = SubResource("BarFill")
 
 [node name="Hud" type="CanvasLayer"]
+theme = SubResource("HudTheme")
 
-[node name="InfoPanel" type="PanelContainer" parent="."]
+[node name="ObjectivePanel" type="PanelContainer" parent="."]
 offset_left = 20.0
-offset_top = 16.0
-offset_right = 700.0
-offset_bottom = 270.0
-theme_override_styles/panel = SubResource("InfoStyle")
+offset_top = 18.0
+offset_right = 552.0
+offset_bottom = 214.0
+theme = SubResource("HudTheme")
+theme_override_styles/panel = SubResource("PanelInfo")
 
-[node name="InfoVBox" type="VBoxContainer" parent="InfoPanel"]
+[node name="ObjectiveVBox" type="VBoxContainer" parent="ObjectivePanel"]
 layout_mode = 2
-theme_override_constants/separation = 3
+theme_override_constants/separation = 4
 
-[node name="Title" type="Label" parent="InfoPanel/InfoVBox"]
+[node name="ModeRow" type="HBoxContainer" parent="ObjectivePanel/ObjectiveVBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 29
-text = "RAMP WRECKERS"
-theme_override_colors/font_color = Color(0.98, 0.79, 0.34, 1)
 
-[node name="Mode" type="Label" parent="InfoPanel/InfoVBox"]
+[node name="Mode" type="Label" parent="ObjectivePanel/ObjectiveVBox/ModeRow"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.13, 0.86, 0.93, 1)
+theme_override_font_sizes/font_size = 14
 text = "CAMPAIGN 1/9"
-theme_override_colors/font_color = Color(0.45, 0.92, 0.83, 1)
 
-[node name="Challenge" type="Label" parent="InfoPanel/InfoVBox"]
+[node name="Brand" type="Label" parent="ObjectivePanel/ObjectiveVBox/ModeRow"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 21
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.44, 0.59, 0.66, 1)
+theme_override_font_sizes/font_size = 13
+text = "RAMP WRECKERS"
+horizontal_alignment = 2
+
+[node name="Challenge" type="Label" parent="ObjectivePanel/ObjectiveVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.98, 1, 1)
+theme_override_font_sizes/font_size = 23
 text = "First Crash — Garden Gnome"
-theme_override_colors/font_color = Color(0.98, 0.98, 0.96, 1)
 
-[node name="Goal" type="Label" parent="InfoPanel/InfoVBox"]
+[node name="Goal" type="Label" parent="ObjectivePanel/ObjectiveVBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.71, 0.82, 0.87, 1)
+theme_override_font_sizes/font_size = 15
 text = "Break any 2 gnome pieces"
-theme_override_colors/font_color = Color(0.90, 0.90, 0.84, 1)
-
-[node name="Progress" type="Label" parent="InfoPanel/InfoVBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "0/2 parts"
-theme_override_colors/font_color = Color(0.74, 0.83, 0.9, 1)
-
-[node name="Stats" type="Label" parent="InfoPanel/InfoVBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "Coins 0 | Score 0 | Ramp 16°"
-theme_override_colors/font_color = Color(0.74, 0.83, 0.9, 1)
-
-[node name="Status" type="Label" parent="InfoPanel/InfoVBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "Drive at the statue!"
-theme_override_colors/font_color = Color(0.45, 0.92, 0.83, 1)
 autowrap_mode = 3
+
+[node name="Required" type="Label" parent="ObjectivePanel/ObjectiveVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.13, 0.86, 0.93, 1)
+theme_override_font_sizes/font_size = 15
+text = "Parts 0 / 2"
+
+[node name="RequiredBar" type="ProgressBar" parent="ObjectivePanel/ObjectiveVBox"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+max_value = 2.0
+value = 0.0
+show_percentage = false
+
+[node name="Total" type="Label" parent="ObjectivePanel/ObjectiveVBox"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.74, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = "Total parts 0 / 2"
+
+[node name="TotalBar" type="ProgressBar" parent="ObjectivePanel/ObjectiveVBox"]
+visible = false
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+max_value = 2.0
+show_percentage = false
+
+[node name="Status" type="Label" parent="ObjectivePanel/ObjectiveVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.83, 0.55, 1)
+theme_override_font_sizes/font_size = 14
+text = "Ready! Hold W to launch."
+autowrap_mode = 3
+
+[node name="StatsPanel" type="PanelContainer" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -262.0
+offset_top = 18.0
+offset_right = -20.0
+offset_bottom = 72.0
+grow_horizontal = 0
+theme = SubResource("HudTheme")
+theme_override_styles/panel = SubResource("PanelChip")
+
+[node name="StatsHBox" type="HBoxContainer" parent="StatsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Stats" type="Label" parent="StatsPanel/StatsHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.76, 0.35, 1)
+theme_override_font_sizes/font_size = 15
+text = "350 coins  ·  BRONZE"
+horizontal_alignment = 2
 
 [node name="SpeedPanel" type="PanelContainer" parent="."]
 anchor_left = 1.0
+anchor_top = 1.0
 anchor_right = 1.0
-offset_left = -236.0
-offset_top = 16.0
+anchor_bottom = 1.0
+offset_left = -256.0
+offset_top = -126.0
 offset_right = -20.0
-offset_bottom = 128.0
+offset_bottom = -16.0
 grow_horizontal = 0
-theme_override_styles/panel = SubResource("SpeedStyle")
+grow_vertical = 0
+theme = SubResource("HudTheme")
+theme_override_styles/panel = SubResource("PanelSpeed")
 
 [node name="SpeedVBox" type="VBoxContainer" parent="SpeedPanel"]
 layout_mode = 2
@@ -124,55 +322,55 @@ theme_override_constants/separation = 0
 
 [node name="Speed" type="Label" parent="SpeedPanel/SpeedVBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 44
+theme_override_colors/font_color = Color(0.96, 0.99, 1, 1)
+theme_override_font_sizes/font_size = 40
 text = "0"
-theme_override_colors/font_color = Color(0.98, 0.98, 0.96, 1)
 horizontal_alignment = 2
 
 [node name="Gear" type="Label" parent="SpeedPanel/SpeedVBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "km/h | D"
-theme_override_colors/font_color = Color(0.45, 0.92, 0.83, 1)
+theme_override_colors/font_color = Color(0.13, 0.86, 0.93, 1)
+theme_override_font_sizes/font_size = 13
+text = "KM/H   ·   D"
 horizontal_alignment = 2
 
-[node name="ControlsPanel" type="PanelContainer" parent="."]
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = -70.0
-offset_right = -20.0
-offset_bottom = -14.0
-grow_vertical = 0
-theme_override_styles/panel = SubResource("ControlsStyle")
-
-[node name="Controls" type="Label" parent="ControlsPanel"]
+[node name="SpeedBar" type="ProgressBar" parent="SpeedPanel/SpeedVBox"]
+custom_minimum_size = Vector2(0, 7)
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
-theme_override_colors/font_color = Color(0.94, 0.94, 0.92, 1)
-text = "W/S DRIVE   A/D STEER   SPACE BRAKE   R RETRY   C CAMERA   G GARAGE   J/K CHALLENGE   Q/E RAMP   F FREE SMASH"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
+max_value = 200.0
+value = 0.0
+show_percentage = false
 
-[node name="Banner" type="Label" parent="."]
+[node name="Hint" type="Label" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -44.0
+offset_right = 620.0
+offset_bottom = -18.0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.62, 0.78, 0.84, 1)
+theme_override_font_sizes/font_size = 14
+text = "H  CONTROLS     G  GARAGE     R  RETRY"
+
+[node name="Banner" type="PanelContainer" parent="."]
 visible = false
-anchor_left = 0.5
-anchor_top = 0.0
-anchor_right = 0.5
-anchor_bottom = 0.0
-offset_left = -330.0
-offset_top = 120.0
-offset_right = 330.0
-offset_bottom = 238.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 31
-theme_override_colors/font_color = Color(0.98, 0.82, 0.26, 1)
-theme_override_colors/font_outline_color = Color(0.03, 0.05, 0.08, 1)
-theme_override_constants/outline_size = 10
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -404.0
+offset_top = 86.0
+offset_right = -20.0
+offset_bottom = 202.0
+grow_horizontal = 0
+theme = SubResource("HudTheme")
+theme_override_styles/panel = SubResource("PanelBanner")
+
+[node name="BannerLabel" type="Label" parent="Banner"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1.0, 0.8, 0.35, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.03, 0.05, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 18
 text = "CHALLENGE COMPLETE!"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -180,23 +378,69 @@ autowrap_mode = 3
 
 [node name="SaveBanner" type="Label" parent="."]
 visible = false
-anchor_left = 0.0
+anchor_left = 0.5
+anchor_right = 0.5
 anchor_top = 1.0
-anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = -112.0
-offset_right = -20.0
-offset_bottom = -76.0
+offset_left = -340.0
+offset_top = -78.0
+offset_right = 340.0
+offset_bottom = -46.0
+grow_horizontal = 2
 grow_vertical = 0
-theme_override_font_sizes/font_size = 16
-theme_override_colors/font_color = Color(0.98, 0.55, 0.42, 1)
-theme_override_colors/font_outline_color = Color(0.02, 0.03, 0.05, 1)
-theme_override_constants/outline_size = 5
+theme_override_colors/font_color = Color(1.0, 0.55, 0.42, 1)
+theme_override_colors/font_outline_color = Color(0.01, 0.03, 0.05, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 14
 text = "Save problem"
 horizontal_alignment = 1
-vertical_alignment = 1
 autowrap_mode = 3
+
+[node name="ModalBackdrop" type="ColorRect" parent="."]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.005, 0.012, 0.02, 0.55)
+
+[node name="HelpPanel" type="PanelContainer" parent="."]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -250.0
+offset_right = 360.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("HudTheme")
+theme_override_styles/panel = SubResource("PanelHelp")
+
+[node name="HelpVBox" type="VBoxContainer" parent="HelpPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HelpTitle" type="Label" parent="HelpPanel/HelpVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.13, 0.86, 0.93, 1)
+theme_override_font_sizes/font_size = 28
+text = "CONTROLS"
+horizontal_alignment = 1
+
+[node name="HelpText" type="Label" parent="HelpPanel/HelpVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.8, 0.9, 0.94, 1)
+theme_override_font_sizes/font_size = 17
+text = "W / S  or  ↑ / ↓     drive / reverse\nA / D  or  ← / →     steer\nSPACE                 brake\n\nR                     instant retry\nC                     camera / skip close-up\nG                     garage\nF                     free smash\nJ / K                 previous / next challenge\nQ / E                 lower / raise ramp\n1 / 2 / 3             rally / pickup / monster\nRight mouse drag      orbit camera\nMouse wheel           zoom\nP                     cycle paint (when owned)\nB / V                 quality / volume\n\nH or ESC              close this help"
+autowrap_mode = 3
+
+[node name="HelpClose" type="Button" parent="HelpPanel/HelpVBox"]
+custom_minimum_size = Vector2(240, 46)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Close (H)"
 
 [node name="Garage" type="PanelContainer" parent="."]
 visible = false
@@ -204,123 +448,137 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -390.0
-offset_top = -250.0
-offset_right = 390.0
-offset_bottom = 250.0
+offset_left = -410.0
+offset_top = -300.0
+offset_right = 410.0
+offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("GarageStyle")
+theme = SubResource("HudTheme")
+theme_override_styles/panel = SubResource("PanelGarage")
 
 [node name="GarageVBox" type="VBoxContainer" parent="Garage"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 7
 
 [node name="GarageTitle" type="Label" parent="Garage/GarageVBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 31
+theme_override_colors/font_color = Color(0.13, 0.86, 0.93, 1)
+theme_override_font_sizes/font_size = 28
 text = "GARAGE"
-theme_override_colors/font_color = Color(0.98, 0.79, 0.34, 1)
 horizontal_alignment = 1
 
 [node name="GarageCoins" type="Label" parent="Garage/GarageVBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.95, 0.76, 0.35, 1)
+theme_override_font_sizes/font_size = 16
 text = "Wreck Coins: 0"
-theme_override_colors/font_color = Color(0.45, 0.92, 0.83, 1)
 horizontal_alignment = 1
+
+[node name="VehicleHeading" type="Label" parent="Garage/GarageVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.44, 0.59, 0.66, 1)
+theme_override_font_sizes/font_size = 13
+text = "VEHICLE"
 
 [node name="VehicleRow" type="HBoxContainer" parent="Garage/GarageVBox"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 10
 alignment = 1
 
 [node name="RallyButton" type="Button" parent="Garage/GarageVBox/VehicleRow"]
-custom_minimum_size = Vector2(220, 58)
+custom_minimum_size = Vector2(238, 54)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "1  Rally Car"
+text = "Rally Car"
 
 [node name="PickupButton" type="Button" parent="Garage/GarageVBox/VehicleRow"]
-custom_minimum_size = Vector2(220, 58)
+custom_minimum_size = Vector2(238, 54)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "2  Pickup"
+text = "Pickup Truck"
 
 [node name="MonsterButton" type="Button" parent="Garage/GarageVBox/VehicleRow"]
-custom_minimum_size = Vector2(260, 58)
+custom_minimum_size = Vector2(260, 54)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "3  Buy Monster (600)"
+text = "Buy Monster · 600"
+
+[node name="ModeHeading" type="Label" parent="Garage/GarageVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.44, 0.59, 0.66, 1)
+theme_override_font_sizes/font_size = 13
+text = "MODE"
 
 [node name="ModeRow" type="HBoxContainer" parent="Garage/GarageVBox"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 10
 alignment = 1
 
 [node name="CampaignButton" type="Button" parent="Garage/GarageVBox/ModeRow"]
-custom_minimum_size = Vector2(260, 50)
+custom_minimum_size = Vector2(300, 46)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
 text = "Play Campaign"
 
 [node name="FreeSmashButton" type="Button" parent="Garage/GarageVBox/ModeRow"]
-custom_minimum_size = Vector2(260, 50)
+custom_minimum_size = Vector2(300, 46)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
 text = "Free Smash"
+
+[node name="UpgradeHeading" type="Label" parent="Garage/GarageVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.44, 0.59, 0.66, 1)
+theme_override_font_sizes/font_size = 13
+text = "UPGRADES & PAINT"
 
 [node name="UpgradeRow" type="HBoxContainer" parent="Garage/GarageVBox"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 10
 alignment = 1
 
 [node name="EngineButton" type="Button" parent="Garage/GarageVBox/UpgradeRow"]
-custom_minimum_size = Vector2(250, 50)
+custom_minimum_size = Vector2(250, 46)
 layout_mode = 2
-theme_override_font_sizes/font_size = 17
-text = "Engine upgrade (350)"
+text = "Engine upgrade · 350"
 
 [node name="GripButton" type="Button" parent="Garage/GarageVBox/UpgradeRow"]
-custom_minimum_size = Vector2(230, 50)
+custom_minimum_size = Vector2(250, 46)
 layout_mode = 2
-theme_override_font_sizes/font_size = 17
-text = "Tyre upgrade (250)"
+text = "Tyre upgrade · 250"
 
 [node name="PaintButton" type="Button" parent="Garage/GarageVBox/UpgradeRow"]
-custom_minimum_size = Vector2(230, 50)
+custom_minimum_size = Vector2(250, 46)
 layout_mode = 2
-theme_override_font_sizes/font_size = 17
-text = "Unlock paint (120)"
+text = "Unlock paint · 120"
+
+[node name="SettingsHeading" type="Label" parent="Garage/GarageVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.44, 0.59, 0.66, 1)
+theme_override_font_sizes/font_size = 13
+text = "SETTINGS"
 
 [node name="SettingsRow" type="HBoxContainer" parent="Garage/GarageVBox"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 10
 alignment = 1
 
 [node name="QualityButton" type="Button" parent="Garage/GarageVBox/SettingsRow"]
-custom_minimum_size = Vector2(230, 46)
+custom_minimum_size = Vector2(300, 42)
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
 text = "Quality: High"
 
 [node name="VolumeButton" type="Button" parent="Garage/GarageVBox/SettingsRow"]
-custom_minimum_size = Vector2(230, 46)
+custom_minimum_size = Vector2(300, 42)
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
 text = "Volume: 100%"
 
 [node name="GarageHint" type="Label" parent="Garage/GarageVBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
-theme_override_colors/font_color = Color(0.74, 0.83, 0.9, 1)
-text = "Select a vehicle. Free Smash never grants coins."
+theme_override_colors/font_color = Color(0.62, 0.74, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+text = "Select a vehicle with the mouse, 1–3 or gamepad. Free Smash never grants coins."
 horizontal_alignment = 1
 autowrap_mode = 3
 
 [node name="CloseButton" type="Button" parent="Garage/GarageVBox"]
-custom_minimum_size = Vector2(260, 52)
+custom_minimum_size = Vector2(260, 46)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 20
 text = "Close (G)"

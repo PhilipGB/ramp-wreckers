@@ -23,6 +23,7 @@ public sealed record WreckChallenge(
     int SilverScore,
     int GoldScore,
     float GoldSeconds,
+    int RecommendedRampDegrees,
     string Hint)
 {
     public string StatueName => StatueCatalog.Names[StatueIndex];
@@ -58,31 +59,31 @@ public static class ChallengeCatalog
     {
         new("First Crash", "Break any 2 gnome pieces", 0,
             Array.Empty<string>(), 2, 100, 240, 620, 24f,
-            "Aim for the legs or belly at full speed."),
+            10, "Aim low at both legs or the belly at full speed."),
         new("Hat Trick", "Knock the gnome's hat off", 0,
             new[] { "Hat" }, 1, 150, 300, 700, 26f,
-            "Raise the ramp and strike high. The hat is the top target."),
+            27, "Use the suggested 27° ramp and strike the hat at the top."),
         new("Gnome Down", "Break 4 gnome pieces", 0,
             Array.Empty<string>(), 4, 200, 600, 1400, 28f,
-            "Take out a leg, then hit the leaning body."),
+            10, "Smash both legs to bring the gnome down. Retry resets it."),
         new("Shield Breaker", "Detach the knight's shield", 1,
             new[] { "Shield" }, 1, 200, 320, 760, 26f,
-            "The shield hangs on the knight's left, toward your right."),
+            18, "The shield hangs on the knight's left, toward your right."),
         new("Knee Trouble", "Break both knight legs", 1,
             new[] { "LeftLeg", "RightLeg" }, 2, 250, 700, 1500, 32f,
-            "Aim low, then retry to finish the other knee."),
+            10, "Aim low at both knees. The rally car sits lowest. Retry resets the statue."),
         new("Knightfall", "Break 5 knight pieces", 1,
             Array.Empty<string>(), 5, 300, 1000, 2200, 34f,
-            "Destroy one knee and the armoured body comes down."),
+            10, "Smash both legs; the armoured body comes down with them."),
         new("Peel the Armour", "Remove the robot's chest armour", 2,
             new[] { "Armour" }, 1, 250, 420, 950, 28f,
-            "Hit the glowing chest plate squarely."),
+            10, "Hit the glowing chest plate squarely."),
         new("Core Shot", "Break the exposed reactor core", 2,
             new[] { "Core" }, 1, 350, 900, 1900, 40f,
-            "Peel the armour first. A second strike can reach the core."),
+            10, "Peel the chest armour, then follow through to the exposed core. Retry resets it."),
         new("Robot Wreck", "Break 6 robot pieces", 2,
             Array.Empty<string>(), 6, 500, 1700, 3400, 44f,
-            "The robot is tough: use the monster truck or a high ramp."),
+            10, "Smash both legs and the robot collapses into six major pieces."),
     };
 
     public static bool StatueCatalogHasAllParts() => StatueCatalog.StatueCatalogHasAllParts();

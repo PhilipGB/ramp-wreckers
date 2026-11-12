@@ -382,7 +382,7 @@ public sealed class GameProfile
         return new RewardResult(firstClear, coins, medal,
             firstClear ? $"Challenge complete! +{coins} Wreck Coins." :
             medalImproved ? $"New best medal: {ChallengeCatalog.MedalLabel(medal)}." :
-            "Objective already rewarded — replay for a better medal.");
+            "Already won — play again for a better medal.");
     }
 
     public PurchaseResult TryUnlockMonster()

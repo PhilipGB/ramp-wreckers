@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="../../src/ChallengeCatalog.cs" Link="ChallengeCatalog.cs" />
+    <Compile Include="../../src/ObjectiveProgress.cs" Link="ObjectiveProgress.cs" />
     <Compile Include="../../src/ImpactModel.cs" Link="ImpactModel.cs" />
     <Compile Include="../../src/SaveSystem.cs" Link="SaveSystem.cs" />
   </ItemGroup>

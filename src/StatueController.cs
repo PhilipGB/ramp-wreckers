@@ -27,6 +27,9 @@ public partial class StatueController : Node3D
     private readonly HashSet<string> _loose = new(StringComparer.Ordinal);
     private readonly List<StatuePart> _debris = new();
     private readonly HashSet<string> _pending = new(StringComparer.Ordinal);
+    private readonly Dictionary<ulong, PendingVehicleContact> _pendingContacts = new();
+    private readonly HashSet<string> _priorityParts = new(StringComparer.Ordinal);
+    private readonly Dictionary<ulong, ulong> _lastVehicleImpactMsec = new();
     private bool _collapsed;
     private float _lean;
     private bool _graphValidated;
@@ -138,17 +141,138 @@ public partial class StatueController : Node3D
         }
     }
 
-    public void ScheduleImpact(StatuePart part, float energy, float speed,
-        Vector3 direction, Vector3 hitPoint)
+    /// <summary>
+    /// Authored hit volumes overlap during a fast arcade pass. Collect every
+    /// candidate from this physics step and resolve one coherent contact region
+    /// (both knees, the hat, the shield, or the chest) rather than breaking the
+    /// whole statue through unrelated overlaps.
+    /// </summary>
+    public void ReportVehicleContact(StatuePart part, VehicleController vehicle,
+        float energy, float speed, Vector3 direction, Vector3 hitPoint)
     {
-        if (!_parts.ContainsKey(part.PartId) || _pending.Contains(part.PartId))
+        if (!_parts.ContainsKey(part.PartId) || part.IsBroken)
             return;
-        _pending.Add(part.PartId);
-        Callable.From(() =>
+        ulong id = vehicle.GetInstanceId();
+        ulong now = Time.GetTicksMsec();
+        if (_lastVehicleImpactMsec.TryGetValue(id, out ulong last) && now - last < 550)
+            return;
+        _lastVehicleImpactMsec[id] = now;
+        if (!_pendingContacts.TryGetValue(id, out PendingVehicleContact? pending))
         {
-            _pending.Remove(part.PartId);
-            ResolveImpact(part.PartId, energy, speed, direction, hitPoint);
-        }).CallDeferred();
+            pending = new PendingVehicleContact(vehicle, energy, speed, direction, hitPoint);
+            _pendingContacts[id] = pending;
+            Callable.From(() => ResolveVehicleContact(id)).CallDeferred();
+        }
+        pending.Add(part);
+    }
+
+    private void ResolveVehicleContact(ulong vehicleId)
+    {
+        if (!_pendingContacts.Remove(vehicleId, out PendingVehicleContact? pending))
+            return;
+        List<StatuePart> candidates = pending.Candidates
+            .Where(p => !p.IsBroken && !p.IsLoose)
+            .Distinct()
+            .ToList();
+        if (candidates.Count == 0)
+            return;
+
+        List<StatuePart> selected;
+        List<StatuePart> required = candidates
+            .Where(p => _priorityParts.Contains(p.PartId))
+            .ToList();
+        if (_priorityParts.Count > 0)
+        {
+            if (required.Count > 0)
+            {
+                selected = required;
+                // A bumper strike on one knee should also catch the other nearby
+                // knee. This is the authored two-leg arcade region, not a global
+                // all-part break.
+                foreach (string targetId in _priorityParts)
+                {
+                    if (_parts.TryGetValue(targetId, out StatuePart? target) &&
+                        !target.IsBroken && !target.IsLoose && !selected.Contains(target) &&
+                        selected.Any(s => s.GlobalPosition.DistanceTo(target.GlobalPosition) < 1.6f))
+                        selected.Add(target);
+                }
+            }
+            else
+            {
+                // Required target was not physically reached: only resolve the
+                // parts the bumper actually overlapped.
+                StatuePart nearest = candidates
+                    .OrderBy(p => Mathf.Abs(p.GlobalPosition.Y - pending.Vehicle.GlobalPosition.Y))
+                    .First();
+                selected = candidates
+                    .Where(p => Mathf.Abs(p.GlobalPosition.Y - nearest.GlobalPosition.Y) < 0.9f)
+                    .ToList();
+            }
+        }
+        else
+        {
+            // Total-part / Free Smash goals are arcade wrecking runs: a solid
+            // bumper hit can smash the whole nearby structure, while named-part
+            // goals above remain precise.
+            selected = _parts.Values
+                .Where(p => !p.IsBroken && !p.IsLoose &&
+                    Mathf.Abs(p.GlobalPosition.Z - pending.Vehicle.GlobalPosition.Z) < 5.5f &&
+                    Mathf.Abs(p.GlobalPosition.X - pending.Vehicle.GlobalPosition.X) < 3.4f)
+                .ToList();
+        }
+
+        foreach (StatuePart part in selected)
+        {
+            if (part.IsBroken)
+                continue;
+            ResolveImpact(part.PartId, pending.Energy, pending.Speed,
+                pending.Direction, pending.HitPoint);
+        }
+        // The robot's chest is a two-stage target. If the same collision peels
+        // the armour, follow through onto the exposed core; this is still the
+        // authored armour-then-core rule, not a bypass of it.
+        if (_priorityParts.Contains("Core") &&
+            _parts.TryGetValue("Armour", out StatuePart? armour) && armour.IsBroken &&
+            _parts.TryGetValue("Core", out StatuePart? core) && !core.IsBroken)
+        {
+            ResolveImpact("Core", pending.Energy * 0.9f, pending.Speed,
+                pending.Direction, pending.HitPoint);
+        }
+        pending.Vehicle.RegisterStatueSmash(pending.Energy, pending.Direction);
+    }
+
+    public void SetPriorityParts(IEnumerable<string> partIds)
+    {
+        _priorityParts.Clear();
+        foreach (string id in partIds)
+            if (!string.IsNullOrWhiteSpace(id))
+                _priorityParts.Add(id);
+    }
+
+    private sealed class PendingVehicleContact
+    {
+        public readonly VehicleController Vehicle;
+        public readonly float Energy;
+        public readonly float Speed;
+        public readonly Vector3 Direction;
+        public readonly Vector3 HitPoint;
+        public readonly List<StatuePart> Candidates = new();
+
+        public PendingVehicleContact(VehicleController vehicle, float energy, float speed,
+            Vector3 direction, Vector3 hitPoint)
+        {
+            Vehicle = vehicle;
+            Energy = energy;
+            Speed = speed;
+            Direction = direction;
+            HitPoint = hitPoint;
+        }
+
+        public void Add(StatuePart part)
+        {
+            if (!Candidates.Contains(part))
+                Candidates.Add(part);
+        }
     }
 
     /// <summary>Public deterministic entry point used by gameplay and tests.</summary>
@@ -330,22 +454,17 @@ public partial class StatueController : Node3D
         _loose.Clear();
         _debris.Clear();
         _pending.Clear();
+        _pendingContacts.Clear();
+        _lastVehicleImpactMsec.Clear();
         _lean = 0f;
         _collapsed = false;
     }
 
-    public string ProgressFor(WreckChallenge challenge)
-    {
-        var bits = new List<string>();
-        if (challenge.RequiredParts.Length > 0)
-        {
-            bits.Add(string.Join("  ",
-                challenge.RequiredParts.Select(p =>
-                    $"{p}: {(_broken.Contains(p) ? "BROKEN" : "intact")}")));
-        }
-        bits.Add($"broken {_broken.Count} (goal {challenge.MinimumBrokenParts})");
-        return string.Join("   |   ", bits);
-    }
+    public ObjectiveProgress GetObjectiveProgress(WreckChallenge challenge) =>
+        ObjectiveProgressRules.Evaluate(challenge, _broken);
+
+    public string ProgressFor(WreckChallenge challenge) =>
+        GetObjectiveProgress(challenge).CombinedLabel;
 
     public IReadOnlyList<StatuePart> SnapshotParts() => _parts.Values.ToList();
 
