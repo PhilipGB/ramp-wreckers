@@ -1,0 +1,29 @@
+=== RAMP WRECKERS CORE UNIT TESTS ===
+[PASS] nine authored challenges exist
+[PASS] challenge part IDs and rewards validate ()
+[PASS] all challenges reward coins
+[PASS] statue inventories contain required weak points
+[PASS] First Crash accepts any two broken parts
+[PASS] Hat Trick rejects a non-hat part
+[PASS] Hat Trick accepts the hat
+[PASS] zero mass has no energy
+[PASS] energy rises with speed
+[PASS] heavier vehicle has more energy at the same speed
+[PASS] below threshold is no break
+[PASS] equal threshold breaks
+[PASS] weak point score bonus applies
+[PASS] protection transfers only part of energy
+[PASS] atomic save succeeds
+[PASS] save roundtrip preserves progress and upgrades
+[PASS] second save creates backup
+[PASS] corrupt primary recovers last good backup
+[PASS] empty save safely falls back to defaults
+[PASS] invalid data is refused with an error message
+[PASS] write failure is reported honestly
+[PASS] first clear grants the authored reward
+[PASS] replay improves medal but cannot duplicate coins
+[PASS] coins are exactly one reward
+[PASS] monster truck unlock works with enough coins
+[PASS] engine upgrade works with enough coins
+[PASS] grip upgrade works with enough coins
+=== RESULT: 27 passed, 0 failed ===

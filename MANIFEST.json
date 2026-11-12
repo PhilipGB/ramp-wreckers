@@ -1,0 +1,318 @@
+{
+  "project": "Ramp Wreckers",
+  "handoff_version": "0.1.0-release",
+  "engine": "Godot 4.7.2 .NET",
+  "dotnet_target": "net10.0",
+  "runtime_validation": "PASS: docs/VERIFICATION.md (Godot 4.7.2 .NET headless runtime + rendered capture)",
+  "static_validation": "PASS: tools/validate_project.py (550 checks)",
+  "file_count": 61,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 84,
+      "sha256": "39f58d77ab018cb5afff509094af84c9885640744d1f71e72696afe451b42e55"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 81,
+      "sha256": "e302b104aaab1932f20682e26ca33b467f0ead4b4784c202e3bc0d3528382235"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 792,
+      "sha256": "039fda16b8a254adc1fdfe692a62414d718f0a1fd6066e6923f17c39f46d2410"
+    },
+    {
+      "path": "AGENT_HANDOFF.md",
+      "bytes": 9074,
+      "sha256": "26786d5989864213341a8440ca83ca0da95df8761e30e9355a745bb166772d71"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3834,
+      "sha256": "73d1b9777a67742194ce8b32205359c9354d494b416e18bc36b0c2ba4957b473"
+    },
+    {
+      "path": "RampWreckers.csproj",
+      "bytes": 347,
+      "sha256": "91e91840f1b18eaaf46a0c5ea762c4084acb88ea0b0b03109b6a15e335d65e1b"
+    },
+    {
+      "path": "art/audio/crash.wav",
+      "bytes": 76778,
+      "sha256": "d5500ecbc41dfb1aea84c38d3b30e0ee7e3ed7381478dba557eff77ce8dd039a"
+    },
+    {
+      "path": "art/audio/launch.wav",
+      "bytes": 44144,
+      "sha256": "5eb56017c90b6daa779279345943340edd3913068f75fc5f4f240c67580247e8"
+    },
+    {
+      "path": "art/audio/reward.wav",
+      "bytes": 65312,
+      "sha256": "11cfb4203c63a48bab0207978491535377dd3d6feca5130d1ef052feeb94ce82"
+    },
+    {
+      "path": "art/meshes/environment/Arena.glb",
+      "bytes": 79676,
+      "sha256": "acb2d0c7e193cea8c8dedc1694d1aa153fa3a8930dbf2e2a0a776f2b2e8e4232"
+    },
+    {
+      "path": "art/meshes/environment/Ramp.glb",
+      "bytes": 20548,
+      "sha256": "1e2173bfe3c43897a3de01b2921161d3375383fef818635232de8583e0ae6733"
+    },
+    {
+      "path": "art/meshes/environment/SafetyCone.glb",
+      "bytes": 4112,
+      "sha256": "27651de26fd640b51ee8518679635842c555a914761b78e306a119ec903f2e48"
+    },
+    {
+      "path": "art/meshes/statues/gnome/Beard.glb",
+      "bytes": 8048,
+      "sha256": "b5c386eae142b1f513747c96ef1faa1ec71dee058bbcacb75532cb2e22e55f78"
+    },
+    {
+      "path": "art/meshes/statues/gnome/Hat.glb",
+      "bytes": 3836,
+      "sha256": "a7422235e7df67235ee39c3bfc730be562013a76fa5e9882602021f7da0ade2c"
+    },
+    {
+      "path": "art/meshes/statues/gnome/Head.glb",
+      "bytes": 10672,
+      "sha256": "1aa3391fecb71206b4f8e268e2f225186a9810108fdae6a04722979100859cd8"
+    },
+    {
+      "path": "art/meshes/statues/gnome/LeftArm.glb",
+      "bytes": 6340,
+      "sha256": "306d9fdcb5064f5a0f4aa0c6ae7d7ccbe9c185312912c8ce75f454e292a09c78"
+    },
+    {
+      "path": "art/meshes/statues/gnome/LeftLeg.glb",
+      "bytes": 5964,
+      "sha256": "892136ebbf43a5bae807a5995a6575b3a993149507205344479651619c86892a"
+    },
+    {
+      "path": "art/meshes/statues/gnome/Pedestal.glb",
+      "bytes": 2248,
+      "sha256": "7832558bdf08e5d3e976f43a3943e8fb4d2cafee212e86b8788868a71318616f"
+    },
+    {
+      "path": "art/meshes/statues/gnome/RightArm.glb",
+      "bytes": 6340,
+      "sha256": "e47114b1c3d5edd659ccee23437c320a3bed41081ab3731dc9d78241a1a89603"
+    },
+    {
+      "path": "art/meshes/statues/gnome/RightLeg.glb",
+      "bytes": 5964,
+      "sha256": "892136ebbf43a5bae807a5995a6575b3a993149507205344479651619c86892a"
+    },
+    {
+      "path": "art/meshes/statues/gnome/Torso.glb",
+      "bytes": 3052,
+      "sha256": "f2d782db01afabee593210ea1c0511f5bca373f986f88073902b23238b1235b3"
+    },
+    {
+      "path": "art/meshes/statues/knight/Head.glb",
+      "bytes": 6632,
+      "sha256": "690ef6907d676334a2df9a5f7b47a1796019b6049e71bae4d87a8406411b67ac"
+    },
+    {
+      "path": "art/meshes/statues/knight/LeftArm.glb",
+      "bytes": 6336,
+      "sha256": "ca382161db0853fad78170e256319dcc18890da250270faff4a525115214c547"
+    },
+    {
+      "path": "art/meshes/statues/knight/LeftLeg.glb",
+      "bytes": 5944,
+      "sha256": "7aa069218b0942d02b731ad3d6b490eb9b446f05431409ae471108095e61b5f5"
+    },
+    {
+      "path": "art/meshes/statues/knight/Pedestal.glb",
+      "bytes": 2232,
+      "sha256": "6ae0de0f4e9913566569c63e2a8be19de175feb15760b51285ef4ca7296a692e"
+    },
+    {
+      "path": "art/meshes/statues/knight/RightArm.glb",
+      "bytes": 6336,
+      "sha256": "06e306b214dbd8e44c7201cc788cf34d3f21a2a6dd2be55e0b17d6f83c72cb61"
+    },
+    {
+      "path": "art/meshes/statues/knight/RightLeg.glb",
+      "bytes": 5944,
+      "sha256": "7aa069218b0942d02b731ad3d6b490eb9b446f05431409ae471108095e61b5f5"
+    },
+    {
+      "path": "art/meshes/statues/knight/Shield.glb",
+      "bytes": 2992,
+      "sha256": "2dadcf868a9decd73d7e833784ab0e201ef5b126026d33fb50e9abd43613fa85"
+    },
+    {
+      "path": "art/meshes/statues/knight/Torso.glb",
+      "bytes": 4308,
+      "sha256": "b9210381a43ce63b33af93fd394a4e83bfb7798b8af696947b02c2181353833d"
+    },
+    {
+      "path": "art/meshes/statues/robot/Armour.glb",
+      "bytes": 1880,
+      "sha256": "b8e7ae8c9f5b5ca2f8ceb0456f4c33918849e807d9f83378508ce395f9c12ab2"
+    },
+    {
+      "path": "art/meshes/statues/robot/Core.glb",
+      "bytes": 7592,
+      "sha256": "b2df7c29415eb714951b9bb735b1537530dae07ce20c6752700934e013e31c98"
+    },
+    {
+      "path": "art/meshes/statues/robot/Head.glb",
+      "bytes": 11932,
+      "sha256": "ba1716f3aeb97b8223926cf84c0990c87f9495a31204a6cdcf139c7a35a369be"
+    },
+    {
+      "path": "art/meshes/statues/robot/LeftArm.glb",
+      "bytes": 7272,
+      "sha256": "e7161e2268cec96a428d8e83fcccde6cb548de27392948d3da2e59d31744bead"
+    },
+    {
+      "path": "art/meshes/statues/robot/LeftLeg.glb",
+      "bytes": 7056,
+      "sha256": "833a00384e0734c0cc70b691a2c282433cec656f4acd59ff1e697a4c2d1e98ec"
+    },
+    {
+      "path": "art/meshes/statues/robot/Pedestal.glb",
+      "bytes": 2320,
+      "sha256": "658a9dbecc6599ded28cf4ff08e500351356530455056e18b13e8148fd34c0f3"
+    },
+    {
+      "path": "art/meshes/statues/robot/RightArm.glb",
+      "bytes": 7272,
+      "sha256": "ef71c95d76c9f4d216d1dfef2abc84b62b7cdea10f25c3909244dc9db541a7f2"
+    },
+    {
+      "path": "art/meshes/statues/robot/RightLeg.glb",
+      "bytes": 7056,
+      "sha256": "833a00384e0734c0cc70b691a2c282433cec656f4acd59ff1e697a4c2d1e98ec"
+    },
+    {
+      "path": "art/meshes/statues/robot/Torso.glb",
+      "bytes": 3640,
+      "sha256": "bb79175f6047421ad34d0aabf66f6c42fda31fa9ee59a47b140470971e2000c9"
+    },
+    {
+      "path": "art/meshes/vehicles/MonsterTruck.glb",
+      "bytes": 37000,
+      "sha256": "3c15db7459cbaeeac3ae4da0f3bd164bd04d0ec22a928471dd6ff5b2e55d2741"
+    },
+    {
+      "path": "art/meshes/vehicles/PickupTruck.glb",
+      "bytes": 36404,
+      "sha256": "3c12719204a4e14445c2faeb47790cdd928338f69dadf226c97d81bab0ee3189"
+    },
+    {
+      "path": "art/meshes/vehicles/RallyCar.glb",
+      "bytes": 35748,
+      "sha256": "d4c060475b95df213c7b7ede124fcd354bf11e72fd224712482b82c9b57e1fc5"
+    },
+    {
+      "path": "docs/ACCEPTANCE.md",
+      "bytes": 4917,
+      "sha256": "8103f9daeff24acb05dd9256062a27a47c2b1e422073c25eba69b56484cc57e0"
+    },
+    {
+      "path": "docs/ART_AND_SCENES.md",
+      "bytes": 3835,
+      "sha256": "f807d8b1aca6003de5223bda5bbc185788676484cece288dacaa4fc905a085ce"
+    },
+    {
+      "path": "docs/ASSET_OVERVIEW.png",
+      "bytes": 58786,
+      "sha256": "24f56946236253de4bb5433ae775b1596febf18b22bf4dafda3a16c9f1a06604"
+    },
+    {
+      "path": "docs/GAME_DESIGN.md",
+      "bytes": 4961,
+      "sha256": "4ce70b36ffa367206c3f2175a82108eac9618ca2297ffcea1aea43c8b740a70f"
+    },
+    {
+      "path": "mesh_sources.zip",
+      "bytes": 173506,
+      "sha256": "89ead5437015e06d61bfa62d02efe77a5f1aa34a34198bafd3937b8bd9dc41a8"
+    },
+    {
+      "path": "project.godot",
+      "bytes": 727,
+      "sha256": "f1782af7a4628572ddaa9036e670df2ab042878e91e3fc23ba47e119d50fe35a"
+    },
+    {
+      "path": "scenes/Hud.tscn",
+      "bytes": 2304,
+      "sha256": "5c28dc1f527642c5497642bbdf4cc6a7402eb764c3e2826cc62a604a4ca70b35"
+    },
+    {
+      "path": "scenes/Main.tscn",
+      "bytes": 2720,
+      "sha256": "b537e77352ebd6f6aa7bf8e85ad54226085fe01ba85d1b6f81ba910ad8ddc99f"
+    },
+    {
+      "path": "scenes/statues/Gnome.tscn",
+      "bytes": 5677,
+      "sha256": "ffe83938cfe0798bc97f27d9b0c528acd2248c1aebdf26228fa2bfc955802268"
+    },
+    {
+      "path": "scenes/statues/Knight.tscn",
+      "bytes": 5076,
+      "sha256": "400b2477fa5488a59df8238c4fce27e276c3f39480c16e492d7f54a61016fa8a"
+    },
+    {
+      "path": "scenes/statues/Robot.tscn",
+      "bytes": 5700,
+      "sha256": "f2fffb08ca73aa4ebbe0a1301e74b9654f9912198b16b61fd7af145134b2851a"
+    },
+    {
+      "path": "scenes/vehicles/MonsterTruck.tscn",
+      "bytes": 776,
+      "sha256": "574c418b5d41415ea8afaed0cfee67e0732665966640ab319807e0d486ed66b5"
+    },
+    {
+      "path": "scenes/vehicles/PickupTruck.tscn",
+      "bytes": 778,
+      "sha256": "cc7bf452fdd4efd14c38cdb14ddba750be8f635a32450d0ceb4fffca9680c104"
+    },
+    {
+      "path": "scenes/vehicles/RallyCar.tscn",
+      "bytes": 769,
+      "sha256": "bbacbcc7819358d3ca9e0d10e44d1e4656f81a6d57e544de4be39bcb4e82ed60"
+    },
+    {
+      "path": "src/ChallengeCatalog.cs",
+      "bytes": 1509,
+      "sha256": "0786d1cbb59b5f0c3a39ef7dff3a09cb32af4726b417802f990c45592bf3276b"
+    },
+    {
+      "path": "src/GameRoot.cs",
+      "bytes": 7966,
+      "sha256": "2eb52fd2335240db539679af5ad7a1a3194e1fb35ad8c940afb24116e4232de4"
+    },
+    {
+      "path": "src/StatueController.cs",
+      "bytes": 2623,
+      "sha256": "12fb739be6566eff3167e51deedfc2694f93efe2486f280e979605800dc0f45d"
+    },
+    {
+      "path": "src/StatuePart.cs",
+      "bytes": 1611,
+      "sha256": "e2ca10f9354b2abfd0e3ba9f68405bcd6f5eb1ff9ef8f9dd78c8e566f2214a54"
+    },
+    {
+      "path": "src/VehicleController.cs",
+      "bytes": 3247,
+      "sha256": "6b2ab75da9d77b56b919ca0835c10a6218bde0814c6f7811a86522406c8642c2"
+    },
+    {
+      "path": "tools/verify_bundle.py",
+      "bytes": 3622,
+      "sha256": "2f024dc3e7277a93c299807aee3d3e01620289dc192296c8d5115862d68a483a"
+    }
+  ],
+  "release_version": "0.1.0",
+  "release_notes": "docs/VERIFICATION.md"
+}

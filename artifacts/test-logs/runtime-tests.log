@@ -1,0 +1,325 @@
+Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
+
+=== RAMP WRECKERS RUNTIME TESTS ===
+[PASS] catalog has nine authored challenges
+[PASS] catalog part IDs validate against each statue ()
+[PASS] every challenge awards positive coins
+[PASS] Hat Trick completes with Hat
+[PASS] Knee Trouble rejects one leg
+[PASS] medal calc returns Gold for high score and fast time
+[PASS] zero mass gives zero impact energy
+[PASS] impact energy grows with speed
+[PASS] below threshold does not break
+[PASS] at threshold breaks exactly
+[PASS] higher energy awards more score
+[PASS] weak point score is boosted
+[PASS] audio cue loads with usable length: res://art/audio/crash.wav
+[PASS] audio cue loads with usable length: res://art/audio/launch.wav
+[PASS] audio cue loads with usable length: res://art/audio/reward.wav
+[PASS] audio cue loads with usable length: res://art/audio/engine_loop.wav
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[PASS] gnome has eight authored breakable parts
+[PASS] gnome structural graph is valid
+[PASS] low-speed statue contact awards no damage
+[PASS] low-energy statue hit is resisted
+[Destruction] Garden Gnome/LeftLeg broke via direct energy=500 score=29 weak=False.
+[PASS] strong leg hit breaks the leg
+[PASS] duplicate hit cannot double-count a part
+[PASS] one broken support visibly leans the statue
+[Destruction] Garden Gnome/RightLeg broke via direct energy=500 score=29 weak=False.
+[Destruction] Garden Gnome/Torso broke via collapse energy=275 score=55 weak=False.
+[Destruction] Garden Gnome/Head broke via collapse energy=275 score=42 weak=False.
+[Destruction] Garden Gnome/Beard broke via collapse energy=275 score=32 weak=False.
+[Destruction] Garden Gnome/Hat broke via collapse energy=275 score=46 weak=False.
+[Destruction] Garden Gnome/LeftArm broke via collapse energy=275 score=23 weak=False.
+[Destruction] Garden Gnome/RightArm broke via collapse energy=275 score=23 weak=False.
+[PASS] both gnome supports can be broken
+[PASS] both supports gone topples the gnome torso
+[PASS] support collapse breaks the upper structure
+[PASS] collapse event state is set
+[PASS] statue reset restores every authored pose
+[Statue] Iron Knight: 7 authored parts, graph valid=True.
+[PASS] knight has seven valid parts
+[Destruction] Iron Knight/Shield broke via direct energy=400 score=118 weak=True.
+[PASS] shield detaches from a direct hit
+[Destruction] Iron Knight/LeftLeg broke via direct energy=500 score=40 weak=False.
+[Destruction] Iron Knight/RightLeg broke via direct energy=500 score=40 weak=False.
+[Destruction] Iron Knight/Torso broke via collapse energy=275 score=74 weak=False.
+[Destruction] Iron Knight/Head broke via collapse energy=275 score=51 weak=False.
+[Destruction] Iron Knight/LeftArm broke via collapse energy=275 score=32 weak=False.
+[Destruction] Iron Knight/RightArm broke via collapse energy=275 score=32 weak=False.
+[Destruction] Iron Knight/Shield broke via collapse energy=275 score=65 weak=False.
+[PASS] knight torso collapses after both legs
+[Statue] Reactor Robot: 8 authored parts, graph valid=True.
+[PASS] robot has eight valid parts
+[Destruction] Reactor Robot/Armour broke via shield energy=250 score=81 weak=False.
+[PASS] robot armour blocks a direct core strike
+[PASS] blocked core strike transfers damage to armour
+[Destruction] Reactor Robot/Core broke via direct energy=500 score=267 weak=True.
+[PASS] exposed robot core breaks on a direct weak-point strike
+[Destruction] Reactor Robot/LeftLeg broke via direct energy=600 score=62 weak=False.
+[Destruction] Reactor Robot/RightLeg broke via direct energy=600 score=62 weak=False.
+[Destruction] Reactor Robot/Torso broke via collapse energy=330 score=108 weak=False.
+[Destruction] Reactor Robot/Head broke via collapse energy=330 score=74 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via collapse energy=330 score=49 weak=False.
+[Destruction] Reactor Robot/RightArm broke via collapse energy=330 score=49 weak=False.
+[Destruction] Reactor Robot/Core detached intact (support lost).
+[Destruction] Reactor Robot/Armour broke via collapse energy=330 score=88 weak=False.
+[PASS] robot core detaches intact when its torso collapses
+[PASS] robot torso and armour break in the collapse
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[Destruction] Garden Gnome/LeftLeg broke via direct energy=420 score=27 weak=False.
+[Destruction] Garden Gnome/RightLeg broke via direct energy=420 score=27 weak=False.
+[Destruction] Garden Gnome/Torso broke via collapse energy=231 score=53 weak=False.
+[Destruction] Garden Gnome/Head broke via collapse energy=231 score=40 weak=False.
+[Destruction] Garden Gnome/Beard broke via collapse energy=231 score=31 weak=False.
+[Destruction] Garden Gnome/Hat broke via collapse energy=231 score=44 weak=False.
+[Destruction] Garden Gnome/LeftArm broke via collapse energy=231 score=22 weak=False.
+[Destruction] Garden Gnome/RightArm broke via collapse energy=231 score=22 weak=False.
+[PASS] challenge 1 'First Crash' is completable from real part breaks
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[Destruction] Garden Gnome/Hat broke via direct energy=420 score=86 weak=True.
+[PASS] challenge 2 'Hat Trick' is completable from real part breaks
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[Destruction] Garden Gnome/LeftLeg broke via direct energy=420 score=27 weak=False.
+[Destruction] Garden Gnome/RightLeg broke via direct energy=420 score=27 weak=False.
+[Destruction] Garden Gnome/Torso broke via collapse energy=231 score=53 weak=False.
+[Destruction] Garden Gnome/Head broke via collapse energy=231 score=40 weak=False.
+[Destruction] Garden Gnome/Beard broke via collapse energy=231 score=31 weak=False.
+[Destruction] Garden Gnome/Hat broke via collapse energy=231 score=44 weak=False.
+[Destruction] Garden Gnome/LeftArm broke via collapse energy=231 score=22 weak=False.
+[Destruction] Garden Gnome/RightArm broke via collapse energy=231 score=22 weak=False.
+[PASS] challenge 3 'Gnome Down' is completable from real part breaks
+[Statue] Iron Knight: 7 authored parts, graph valid=True.
+[Destruction] Iron Knight/Shield broke via direct energy=420 score=120 weak=True.
+[PASS] challenge 4 'Shield Breaker' is completable from real part breaks
+[Statue] Iron Knight: 7 authored parts, graph valid=True.
+[Destruction] Iron Knight/LeftLeg broke via direct energy=420 score=37 weak=False.
+[Destruction] Iron Knight/RightLeg broke via direct energy=420 score=37 weak=False.
+[Destruction] Iron Knight/Torso broke via collapse energy=231 score=70 weak=False.
+[Destruction] Iron Knight/Head broke via collapse energy=231 score=48 weak=False.
+[Destruction] Iron Knight/LeftArm broke via collapse energy=231 score=31 weak=False.
+[Destruction] Iron Knight/RightArm broke via collapse energy=231 score=31 weak=False.
+[Destruction] Iron Knight/Shield broke via collapse energy=231 score=62 weak=False.
+[PASS] challenge 5 'Knee Trouble' is completable from real part breaks
+[Statue] Iron Knight: 7 authored parts, graph valid=True.
+[Destruction] Iron Knight/LeftLeg broke via direct energy=420 score=37 weak=False.
+[Destruction] Iron Knight/RightLeg broke via direct energy=420 score=37 weak=False.
+[Destruction] Iron Knight/Torso broke via collapse energy=231 score=70 weak=False.
+[Destruction] Iron Knight/Head broke via collapse energy=231 score=48 weak=False.
+[Destruction] Iron Knight/LeftArm broke via collapse energy=231 score=31 weak=False.
+[Destruction] Iron Knight/RightArm broke via collapse energy=231 score=31 weak=False.
+[Destruction] Iron Knight/Shield broke via collapse energy=231 score=62 weak=False.
+[PASS] challenge 6 'Knightfall' is completable from real part breaks
+[Statue] Reactor Robot: 8 authored parts, graph valid=True.
+[Destruction] Reactor Robot/Armour broke via direct energy=420 score=96 weak=False.
+[PASS] challenge 7 'Peel the Armour' is completable from real part breaks
+[Statue] Reactor Robot: 8 authored parts, graph valid=True.
+[Destruction] Reactor Robot/Armour broke via direct energy=420 score=96 weak=False.
+[Destruction] Reactor Robot/Core broke via direct energy=420 score=248 weak=True.
+[PASS] challenge 8 'Core Shot' is completable from real part breaks
+[Statue] Reactor Robot: 8 authored parts, graph valid=True.
+[Destruction] Reactor Robot/LeftLeg broke via direct energy=420 score=53 weak=False.
+[Destruction] Reactor Robot/RightLeg broke via direct energy=420 score=53 weak=False.
+[Destruction] Reactor Robot/Torso broke via collapse energy=231 score=97 weak=False.
+[Destruction] Reactor Robot/Head broke via collapse energy=231 score=66 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via collapse energy=231 score=44 weak=False.
+[Destruction] Reactor Robot/RightArm broke via collapse energy=231 score=44 weak=False.
+[Destruction] Reactor Robot/Core detached intact (support lost).
+[Destruction] Reactor Robot/Armour broke via collapse energy=231 score=79 weak=False.
+[PASS] challenge 9 'Robot Wreck' is completable from real part breaks
+[Statue] Reactor Robot: 8 authored parts, graph valid=True.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via direct energy=500 score=58 weak=False.
+[Destruction] Reactor Robot/RightArm broke via direct energy=500 score=58 weak=False.
+[PASS] 30 break/reset cycles restore exact part transforms and state
+[PASS] save writes a valid payload
+[PASS] save roundtrip restores coins, medals and unlocks
+[PASS] second save writes and creates a backup
+[PASS] corrupt primary save recovers the last good backup
+[PASS] empty save recovers to a safe default profile
+[PASS] invalid save data is refused with honest feedback
+[PASS] write failure is reported, not claimed as success
+[PASS] first challenge clear awards coins once
+[PASS] challenge replay improves medal but cannot duplicate coins
+[PASS] profile coins reflect the single reward exactly
+[Save] New profile created.
+[Catalog] 9 authored challenges validated against statue part inventories.
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[PASS] ramp 10° foot is flush with the runway (y=0.04)
+[PASS] ramp 10° lifts the launch lip off the ground (y=2.14)
+[PASS] ramp 10° collider slope matches the authored deck
+[PASS] ramp 16° foot is flush with the runway (y=0.03)
+[PASS] ramp 16° lifts the launch lip off the ground (y=3.36)
+[PASS] ramp 16° collider slope matches the authored deck
+[PASS] ramp 27° foot is flush with the runway (y=-0.00)
+[PASS] ramp 27° lifts the launch lip off the ground (y=5.49)
+[PASS] ramp 27° collider slope matches the authored deck
+[Save] Progress loaded.
+[Catalog] 9 authored challenges validated against statue part inventories.
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[PASS] G key opens the garage overlay
+[PASS] G key closes the garage overlay
+[PASS] F key enables Free Smash
+[Destruction] Garden Gnome/LeftLeg broke via direct energy=500 score=29 weak=False.
+[Destruction] Garden Gnome/RightLeg broke via direct energy=500 score=29 weak=False.
+[Destruction] Garden Gnome/Torso broke via collapse energy=275 score=55 weak=False.
+[Destruction] Garden Gnome/Head broke via collapse energy=275 score=42 weak=False.
+[Destruction] Garden Gnome/Beard broke via collapse energy=275 score=32 weak=False.
+[Destruction] Garden Gnome/Hat broke via collapse energy=275 score=46 weak=False.
+[Destruction] Garden Gnome/LeftArm broke via collapse energy=275 score=23 weak=False.
+[Destruction] Garden Gnome/RightArm broke via collapse energy=275 score=23 weak=False.
+[PASS] Free Smash destruction cannot grant campaign coins or corrupt rewards
+[PASS] F key returns to Campaign
+[PASS] C key cycles the camera preset
+[Save] Progress loaded.
+[Catalog] 9 authored challenges validated against statue part inventories.
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[PASS] vehicle 0 spawned for route test
+[Destruction] Garden Gnome/Beard broke via direct energy=267 score=32 weak=False.
+[Destruction] Garden Gnome/Torso broke via direct energy=268 score=55 weak=False.
+[CHALLENGE] First Crash complete? broken=Beard,Torso required= min=2
+[Destruction] Garden Gnome/Head broke via collapse energy=147 score=36 weak=False.
+[Destruction] Garden Gnome/Hat broke via collapse energy=147 score=40 weak=False.
+[Destruction] Garden Gnome/LeftArm broke via collapse energy=147 score=20 weak=False.
+[Destruction] Garden Gnome/RightArm broke via collapse energy=147 score=20 weak=False.
+[Destruction] Garden Gnome/RightLeg broke via direct energy=56 score=18 weak=False.
+[Destruction] Garden Gnome/LeftLeg broke via direct energy=57 score=18 weak=False.
+[PASS] vehicle 0 physically travelled more than 30 m (z 34 -> -21)
+[PASS] vehicle 0 reached a usable launch speed (97 km/h)
+[PASS] vehicle 0 became airborne from the ramp
+[PASS] vehicle 0 damaged the statue through ordinary driving (score 32)
+[PASS] campaign route completes First Crash and saves the first-clear reward
+[ROUTE] vehicle=0 z=34->-21 maxY=5.5 maxSpeed=97 score=32
+[PASS] vehicle 1 spawned for route test
+[Destruction] Garden Gnome/Beard broke via direct energy=407 score=37 weak=False.
+[Destruction] Garden Gnome/Torso broke via direct energy=409 score=64 weak=False.
+[CHALLENGE] First Crash complete? broken=Beard,Torso required= min=2
+[Destruction] Garden Gnome/Head broke via collapse energy=225 score=39 weak=False.
+[Destruction] Garden Gnome/Hat broke via collapse energy=225 score=44 weak=False.
+[Destruction] Garden Gnome/LeftArm broke via collapse energy=225 score=22 weak=False.
+[Destruction] Garden Gnome/RightArm broke via collapse energy=225 score=22 weak=False.
+[Destruction] Garden Gnome/RightLeg broke via direct energy=409 score=26 weak=False.
+[Destruction] Garden Gnome/LeftLeg broke via direct energy=409 score=26 weak=False.
+[PASS] vehicle 1 physically travelled more than 30 m (z 34 -> -20)
+[PASS] vehicle 1 reached a usable launch speed (91 km/h)
+[PASS] vehicle 1 became airborne from the ramp
+[PASS] vehicle 1 damaged the statue through ordinary driving (score 37)
+[ROUTE] vehicle=1 z=34->-20 maxY=5.6 maxSpeed=91 score=37
+[PASS] vehicle 2 spawned for route test
+[Destruction] Garden Gnome/Torso broke via direct energy=165 score=49 weak=False.
+[Destruction] Garden Gnome/Head broke via collapse energy=91 score=33 weak=False.
+[CHALLENGE] First Crash complete? broken=Torso,Head required= min=2
+[Destruction] Garden Gnome/Beard broke via collapse energy=91 score=26 weak=False.
+[Destruction] Garden Gnome/Hat broke via collapse energy=91 score=37 weak=False.
+[Destruction] Garden Gnome/LeftArm broke via collapse energy=91 score=19 weak=False.
+[Destruction] Garden Gnome/RightArm broke via collapse energy=91 score=19 weak=False.
+[Destruction] Garden Gnome/RightLeg broke via direct energy=157 score=20 weak=False.
+[Destruction] Garden Gnome/LeftLeg broke via direct energy=157 score=20 weak=False.
+[PASS] vehicle 2 physically travelled more than 30 m (z 34 -> -20)
+[PASS] vehicle 2 reached a usable launch speed (68 km/h)
+[PASS] vehicle 2 became airborne from the ramp
+[PASS] vehicle 2 damaged the statue through ordinary driving (score 183)
+[ROUTE] vehicle=2 z=34->-20 maxY=5.4 maxSpeed=68 score=183
+[Save] Progress loaded.
+[Catalog] 9 authored challenges validated against statue part inventories.
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[Statue] Iron Knight: 7 authored parts, graph valid=True.
+[Statue] Reactor Robot: 8 authored parts, graph valid=True.
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[Statue] Iron Knight: 7 authored parts, graph valid=True.
+[Statue] Reactor Robot: 8 authored parts, graph valid=True.
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[Statue] Iron Knight: 7 authored parts, graph valid=True.
+[Statue] Reactor Robot: 8 authored parts, graph valid=True.
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[PASS] 30 retries keep statue/vehicle state bounded and intact
+[PASS] 30 retries complete quickly (987 ms total)
+=== RESULT: 90 passed, 0 failed ===
