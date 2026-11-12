@@ -164,6 +164,10 @@ def validate_statue_scenes() -> dict[str, set[str]]:
             # Every visible part must be an instance of an authored GLB scene.
             check(f'[node name="Art" parent="{part["_name"]}" instance=' in text,
                   f"{scene_path}/{part_id} has no authored Art instance")
+            check(f'[node name="HitArea" type="Area3D" parent="{part["_name"]}"]' in text,
+                  f"{scene_path}/{part_id} has no authored gameplay HitArea")
+            check(f'[node name="HitShape" type="CollisionShape3D" parent="{part["_name"]}/HitArea"]' in text,
+                  f"{scene_path}/{part_id} has no authored HitArea collision shape")
             art_lines = [line for line in text.splitlines()
                          if line.startswith(f'[node name="Art" parent="{part["_name"]}" instance=')]
             check(bool(art_lines) and "ExtResource" in art_lines[0],

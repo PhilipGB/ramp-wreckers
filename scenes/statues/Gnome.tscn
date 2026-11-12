@@ -74,6 +74,14 @@ shape = SubResource("ShapeLeftLeg")
 
 [node name="Art" parent="LeftLeg" instance=ExtResource("4")]
 
+[node name="HitArea" type="Area3D" parent="LeftLeg"]
+collision_layer = 4
+collision_mask = 2
+monitorable = false
+
+[node name="HitShape" type="CollisionShape3D" parent="LeftLeg/HitArea"]
+shape = SubResource("ShapeLeftLeg")
+
 [node name="RightLeg" type="RigidBody3D" parent="."]
 position = Vector3(0.55, 1.38, 0)
 collision_layer = 4
@@ -93,6 +101,14 @@ IsSupport = true
 shape = SubResource("ShapeRightLeg")
 
 [node name="Art" parent="RightLeg" instance=ExtResource("5")]
+
+[node name="HitArea" type="Area3D" parent="RightLeg"]
+collision_layer = 4
+collision_mask = 2
+monitorable = false
+
+[node name="HitShape" type="CollisionShape3D" parent="RightLeg/HitArea"]
+shape = SubResource("ShapeRightLeg")
 
 [node name="Torso" type="RigidBody3D" parent="."]
 position = Vector3(0, 2.8, 0)
@@ -114,6 +130,14 @@ shape = SubResource("ShapeTorso")
 
 [node name="Art" parent="Torso" instance=ExtResource("6")]
 
+[node name="HitArea" type="Area3D" parent="Torso"]
+collision_layer = 4
+collision_mask = 2
+monitorable = false
+
+[node name="HitShape" type="CollisionShape3D" parent="Torso/HitArea"]
+shape = SubResource("ShapeTorso")
+
 [node name="Head" type="RigidBody3D" parent="."]
 position = Vector3(0, 4.55, 0)
 collision_layer = 4
@@ -133,6 +157,14 @@ SupportedByCsv = "Torso"
 shape = SubResource("ShapeHead")
 
 [node name="Art" parent="Head" instance=ExtResource("7")]
+
+[node name="HitArea" type="Area3D" parent="Head"]
+collision_layer = 4
+collision_mask = 2
+monitorable = false
+
+[node name="HitShape" type="CollisionShape3D" parent="Head/HitArea"]
+shape = SubResource("ShapeHead")
 
 [node name="Beard" type="RigidBody3D" parent="."]
 position = Vector3(0, 4.15, 0.2)
@@ -155,6 +187,15 @@ shape = SubResource("ShapeBeard")
 
 [node name="Art" parent="Beard" instance=ExtResource("8")]
 
+[node name="HitArea" type="Area3D" parent="Beard"]
+collision_layer = 4
+collision_mask = 2
+monitorable = false
+
+[node name="HitShape" type="CollisionShape3D" parent="Beard/HitArea"]
+position = Vector3(0, 0, 0.38)
+shape = SubResource("ShapeBeard")
+
 [node name="Hat" type="RigidBody3D" parent="."]
 position = Vector3(0, 5.65, 0)
 collision_layer = 4
@@ -176,6 +217,14 @@ shape = SubResource("ShapeHat")
 
 [node name="Art" parent="Hat" instance=ExtResource("9")]
 
+[node name="HitArea" type="Area3D" parent="Hat"]
+collision_layer = 4
+collision_mask = 2
+monitorable = false
+
+[node name="HitShape" type="CollisionShape3D" parent="Hat/HitArea"]
+shape = SubResource("ShapeHat")
+
 [node name="LeftArm" type="RigidBody3D" parent="."]
 position = Vector3(-1.15, 3.05, 0)
 collision_layer = 4
@@ -196,6 +245,14 @@ shape = SubResource("ShapeLeftArm")
 
 [node name="Art" parent="LeftArm" instance=ExtResource("10")]
 
+[node name="HitArea" type="Area3D" parent="LeftArm"]
+collision_layer = 4
+collision_mask = 2
+monitorable = false
+
+[node name="HitShape" type="CollisionShape3D" parent="LeftArm/HitArea"]
+shape = SubResource("ShapeLeftArm")
+
 [node name="RightArm" type="RigidBody3D" parent="."]
 position = Vector3(1.15, 3.05, 0)
 collision_layer = 4
@@ -215,3 +272,11 @@ SupportedByCsv = "Torso"
 shape = SubResource("ShapeRightArm")
 
 [node name="Art" parent="RightArm" instance=ExtResource("11")]
+
+[node name="HitArea" type="Area3D" parent="RightArm"]
+collision_layer = 4
+collision_mask = 2
+monitorable = false
+
+[node name="HitShape" type="CollisionShape3D" parent="RightArm/HitArea"]
+shape = SubResource("ShapeRightArm")

@@ -47,46 +47,30 @@ public partial class StatuePart : RigidBody3D
         SupportedBy = SplitCsv(SupportedByCsv);
         ProtectedBy = SplitCsv(ProtectedByCsv);
 
-        // Intact statues use invisible Area3D hit volumes so a fast vehicle can
-        // smash through and break several components. The rigid body becomes
-        // solid only when it turns into debris.
+        // Intact statues use authored invisible Area3D hit volumes so a fast
+        // vehicle can smash through and break several components. The rigid body
+        // becomes solid only when it turns into debris.
         CollisionLayer = 0;
         CollisionMask = 0;
-        BuildHitArea();
+        _hitArea = GetNodeOrNull<Area3D>("HitArea");
+        if (_hitArea == null)
+        {
+            GD.PushError($"{PartId}: missing authored HitArea child.");
+        }
+        else
+        {
+            _hitArea.CollisionLayer = 4;
+            _hitArea.CollisionMask = 2;
+            _hitArea.Monitorable = false;
+            _hitArea.Monitoring = true;
+            _hitArea.BodyEntered += OnHitAreaBodyEntered;
+        }
         BodyEntered += OnBodyEntered;
         if (!_initialCaptured)
         {
             InitialLocalTransform = Transform;
             _initialCaptured = true;
         }
-    }
-
-    private void BuildHitArea()
-    {
-        CollisionShape3D? source = GetNodeOrNull<CollisionShape3D>("Collision") ??
-                                   GetNodeOrNull<CollisionShape3D>("CollisionShape3D");
-        if (source?.Shape == null)
-        {
-            GD.PushError($"{PartId}: no collision shape available for the hit area.");
-            return;
-        }
-        _hitArea = new Area3D
-        {
-            Name = "HitArea",
-            CollisionLayer = 4,
-            CollisionMask = 2,
-            Monitoring = true,
-            Monitorable = false,
-        };
-        var shape = new CollisionShape3D
-        {
-            Name = "HitShape",
-            Shape = source.Shape,
-            Transform = source.Transform,
-        };
-        _hitArea.AddChild(shape);
-        AddChild(_hitArea);
-        _hitArea.BodyEntered += OnHitAreaBodyEntered;
     }
 
     private void OnHitAreaBodyEntered(Node body)

@@ -19,6 +19,6 @@ WARNING: All audio drivers failed, falling back to the dummy driver.
 [VISUAL] saved /home/philip/Projects/RampWreckers/artifacts/screenshots/monster_robot_04_impact.png
 [VISUAL] saved /home/philip/Projects/RampWreckers/artifacts/screenshots/monster_robot_05_debris.png
 [VISUAL] saved /home/philip/Projects/RampWreckers/artifacts/screenshots/monster_robot_06_result.png
-[VISUAL] monster_robot: score=66 completed=False frames=749 frames, fps=41
+[VISUAL] monster_robot: score=66 completed=False frames=749 frames, fps=37
 WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details).
    at: cleanup (core/object/object.cpp:2536)

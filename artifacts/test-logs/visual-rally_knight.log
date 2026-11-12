@@ -21,7 +21,13 @@ WARNING: All audio drivers failed, falling back to the dummy driver.
 [Destruction] Iron Knight/RightArm broke via collapse energy=131 score=27 weak=False.
 [Destruction] Iron Knight/Shield broke via collapse energy=131 score=55 weak=False.
 [VISUAL] saved /home/philip/Projects/RampWreckers/artifacts/screenshots/rally_knight_04_impact.png
-[Destruction] Iron Knight/RightLeg broke via direct energy=105 score=26 weak=False.
+[Destruction] Iron Knight/RightLeg broke via direct energy=116 score=27 weak=False.
+[Destruction] Iron Knight/LeftLeg broke via direct energy=101 score=26 weak=False.
+[CHALLENGE] Knee Trouble complete? broken=Torso,Head,LeftArm,RightArm,Shield,RightLeg,LeftLeg required=LeftLeg,RightLeg min=2
 [VISUAL] saved /home/philip/Projects/RampWreckers/artifacts/screenshots/rally_knight_05_debris.png
 [VISUAL] saved /home/philip/Projects/RampWreckers/artifacts/screenshots/rally_knight_06_result.png
-[VISUAL] rally_knight: score=249 completed=False frames=261 frames, fps=51
+[VISUAL] rally_knight: score=276 completed=True frames=179 frames, fps=44
+WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 1 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)
