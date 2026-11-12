@@ -1,5 +1,7 @@
 # Ramp Wreckers
 
+![CI](https://github.com/PhilipGB/ramp-wreckers/actions/workflows/ci.yml/badge.svg)
+
 A model-driven 3D arcade stunt/destruction game for Godot 4.7.2 .NET, C# and .NET 10.
 
 Drive an authored rally car, pickup or monster truck down a runway, climb an adjustable
@@ -8,6 +10,18 @@ Nine authored campaign challenges and a Free Smash mode are included. No account
 telemetry, purchases or online features.
 
 ![Vehicles, statues and arena](docs/ASSET_OVERVIEW.png)
+
+## Download v0.1.0
+
+- Release page: <https://github.com/PhilipGB/ramp-wreckers/releases/tag/v0.1.0>
+- Linux x64: `RampWreckers-v0.1.0-linux-x64.tar.gz`
+- Windows x64: `RampWreckers-v0.1.0-windows-x64.zip`
+- Checksums: `SHA256SUMS.txt`
+
+The Linux export is a single self-contained executable. Extract the archive, then run
+`RampWreckers.x86_64`. The Windows export is a single self-contained executable; extract
+the ZIP and run `RampWreckers.exe`. Windows startup is exported but not executed on the
+Linux build host.
 
 ## Play
 
@@ -79,6 +93,10 @@ dust/debris GLBs and the seamless engine loop; it is an offline authoring tool, 
 loaded by the game.
 
 ## Tests and verification
+
+CI runs the same build, static contract, pure tests, Godot import/boot, runtime tests,
+Linux export boot and Windows export on every push. The local equivalent is
+`./tools/run_all_tests.sh`.
 
 Quick automated suite (requires Godot on PATH or set `GODOT_BIN`):
 

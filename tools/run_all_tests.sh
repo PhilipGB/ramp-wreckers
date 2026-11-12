@@ -20,7 +20,7 @@ echo "== Godot headless editor import =="
 "$GODOT_BIN" --headless --editor --quit --path . 2>&1 | tee "$LOG_DIR/godot-import.log"
 
 echo "== Headless 60-second gameplay boot =="
-"$GODOT_BIN" --headless --path . --quit-after 3600 2>&1 | tee "$LOG_DIR/godot-boot-60s.log"
+"$GODOT_BIN" --headless --path . res://tests/BootProbe.tscn 2>&1 | tee "$LOG_DIR/godot-boot-60s.log"
 
 echo "== Deterministic runtime acceptance tests =="
 "$GODOT_BIN" --headless --path . res://tests/RuntimeTests.tscn 2>&1 | tee "$LOG_DIR/runtime-tests.log"

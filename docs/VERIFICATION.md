@@ -20,15 +20,15 @@ commit SHA is reported with the release.
 
 | Check | Result | Evidence |
 |---|---|---|
-| Static project contract | **596 checks, 0 failures** | `artifacts/test-logs/static-validation.log` |
+| Static project contract | **612 checks, 0 failures** | `artifacts/test-logs/static-validation.log` |
 | `dotnet build -c Release` | **0 warnings, 0 errors** | `artifacts/test-logs/dotnet-build-release.log` |
 | Pure .NET core tests | **27 passed, 0 failed** | `artifacts/test-logs/unit-tests.log` |
 | Godot headless editor import | exit 0, no resource/import errors | `artifacts/test-logs/godot-import.log` |
-| 60-second headless boot | no script errors during play | `artifacts/test-logs/godot-boot-60s.log` |
+| 60-second wall-clock headless boot (`tests/BootProbe.tscn`) | no script errors during play | `artifacts/test-logs/godot-boot-60s.log` |
 | Deterministic runtime tests | **90 passed, 0 failed** | `artifacts/test-logs/runtime-tests.log` |
 | Linux export | produced and booted headless | `artifacts/test-logs/export-linux.log`, `export-linux-boot.log` |
 | Windows export | produced (not executable on this Linux host) | `artifacts/test-logs/export-windows.log` |
-| Rendered performance probe | **60 FPS**, 387 object nodes, 211 draw calls at 1600×900, high quality | `artifacts/test-logs/visual-perf.log` |
+| Rendered performance probe | **59–60 FPS**, 387 object nodes, 236 draw calls at 1600×900, high quality | `artifacts/test-logs/visual-perf.log` |
 
 ### Runtime tests covered
 
@@ -75,7 +75,7 @@ Godot resource import/export pipeline.
 
 The earlier animation/movie capture at 1600×900 reported 1.25 ms CPU and 2.34 ms GPU
 render time per frame on this host (Movie Maker mode, 30 FPS recording). The
-screenshot-producing visual runs report lower averages (37–51 FPS) because each
+screenshot-producing visual runs report lower averages (39–57 FPS) because each
 `ViewportTexture.GetImage().SavePng()` stalls the render thread; the separate
 performance probe without captures holds 60 FPS.
 

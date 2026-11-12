@@ -4,7 +4,7 @@
   "engine": "Godot 4.7.2 .NET",
   "dotnet_target": "net10.0",
   "runtime_validation": "PASS: docs/VERIFICATION.md (Godot 4.7.2 .NET headless runtime + rendered capture)",
-  "static_validation": "PASS: tools/validate_project.py (596 checks)",
+  "static_validation": "PASS: tools/validate_project.py (612 checks)",
   "file_count": 61,
   "files": [
     {

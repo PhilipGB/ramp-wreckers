@@ -21,8 +21,4 @@ WARNING: All audio drivers failed, falling back to the dummy driver.
 [Destruction] Garden Gnome/RightArm broke via collapse energy=225 score=22 weak=False.
 [Destruction] Garden Gnome/RightLeg broke via direct energy=409 score=26 weak=False.
 [Destruction] Garden Gnome/LeftLeg broke via direct energy=409 score=26 weak=False.
-[PERF] fps=60 objects=387 draws=211
-WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).
-   at: cleanup (core/object/object.cpp:2536)
-ERROR: 1 resources still in use at exit (run with --verbose for details).
-   at: clear (core/io/resource.cpp:822)
+[PERF] fps=59 objects=387 draws=236

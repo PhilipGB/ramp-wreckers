@@ -1,0 +1,106 @@
+name: ci
+
+on:
+  push:
+    branches: [main, "p*-*"]
+  pull_request:
+
+jobs:
+  build-and-test:
+    name: Build, import, runtime tests and exports
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore and build with warnings as errors
+        run: |
+          dotnet restore
+          dotnet build -c Release -warnaserror
+
+      - name: Static project contract
+        run: python3 tools/validate_project.py
+
+      - name: Pure .NET unit tests
+        run: dotnet run --project tests/UnitTests/UnitTests.csproj
+
+      - name: Install pinned Godot 4.7.2 .NET
+        run: |
+          set -e
+          curl --fail --location --retry 10 --retry-all-errors --retry-delay 2 \
+            --connect-timeout 30 \
+            --output /tmp/godot.zip \
+            https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_mono_linux_x86_64.zip
+          sudo mkdir -p /opt/godot
+          sudo unzip -q /tmp/godot.zip -d /opt/godot
+          GODOT_BIN="$(find /opt/godot -type f -name 'Godot_v4.7.2-stable_mono_linux.x86_64' | head -n 1)"
+          test -n "$GODOT_BIN"
+          sudo chmod 0755 "$GODOT_BIN"
+          printf '#!/bin/sh\nexec "%s" "$@"\n' "$GODOT_BIN" | sudo tee /usr/local/bin/godot >/dev/null
+          sudo chmod 0755 /usr/local/bin/godot
+          godot --version
+
+      - name: Build debug assembly and import project
+        run: |
+          dotnet build
+          godot --headless --path . --editor --quit
+
+      - name: Headless 60-second gameplay boot
+        run: timeout 90 godot --headless --path . res://tests/BootProbe.tscn
+
+      - name: Deterministic runtime acceptance tests
+        run: timeout 240 godot --headless --path . res://tests/RuntimeTests.tscn
+
+      - name: Cache Godot export templates
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/godot/export_templates/4.7.2.stable.mono
+          key: godot-4.7.2-mono-export-templates-v1
+
+      - name: Install matching export templates
+        run: |
+          TEMPLATE_DIR="$HOME/.local/share/godot/export_templates/4.7.2.stable.mono"
+          if [ ! -f "$TEMPLATE_DIR/version.txt" ]; then
+            curl --fail --location --retry 5 --retry-all-errors \
+              --output /tmp/godot_templates.tpz \
+              https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_mono_export_templates.tpz
+            mkdir -p "$TEMPLATE_DIR"
+            unzip -o -j /tmp/godot_templates.tpz \
+              'templates/version.txt' 'templates/linux_release.x86_64' \
+              'templates/windows_release_x86_64.exe' -d "$TEMPLATE_DIR"
+          fi
+          cat "$TEMPLATE_DIR/version.txt"
+
+      - name: Export and boot Linux and Windows releases
+        run: |
+          mkdir -p /tmp/rw-export/linux /tmp/rw-export/windows
+          timeout 300 godot --headless --path . --export-release "Linux" /tmp/rw-export/linux/RampWreckers.x86_64
+          timeout 300 godot --headless --path . --export-release "Windows" /tmp/rw-export/windows/RampWreckers.exe
+          test -x /tmp/rw-export/linux/RampWreckers.x86_64
+          test -f /tmp/rw-export/windows/RampWreckers.exe
+          file /tmp/rw-export/linux/RampWreckers.x86_64
+          file /tmp/rw-export/windows/RampWreckers.exe
+          timeout 120 /tmp/rw-export/linux/RampWreckers.x86_64 --headless --quit-after 180
+
+  windows-build:
+    name: Windows build and pure tests
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Build with warnings as errors
+        run: dotnet build -c Release -warnaserror
+
+      - name: Pure .NET unit tests
+        run: dotnet run --project tests/UnitTests/UnitTests.csproj
