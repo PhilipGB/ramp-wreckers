@@ -1,0 +1,174 @@
+Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.6 (Core Profile) Mesa 26.0.8-1ubuntu0.3 - Compatibility - Using Device: AMD - AMD Radeon 890M Graphics (radeonsi, strix1, ACO, DRM 3.64, 7.3.3-ogc1.1.fc45.x86_64)
+
+[Save] New profile created.
+[Catalog] 9 authored challenges validated against statue part inventories.
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[PT] phase=p0_boot starting
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p0_boot.png
+[PT] phase=p0 vehicle=Pickup Truck statue=Garden Gnome statue_parts=8 coins=0 unlocked=110 ramp_deg=16 challenge=1 msg Hold W to launch. Q/E changes the ramp. R retries instantly.
+[PT] phase=p0 help_open help_visible=True
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p0_help.png
+[PT] phase=p0 help_closed help_visible=False
+[PT] phase=p1_blind starting
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p1_ramp.png
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p1_air.png
+[Destruction] Garden Gnome/Hat broke via direct energy=397 score=84 weak=True.
+[Destruction] Garden Gnome/Beard broke via direct energy=397 score=37 weak=False.
+[CHALLENGE] First Crash complete? broken=Hat,Beard required= min=2
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p1_impact.png
+[PT] phase=p1_result launched=True launch_frames=140 apex_m=5.59 score=121 parts_broken=2 challenge1_complete=True msg Challenge complete! +100 Wreck Coins.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p1_result.png
+[PT] phase=p1_retry latency_frames=2 statue_restored=True broken_before=2
+[PT] phase=p2 starting
+[PT] phase=p2_reverse z_moved=10.63 gear_text=R   ·   9 M/S
+[PT] phase=p2_steer yaw_change_deg=0.37 speed_kph=79.56
+[PT] phase=p2_ramp_keys low_msg AIRBORNE! Aim for a weak point. high_msg Ramp angle: 22°   (estimated launch 0.9 m) ramp_deg=22
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p2_ramp_adjust.png
+[Destruction] Garden Gnome/Hat broke via direct energy=323 score=78 weak=True.
+[Destruction] Garden Gnome/Beard broke via direct energy=73 score=25 weak=False.
+[CHALLENGE] First Crash complete? broken=Hat,Beard required= min=2
+[PT] phase=p2_vehicle vehicle_index=1 airborne=True apex_m=7.4 speed_at_ramp_kph=80.88 score=103 parts_broken=2 flipped_or_stuck=False stuck_frames=0 final_msg Already won — play again for a better medal.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p2_v1_after.png
+[Destruction] Garden Gnome/Hat broke via direct energy=222 score=70 weak=True.
+[PT] phase=p2_vehicle vehicle_index=0 airborne=True apex_m=7.48 speed_at_ramp_kph=86.58 score=70 parts_broken=1 flipped_or_stuck=False stuck_frames=0 final_msg Head held firm (27 impact). Hit it harder!
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p2_v0_after.png
+[Destruction] Garden Gnome/Hat broke via direct energy=222 score=70 weak=True.
+[PT] phase=p2_vehicle vehicle_index=2 airborne=True apex_m=7.48 speed_at_ramp_kph=86.58 score=70 parts_broken=1 flipped_or_stuck=False stuck_frames=0 final_msg Head held firm (27 impact). Hit it harder!
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p2_v2_after.png
+[PT] phase=p2_locked msg Monster Truck is locked. Open the garage (G) and buy it for 600 coins. still_vehicle=0
+[PT] phase=p3 starting
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p3_v1_air.png
+[Destruction] Garden Gnome/Hat broke via direct energy=323 score=78 weak=True.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p3_v1_impact.png
+[Destruction] Garden Gnome/Beard broke via direct energy=73 score=25 weak=False.
+[CHALLENGE] First Crash complete? broken=Hat,Beard required= min=2
+[PT] phase=p3_destruction vehicle_index=1 score=103 parts_broken=2 broken_ids=Beard,Hat cinematic_started=True collapsed=False msg Already won — play again for a better medal.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p3_v1_debris.png
+[PT] phase=p3_cinematic_skip cinematic_after_c=False
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p3_v0_air.png
+[Destruction] Garden Gnome/Hat broke via direct energy=222 score=70 weak=True.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p3_v0_impact.png
+[PT] phase=p3_destruction vehicle_index=0 score=70 parts_broken=1 broken_ids=Hat cinematic_started=False collapsed=False msg Head held firm (27 impact). Hit it harder!
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p3_v0_debris.png
+[PT] phase=p3_cinematic_skip cinematic_after_c=False
+[PT] phase=p4 starting
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c1_a0_air.png
+[Destruction] Garden Gnome/Hat broke via direct energy=323 score=78 weak=True.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c1_a0_impact.png
+[Destruction] Garden Gnome/Beard broke via direct energy=73 score=25 weak=False.
+[CHALLENGE] First Crash complete? broken=Hat,Beard required= min=2
+[PT] phase=p4_challenge index=1 hud First Crash  —  Garden Gnome attempts=1 completed=True medal=1 coins=100 score=103 msg Already won — play again for a better medal.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c2_a0_air.png
+[Destruction] Garden Gnome/Hat broke via direct energy=182 score=67 weak=True.
+[CHALLENGE] Hat Trick complete? broken=Hat required=Hat min=1
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c2_a0_impact.png
+[PT] phase=p4_challenge index=2 hud Hat Trick  —  Garden Gnome attempts=1 completed=True medal=1 coins=250 score=67 msg AIRBORNE! Aim for a weak point.
+[Destruction] Garden Gnome/Head broke via direct energy=121 score=35 weak=False.
+[Destruction] Garden Gnome/Beard detached intact (support lost).
+[Destruction] Garden Gnome/Hat detached intact (support lost).
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c3_a0_air.png
+[Destruction] Garden Gnome/Torso broke via direct energy=465 score=67 weak=False.
+[Destruction] Garden Gnome/Head broke via collapse energy=256 score=41 weak=False.
+[Destruction] Garden Gnome/Beard detached intact (support lost).
+[Destruction] Garden Gnome/Hat detached intact (support lost).
+[Destruction] Garden Gnome/LeftArm broke via collapse energy=256 score=23 weak=False.
+[Destruction] Garden Gnome/RightArm broke via collapse energy=256 score=23 weak=False.
+[CHALLENGE] Gnome Down complete? broken=Torso,Head,LeftArm,RightArm required= min=4
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c3_a0_impact.png
+[PT] phase=p4_challenge index=3 hud Gnome Down  —  Garden Gnome attempts=1 completed=True medal=1 coins=450 score=154 msg The statue collapsed! R retries instantly.
+[Statue] Iron Knight: 7 authored parts, graph valid=True.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c4_a0_impact.png
+[PT] phase=p4_challenge index=4 hud Shield Breaker  —  Iron Knight attempts=4 completed=False medal=0 coins=450 score=0 msg Ready! The shield hangs on the knight's left, toward your right.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c5_a0_air.png
+[Destruction] Iron Knight/LeftLeg broke via direct energy=306 score=33 weak=False.
+[Destruction] Iron Knight/RightLeg broke via direct energy=306 score=33 weak=False.
+[CHALLENGE] Knee Trouble complete? broken=LeftLeg,RightLeg required=LeftLeg,RightLeg min=2
+[Destruction] Iron Knight/Torso broke via collapse energy=169 score=65 weak=False.
+[Destruction] Iron Knight/Head broke via collapse energy=169 score=45 weak=False.
+[Destruction] Iron Knight/LeftArm broke via collapse energy=169 score=29 weak=False.
+[Destruction] Iron Knight/RightArm broke via collapse energy=169 score=29 weak=False.
+[Destruction] Iron Knight/Shield detached intact (support lost).
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c5_a0_impact.png
+[PT] phase=p4_challenge index=5 hud Knee Trouble  —  Iron Knight attempts=1 completed=True medal=1 coins=700 score=234 msg The statue collapsed! R retries instantly.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c6_a0_air.png
+[Destruction] Iron Knight/Torso broke via direct energy=332 score=79 weak=False.
+[Destruction] Iron Knight/Head broke via collapse energy=183 score=46 weak=False.
+[Destruction] Iron Knight/LeftArm broke via collapse energy=183 score=29 weak=False.
+[Destruction] Iron Knight/RightArm broke via collapse energy=183 score=29 weak=False.
+[Destruction] Iron Knight/Shield detached intact (support lost).
+[Destruction] Iron Knight/RightLeg broke via direct energy=332 score=34 weak=False.
+[CHALLENGE] Knightfall complete? broken=Torso,Head,LeftArm,RightArm,RightLeg required= min=5
+[Destruction] Iron Knight/LeftLeg broke via direct energy=332 score=34 weak=False.
+[Destruction] Iron Knight/Shield broke via direct energy=332 score=110 weak=True.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c6_a0_impact.png
+[PT] phase=p4_challenge index=6 hud Knightfall  —  Iron Knight attempts=1 completed=True medal=1 coins=1000 score=361 msg WEAK POINT! Shield shattered for 110 points. C skips the close-up.
+[PT] phase=buy tag monster_mid_campaign before Monster Truck  ·  BUY 600 after Monster Truck  ·  SELECTED coins=400 hint This run: 0 score  ·  0.0s  ·  ramp 10°.  Use the mouse or 1–3 to choose a vehicle. Free Smash never grants coins.
+[Statue] Reactor Robot: 8 authored parts, graph valid=True.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c7_a0_air.png
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c7_a0_impact.png
+[PT] phase=p4_challenge index=7 hud Peel the Armour  —  Reactor Robot attempts=4 completed=False medal=0 coins=400 score=0 msg AIRBORNE! Aim for a weak point.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c8_a0_air.png
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c8_a0_impact.png
+[PT] phase=recovery note no further launch height gained on cycle 2
+[PT] phase=recovery note no further launch height gained on cycle 3
+[PT] phase=recovery note no further launch height gained on cycle 4
+[PT] phase=recovery note no further launch height gained on cycle 5
+[PT] phase=recovery note no further launch height gained on cycle 2
+[PT] phase=recovery note no further launch height gained on cycle 3
+[PT] phase=recovery note no further launch height gained on cycle 4
+[PT] phase=recovery note no further launch height gained on cycle 5
+[PT] phase=recovery note no further launch height gained on cycle 2
+[PT] phase=recovery note no further launch height gained on cycle 3
+[PT] phase=recovery note no further launch height gained on cycle 4
+[PT] phase=recovery note no further launch height gained on cycle 5
+[PT] phase=recovery note no further launch height gained on cycle 2
+[PT] phase=recovery note no further launch height gained on cycle 3
+[PT] phase=recovery note no further launch height gained on cycle 4
+[PT] phase=recovery note no further launch height gained on cycle 5
+[PT] phase=p4_challenge index=8 hud Core Shot  —  Reactor Robot attempts=4 completed=False medal=0 coins=400 score=0 msg Armour absorbed the hit — the Core is still protected!
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c9_a0_air.png
+[Destruction] Reactor Robot/Armour broke via direct energy=134 score=71 weak=False.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c9_a0_impact.png
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c9_a0_partial.png
+[Destruction] Reactor Robot/Armour broke via direct energy=134 score=71 weak=False.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c9_a1_partial.png
+[Destruction] Reactor Robot/Armour broke via direct energy=134 score=71 weak=False.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c9_a2_partial.png
+[Destruction] Reactor Robot/Armour broke via direct energy=134 score=71 weak=False.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_c9_a3_partial.png
+[PT] phase=p4_challenge index=9 hud Robot Wreck  —  Reactor Robot attempts=4 completed=False medal=0 coins=400 score=71 msg Armour absorbed the hit — the Core is still protected!
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p4_final.png
+[PT] phase=p5 starting
+[PT] phase=p5_open garage_visible=True coins_label Wreck Coins: 400
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p5_garage.png
+[PT] phase=buy tag engine before Engine upgrade  ·  350 after Engine  ·  OWNED coins=50 hint This run: 71 score  ·  9.6s  ·  ramp 10°.  Use the mouse or 1–3 to choose a vehicle. Free Smash never grants coins.
+[PT] phase=buy tag tyres before Tyre upgrade  ·  250 after Tyre upgrade  ·  250 coins=50 hint This run: 71 score  ·  9.6s  ·  ramp 10°.  Use the mouse or 1–3 to choose a vehicle. Free Smash never grants coins.
+[PT] phase=buy tag paint before Unlock paint  ·  120 after Unlock paint  ·  120 coins=50 hint This run: 71 score  ·  9.6s  ·  ramp 10°.  Use the mouse or 1–3 to choose a vehicle. Free Smash never grants coins.
+[PT] phase=p5_after_buy coins=50 engine=1 grip=0 paint_unlocked=False monster_unlocked=True
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p5_garage_after.png
+[PT] phase=p5_close garage_visible=False
+[PT] phase=p5_paint msg Vehicle: Rally Car — fast and light: long jumps
+[PT] phase=p5_paint msg Vehicle: Rally Car — fast and light: long jumps
+[PT] phase=p5_paint msg Vehicle: Rally Car — fast and light: long jumps
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p5_paint.png
+[PT] phase=p5_upgrade_bench distance_m=36.47 seconds=2 avg_kph=65.64
+[PT] phase=p6 starting
+[PT] phase=p6_enter free_smash=True mode_label FREE SMASH msg FREE SMASH: rewards off, every locally unlocked vehicle and ramp angle available.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p6_free_smash.png
+[Statue] Iron Knight: 7 authored parts, graph valid=True.
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[PT] phase=p6_switch first_msg Free Smash target: Iron Knight second_msg Free Smash target: Garden Gnome statue=Garden Gnome
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p6_smash_air.png
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p6_smash_impact.png
+[PT] phase=p6_smash score=0 parts_broken=0 coins_after=50 coins_before=50 no_coins_minted=True
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p6_debris.png
+[PT] phase=p6_retry attempt=1 latency_frames=4 statue_restored=True
+[PT] phase=p6_retry attempt=2 latency_frames=0 statue_restored=True
+[PT] phase=p6_retry attempt=3 latency_frames=0 statue_restored=True
+[Statue] Reactor Robot: 8 authored parts, graph valid=True.
+[PT] phase=p6_exit free_smash=False msg Campaign challenge 9/9 resumed.
+[PT] saved /home/philip/Projects/RampWreckers/artifacts/playtest/p7_final.png
+[PT] phase=p7_fps samples=404 min=32 max=61 avg=58.77
+[PT] phase=p7_save coins=50 medals=1,1,1,0,1,1,0,0,0 claimed=111011000 monster=True engine=1 grip=0 paint=False
+[PT] SUMMARY_END
