@@ -1,0 +1,326 @@
+[gd_scene load_steps=5 format=3]
+
+[sub_resource type="StyleBoxFlat" id="InfoStyle"]
+bg_color = Color(0.04, 0.075, 0.12, 0.92)
+content_margin_left = 18.0
+content_margin_top = 13.0
+content_margin_right = 18.0
+content_margin_bottom = 13.0
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.98, 0.79, 0.34, 0.35)
+
+[sub_resource type="StyleBoxFlat" id="SpeedStyle"]
+bg_color = Color(0.04, 0.075, 0.12, 0.9)
+content_margin_left = 16.0
+content_margin_top = 7.0
+content_margin_right = 16.0
+content_margin_bottom = 7.0
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="ControlsStyle"]
+bg_color = Color(0.04, 0.075, 0.12, 0.86)
+content_margin_left = 12.0
+content_margin_right = 12.0
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+
+[sub_resource type="StyleBoxFlat" id="GarageStyle"]
+bg_color = Color(0.035, 0.06, 0.10, 0.98)
+content_margin_left = 22.0
+content_margin_top = 18.0
+content_margin_right = 22.0
+content_margin_bottom = 18.0
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.98, 0.79, 0.34, 0.7)
+
+[node name="Hud" type="CanvasLayer"]
+
+[node name="InfoPanel" type="PanelContainer" parent="."]
+offset_left = 20.0
+offset_top = 16.0
+offset_right = 700.0
+offset_bottom = 270.0
+theme_override_styles/panel = SubResource("InfoStyle")
+
+[node name="InfoVBox" type="VBoxContainer" parent="InfoPanel"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="Title" type="Label" parent="InfoPanel/InfoVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 29
+text = "RAMP WRECKERS"
+theme_override_colors/font_color = Color(0.98, 0.79, 0.34, 1)
+
+[node name="Mode" type="Label" parent="InfoPanel/InfoVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "CAMPAIGN 1/9"
+theme_override_colors/font_color = Color(0.45, 0.92, 0.83, 1)
+
+[node name="Challenge" type="Label" parent="InfoPanel/InfoVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 21
+text = "First Crash — Garden Gnome"
+theme_override_colors/font_color = Color(0.98, 0.98, 0.96, 1)
+
+[node name="Goal" type="Label" parent="InfoPanel/InfoVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Break any 2 gnome pieces"
+theme_override_colors/font_color = Color(0.90, 0.90, 0.84, 1)
+
+[node name="Progress" type="Label" parent="InfoPanel/InfoVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "0/2 parts"
+theme_override_colors/font_color = Color(0.74, 0.83, 0.9, 1)
+
+[node name="Stats" type="Label" parent="InfoPanel/InfoVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Coins 0 | Score 0 | Ramp 16°"
+theme_override_colors/font_color = Color(0.74, 0.83, 0.9, 1)
+
+[node name="Status" type="Label" parent="InfoPanel/InfoVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Drive at the statue!"
+theme_override_colors/font_color = Color(0.45, 0.92, 0.83, 1)
+autowrap_mode = 3
+
+[node name="SpeedPanel" type="PanelContainer" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -236.0
+offset_top = 16.0
+offset_right = -20.0
+offset_bottom = 128.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("SpeedStyle")
+
+[node name="SpeedVBox" type="VBoxContainer" parent="SpeedPanel"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Speed" type="Label" parent="SpeedPanel/SpeedVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 44
+text = "0"
+theme_override_colors/font_color = Color(0.98, 0.98, 0.96, 1)
+horizontal_alignment = 2
+
+[node name="Gear" type="Label" parent="SpeedPanel/SpeedVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "km/h | D"
+theme_override_colors/font_color = Color(0.45, 0.92, 0.83, 1)
+horizontal_alignment = 2
+
+[node name="ControlsPanel" type="PanelContainer" parent="."]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -70.0
+offset_right = -20.0
+offset_bottom = -14.0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("ControlsStyle")
+
+[node name="Controls" type="Label" parent="ControlsPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.94, 0.94, 0.92, 1)
+text = "W/S DRIVE   A/D STEER   SPACE BRAKE   R RETRY   C CAMERA   G GARAGE   J/K CHALLENGE   Q/E RAMP   F FREE SMASH"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Banner" type="Label" parent="."]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.0
+anchor_right = 0.5
+anchor_bottom = 0.0
+offset_left = -330.0
+offset_top = 120.0
+offset_right = 330.0
+offset_bottom = 238.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 31
+theme_override_colors/font_color = Color(0.98, 0.82, 0.26, 1)
+theme_override_colors/font_outline_color = Color(0.03, 0.05, 0.08, 1)
+theme_override_constants/outline_size = 10
+text = "CHALLENGE COMPLETE!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="SaveBanner" type="Label" parent="."]
+visible = false
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -112.0
+offset_right = -20.0
+offset_bottom = -76.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.98, 0.55, 0.42, 1)
+theme_override_colors/font_outline_color = Color(0.02, 0.03, 0.05, 1)
+theme_override_constants/outline_size = 5
+text = "Save problem"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Garage" type="PanelContainer" parent="."]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -390.0
+offset_top = -250.0
+offset_right = 390.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("GarageStyle")
+
+[node name="GarageVBox" type="VBoxContainer" parent="Garage"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="GarageTitle" type="Label" parent="Garage/GarageVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 31
+text = "GARAGE"
+theme_override_colors/font_color = Color(0.98, 0.79, 0.34, 1)
+horizontal_alignment = 1
+
+[node name="GarageCoins" type="Label" parent="Garage/GarageVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Wreck Coins: 0"
+theme_override_colors/font_color = Color(0.45, 0.92, 0.83, 1)
+horizontal_alignment = 1
+
+[node name="VehicleRow" type="HBoxContainer" parent="Garage/GarageVBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="RallyButton" type="Button" parent="Garage/GarageVBox/VehicleRow"]
+custom_minimum_size = Vector2(220, 58)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "1  Rally Car"
+
+[node name="PickupButton" type="Button" parent="Garage/GarageVBox/VehicleRow"]
+custom_minimum_size = Vector2(220, 58)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "2  Pickup"
+
+[node name="MonsterButton" type="Button" parent="Garage/GarageVBox/VehicleRow"]
+custom_minimum_size = Vector2(260, 58)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "3  Buy Monster (600)"
+
+[node name="ModeRow" type="HBoxContainer" parent="Garage/GarageVBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="CampaignButton" type="Button" parent="Garage/GarageVBox/ModeRow"]
+custom_minimum_size = Vector2(260, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Play Campaign"
+
+[node name="FreeSmashButton" type="Button" parent="Garage/GarageVBox/ModeRow"]
+custom_minimum_size = Vector2(260, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Free Smash"
+
+[node name="UpgradeRow" type="HBoxContainer" parent="Garage/GarageVBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="EngineButton" type="Button" parent="Garage/GarageVBox/UpgradeRow"]
+custom_minimum_size = Vector2(250, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "Engine upgrade (350)"
+
+[node name="GripButton" type="Button" parent="Garage/GarageVBox/UpgradeRow"]
+custom_minimum_size = Vector2(230, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "Tyre upgrade (250)"
+
+[node name="PaintButton" type="Button" parent="Garage/GarageVBox/UpgradeRow"]
+custom_minimum_size = Vector2(230, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "Unlock paint (120)"
+
+[node name="SettingsRow" type="HBoxContainer" parent="Garage/GarageVBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="QualityButton" type="Button" parent="Garage/GarageVBox/SettingsRow"]
+custom_minimum_size = Vector2(230, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Quality: High"
+
+[node name="VolumeButton" type="Button" parent="Garage/GarageVBox/SettingsRow"]
+custom_minimum_size = Vector2(230, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Volume: 100%"
+
+[node name="GarageHint" type="Label" parent="Garage/GarageVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.74, 0.83, 0.9, 1)
+text = "Select a vehicle. Free Smash never grants coins."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="CloseButton" type="Button" parent="Garage/GarageVBox"]
+custom_minimum_size = Vector2(260, 52)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+text = "Close (G)"

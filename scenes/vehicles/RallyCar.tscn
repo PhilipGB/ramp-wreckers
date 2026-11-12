@@ -1,0 +1,77 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://src/VehicleController.cs" id="1"]
+[ext_resource type="PackedScene" path="res://art/meshes/vehicles/RallyCar.glb" id="2"]
+
+[sub_resource type="BoxShape3D" id="BodyCollider"]
+size = Vector3(2.1, 1.1, 4.6)
+
+[sub_resource type="SphereShape3D" id="WheelShape"]
+radius = 0.52
+
+[sub_resource type="PhysicsMaterial" id="TyreMaterial"]
+friction = 0.05
+rough = false
+
+[node name="RallyCar" type="RigidBody3D"]
+collision_layer = 2
+collision_mask = 5
+mass = 900.0
+linear_damp = 0.08
+angular_damp = 1.25
+continuous_cd = true
+physics_material_override = SubResource("TyreMaterial")
+script = ExtResource("1")
+VehicleIndex = 0
+DisplayName = "Rally Car"
+Acceleration = 23.0
+TopSpeed = 36.0
+SteeringStrength = 5.8
+Grip = 7.6
+SpawnHeight = 1.0
+
+[node name="BodyCollider" type="CollisionShape3D" parent="."]
+position = Vector3(0, -0.05, 0)
+shape = SubResource("BodyCollider")
+
+[node name="WheelCollider1" type="CollisionShape3D" parent="."]
+position = Vector3(-1.115, -0.43, -1.488)
+shape = SubResource("WheelShape")
+
+[node name="WheelCollider2" type="CollisionShape3D" parent="."]
+position = Vector3(1.115, -0.43, -1.488)
+shape = SubResource("WheelShape")
+
+[node name="WheelCollider3" type="CollisionShape3D" parent="."]
+position = Vector3(-1.115, -0.43, 1.44)
+shape = SubResource("WheelShape")
+
+[node name="WheelCollider4" type="CollisionShape3D" parent="."]
+position = Vector3(1.115, -0.43, 1.44)
+shape = SubResource("WheelShape")
+
+[node name="Art" parent="." instance=ExtResource("2")]
+
+[node name="WheelProbe1" type="RayCast3D" parent="."]
+position = Vector3(-0.85, -0.1, -1.55)
+target_position = Vector3(0, -1.05, 0)
+collision_mask = 1
+exclude_parent = true
+
+[node name="WheelProbe2" type="RayCast3D" parent="."]
+position = Vector3(0.85, -0.1, -1.55)
+target_position = Vector3(0, -1.05, 0)
+collision_mask = 1
+exclude_parent = true
+
+[node name="WheelProbe3" type="RayCast3D" parent="."]
+position = Vector3(-0.85, -0.1, 1.55)
+target_position = Vector3(0, -1.05, 0)
+collision_mask = 1
+exclude_parent = true
+
+[node name="WheelProbe4" type="RayCast3D" parent="."]
+position = Vector3(0.85, -0.1, 1.55)
+target_position = Vector3(0, -1.05, 0)
+collision_mask = 1
+exclude_parent = true

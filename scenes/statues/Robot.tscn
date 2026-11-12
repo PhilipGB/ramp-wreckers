@@ -1,0 +1,220 @@
+[gd_scene load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://src/StatueController.cs" id="1"]
+[ext_resource type="Script" path="res://src/StatuePart.cs" id="2"]
+[ext_resource type="PackedScene" path="res://art/meshes/statues/robot/Pedestal.glb" id="3"]
+[ext_resource type="PackedScene" path="res://art/meshes/statues/robot/LeftLeg.glb" id="4"]
+[ext_resource type="PackedScene" path="res://art/meshes/statues/robot/RightLeg.glb" id="5"]
+[ext_resource type="PackedScene" path="res://art/meshes/statues/robot/Torso.glb" id="6"]
+[ext_resource type="PackedScene" path="res://art/meshes/statues/robot/Head.glb" id="7"]
+[ext_resource type="PackedScene" path="res://art/meshes/statues/robot/LeftArm.glb" id="8"]
+[ext_resource type="PackedScene" path="res://art/meshes/statues/robot/RightArm.glb" id="9"]
+[ext_resource type="PackedScene" path="res://art/meshes/statues/robot/Core.glb" id="10"]
+[ext_resource type="PackedScene" path="res://art/meshes/statues/robot/Armour.glb" id="11"]
+
+[sub_resource type="BoxShape3D" id="PedestalShape"]
+size = Vector3(4.8, 0.64, 4.4)
+
+[sub_resource type="BoxShape3D" id="ShapeLeftLeg"]
+size = Vector3(1.44, 2.31, 1.46)
+
+[sub_resource type="BoxShape3D" id="ShapeRightLeg"]
+size = Vector3(1.44, 2.31, 1.46)
+
+[sub_resource type="BoxShape3D" id="ShapeTorso"]
+size = Vector3(3.3, 2.95, 1.74)
+
+[sub_resource type="BoxShape3D" id="ShapeHead"]
+size = Vector3(1.94, 2.76, 1.5)
+
+[sub_resource type="BoxShape3D" id="ShapeLeftArm"]
+size = Vector3(1.06, 1.86, 1.07)
+
+[sub_resource type="BoxShape3D" id="ShapeRightArm"]
+size = Vector3(1.06, 1.86, 1.07)
+
+[sub_resource type="BoxShape3D" id="ShapeCore"]
+size = Vector3(1.64, 1.26, 0.74)
+
+[sub_resource type="BoxShape3D" id="ShapeArmour"]
+size = Vector3(2.16, 1.6, 0.36)
+
+[node name="RobotStatue" type="Node3D"]
+script = ExtResource("1")
+RequiredBrokenParts = 6
+DisplayName = "Reactor Robot"
+
+[node name="Pedestal" type="StaticBody3D" parent="."]
+position = Vector3(0, 0.48, 0)
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Pedestal"]
+shape = SubResource("PedestalShape")
+
+[node name="Art" parent="Pedestal" instance=ExtResource("3")]
+
+[node name="LeftLeg" type="RigidBody3D" parent="."]
+position = Vector3(-1.05, 1.77, 0)
+collision_layer = 4
+collision_mask = 7
+mass = 64.0
+freeze = true
+contact_monitor = true
+max_contacts_reported = 16
+continuous_cd = true
+script = ExtResource("2")
+PartId = "LeftLeg"
+BreakThreshold = 120.0
+ScoreValue = 50
+IsSupport = true
+
+[node name="Collision" type="CollisionShape3D" parent="LeftLeg"]
+shape = SubResource("ShapeLeftLeg")
+
+[node name="Art" parent="LeftLeg" instance=ExtResource("4")]
+
+[node name="RightLeg" type="RigidBody3D" parent="."]
+position = Vector3(1.05, 1.77, 0)
+collision_layer = 4
+collision_mask = 7
+mass = 64.0
+freeze = true
+contact_monitor = true
+max_contacts_reported = 16
+continuous_cd = true
+script = ExtResource("2")
+PartId = "RightLeg"
+BreakThreshold = 120.0
+ScoreValue = 50
+IsSupport = true
+
+[node name="Collision" type="CollisionShape3D" parent="RightLeg"]
+shape = SubResource("ShapeRightLeg")
+
+[node name="Art" parent="RightLeg" instance=ExtResource("5")]
+
+[node name="Torso" type="RigidBody3D" parent="."]
+position = Vector3(0, 4.25, 0)
+collision_layer = 4
+collision_mask = 7
+mass = 64.0
+freeze = true
+contact_monitor = true
+max_contacts_reported = 16
+continuous_cd = true
+script = ExtResource("2")
+PartId = "Torso"
+BreakThreshold = 180.0
+ScoreValue = 110
+SupportedByCsv = "LeftLeg,RightLeg"
+
+[node name="Collision" type="CollisionShape3D" parent="Torso"]
+shape = SubResource("ShapeTorso")
+
+[node name="Art" parent="Torso" instance=ExtResource("6")]
+
+[node name="Head" type="RigidBody3D" parent="."]
+position = Vector3(0, 6.29, 0)
+collision_layer = 4
+collision_mask = 7
+mass = 64.0
+freeze = true
+contact_monitor = true
+max_contacts_reported = 16
+continuous_cd = true
+script = ExtResource("2")
+PartId = "Head"
+BreakThreshold = 125.0
+ScoreValue = 75
+SupportedByCsv = "Torso"
+WeakPointMultiplier = 1.2
+
+[node name="Collision" type="CollisionShape3D" parent="Head"]
+shape = SubResource("ShapeHead")
+
+[node name="Art" parent="Head" instance=ExtResource("7")]
+
+[node name="LeftArm" type="RigidBody3D" parent="."]
+position = Vector3(-1.92, 4.22, 0)
+collision_layer = 4
+collision_mask = 7
+mass = 64.0
+freeze = true
+contact_monitor = true
+max_contacts_reported = 16
+continuous_cd = true
+script = ExtResource("2")
+PartId = "LeftArm"
+BreakThreshold = 105.0
+ScoreValue = 50
+SupportedByCsv = "Torso"
+
+[node name="Collision" type="CollisionShape3D" parent="LeftArm"]
+shape = SubResource("ShapeLeftArm")
+
+[node name="Art" parent="LeftArm" instance=ExtResource("8")]
+
+[node name="RightArm" type="RigidBody3D" parent="."]
+position = Vector3(1.92, 4.22, 0)
+collision_layer = 4
+collision_mask = 7
+mass = 64.0
+freeze = true
+contact_monitor = true
+max_contacts_reported = 16
+continuous_cd = true
+script = ExtResource("2")
+PartId = "RightArm"
+BreakThreshold = 105.0
+ScoreValue = 50
+SupportedByCsv = "Torso"
+
+[node name="Collision" type="CollisionShape3D" parent="RightArm"]
+shape = SubResource("ShapeRightArm")
+
+[node name="Art" parent="RightArm" instance=ExtResource("9")]
+
+[node name="Core" type="RigidBody3D" parent="."]
+position = Vector3(0, 4.48, 0)
+collision_layer = 4
+collision_mask = 7
+mass = 64.0
+freeze = true
+contact_monitor = true
+max_contacts_reported = 16
+continuous_cd = true
+script = ExtResource("2")
+PartId = "Core"
+BreakThreshold = 90.0
+ScoreValue = 145
+SupportedByCsv = "Torso"
+ProtectedByCsv = "Armour"
+WeakPointMultiplier = 2.4
+CountsAsBrokenWhenUnsupported = false
+
+[node name="Collision" type="CollisionShape3D" parent="Core"]
+position = Vector3(0, 0, 1.0)
+shape = SubResource("ShapeCore")
+
+[node name="Art" parent="Core" instance=ExtResource("10")]
+
+[node name="Armour" type="RigidBody3D" parent="."]
+position = Vector3(0, 4.54, 1.22)
+collision_layer = 4
+collision_mask = 7
+mass = 64.0
+freeze = true
+contact_monitor = true
+max_contacts_reported = 16
+continuous_cd = true
+script = ExtResource("2")
+PartId = "Armour"
+BreakThreshold = 75.0
+ScoreValue = 90
+SupportedByCsv = "Torso"
+
+[node name="Collision" type="CollisionShape3D" parent="Armour"]
+shape = SubResource("ShapeArmour")
+
+[node name="Art" parent="Armour" instance=ExtResource("11")]

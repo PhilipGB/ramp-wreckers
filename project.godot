@@ -1,0 +1,32 @@
+; Ramp Wreckers — Godot 4.7.2 .NET / C# / .NET 10
+; Mesh policy: NO procedural, runtime-generated or PrimitiveMesh visual geometry.
+
+config_version=5
+
+[application]
+
+config/name="Ramp Wreckers"
+run/main_scene="res://scenes/Main.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility", "C#")
+config/description="Hand-authored model-driven 3D vehicle destruction game."
+
+[display]
+
+window/size/viewport_width=1600
+window/size/viewport_height=900
+window/stretch/mode="canvas_items"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=false
+anti_aliasing/quality/msaa_3d=2
+
+[physics]
+
+3d/default_gravity=20.0
+
+[dotnet]
+
+project/assembly_name="RampWreckers"

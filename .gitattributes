@@ -1,0 +1,5 @@
+*.glb binary
+*.tscn text eol=lf
+*.cs text eol=lf
+*.md text eol=lf
+*.obj text eol=lf
