@@ -2,6 +2,63 @@
 
 All notable changes to Ramp Wreckers are recorded here.
 
+## Unreleased — v0.1.1 Visual and Gameplay Polish
+
+### Fixed
+
+- Removed the severe concentric/ripple rendering artifact: supplied GLBs had no
+  authored NORMAL attributes. Added authored smooth-angle normals to all 34 runtime
+  GLBs with `tools/add_normals_to_glb.py`; positions, triangles, transforms and
+  materials are unchanged. Added a CI `--check`.
+- Removed residual environment self-shadow acne on broad ledges with tuned shadow
+  bias/normal bias, a shorter shadow range and a darker sky-independent fog.
+- Corrected named-objective progress so unrelated breaks never appear as knee progress,
+  and Core Shot stays incomplete until the reactor core itself breaks.
+- Fixed contact cooldown ordering: same-physics-step contacts now accumulate before
+  the cooldown is applied, so a two-knee impact cannot silently discard the second knee.
+- Removed proximity/area target destruction and the unconditional robot-core shortcut.
+  Only physically overlapping hit volumes are resolved; the core requires armour to be
+  destroyed and a fresh/overlapping contact afterward. Support collapse remains separate.
+- Corrected hints that implied damage persists across a retry.
+- Fixed the dummy-audio shutdown leak by configuring the imported stream in place and
+  skipping playback when Godot reports the Dummy driver.
+
+### Changed
+
+- Authored arcade palette, sRGB→linear conversion, sky/fog/sun/tonemap/exposure and
+  distinct statue palettes (silver/blue/gold knight, warm red gnome, mint/navy robot).
+- Smaller, dimmer bounded dust; added capped sparks, chips and short flashes; weak
+  points, resisted hits and collapses now read differently.
+- Side impact cinematic with a one-frame snap; camera clamping and recovery retained;
+  C still skips the close-up.
+- Intact major statue parts are solid world obstacles with authored hit volumes; the
+  knight shield is a non-blocking ornament so the low rally route can reach both knees.
+  Broken parts move to the debris layer.
+- New HUD hierarchy, named/total progress bars, speed/gear panel, contextual status,
+  720p and 1600p layouts, improved garage button states and a controls/help modal.
+- Recommended ramp per challenge; selecting a challenge sets the suggested angle.
+
+### Verified
+
+- Static validation: **1522 checks, 0 failures**; bundle: 8 scenes, 34 GLBs.
+- Authored NORMALs: **34/34**; authored palette: **34/34**.
+- Release build with warnings as errors: 0 errors.
+- Pure .NET tests: **33 passed**; Godot runtime tests: **152 passed**.
+- All nine challenges physically completed through ordinary vehicle controls.
+- 60-second wall-clock boot: `ok=True`; no leaked audio resources. The runtime log
+  contains no managed/unmanaged exception, and CI now fails on such output.
+- Rendered 1600×900 probe: **55–60 FPS**, 402 nodes, ~549 draws (High); **~60 FPS**,
+  402 nodes, ~114 draws (Performance). A redundant statue omni shadow was removed after
+  profiling (High 810→549; Performance 323→114). Screenshot capture runs are lower.
+- Linux export built, packaged and booted after extraction; Windows export built
+  (not run on this Linux host).
+
+### Unverified / limitations
+
+- Audible audio, because this host has no usable audio device.
+- Windows runtime execution.
+- Human child playtest and physical gamepad test.
+
 ## v0.1.0 — First Playable — 2026-11-12
 
 First complete, playable release of the Godot 4.7.2 .NET / C# 10 game.

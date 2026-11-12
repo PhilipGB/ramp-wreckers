@@ -7,6 +7,10 @@ Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
 [PASS] Hat Trick completes with Hat
 [PASS] Knee Trouble rejects one leg
 [PASS] medal calc returns Gold for high score and fast time
+[PASS] every challenge has an authored 10-27 degree suggested ramp
+[PASS] Knee Trouble progress never counts unrelated broken pieces as knees
+[PASS] Core Shot remains incomplete while only the chest armour is broken
+[PASS] Hat Trick progress completes on the hat
 [PASS] zero mass gives zero impact energy
 [PASS] impact energy grows with speed
 [PASS] below threshold does not break
@@ -29,8 +33,8 @@ Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
 [Destruction] Garden Gnome/RightLeg broke via direct energy=500 score=29 weak=False.
 [Destruction] Garden Gnome/Torso broke via collapse energy=275 score=55 weak=False.
 [Destruction] Garden Gnome/Head broke via collapse energy=275 score=42 weak=False.
-[Destruction] Garden Gnome/Beard broke via collapse energy=275 score=32 weak=False.
-[Destruction] Garden Gnome/Hat broke via collapse energy=275 score=46 weak=False.
+[Destruction] Garden Gnome/Beard detached intact (support lost).
+[Destruction] Garden Gnome/Hat detached intact (support lost).
 [Destruction] Garden Gnome/LeftArm broke via collapse energy=275 score=23 weak=False.
 [Destruction] Garden Gnome/RightArm broke via collapse energy=275 score=23 weak=False.
 [PASS] both gnome supports can be broken
@@ -48,7 +52,7 @@ Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
 [Destruction] Iron Knight/Head broke via collapse energy=275 score=51 weak=False.
 [Destruction] Iron Knight/LeftArm broke via collapse energy=275 score=32 weak=False.
 [Destruction] Iron Knight/RightArm broke via collapse energy=275 score=32 weak=False.
-[Destruction] Iron Knight/Shield broke via collapse energy=275 score=65 weak=False.
+[Destruction] Iron Knight/Shield detached intact (support lost).
 [PASS] knight torso collapses after both legs
 [Statue] Reactor Robot: 8 authored parts, graph valid=True.
 [PASS] robot has eight valid parts
@@ -64,16 +68,16 @@ Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
 [Destruction] Reactor Robot/LeftArm broke via collapse energy=330 score=49 weak=False.
 [Destruction] Reactor Robot/RightArm broke via collapse energy=330 score=49 weak=False.
 [Destruction] Reactor Robot/Core detached intact (support lost).
-[Destruction] Reactor Robot/Armour broke via collapse energy=330 score=88 weak=False.
+[Destruction] Reactor Robot/Armour detached intact (support lost).
 [PASS] robot core detaches intact when its torso collapses
-[PASS] robot torso and armour break in the collapse
+[PASS] robot torso breaks and armour detaches intact in the collapse
 [Statue] Garden Gnome: 8 authored parts, graph valid=True.
 [Destruction] Garden Gnome/LeftLeg broke via direct energy=420 score=27 weak=False.
 [Destruction] Garden Gnome/RightLeg broke via direct energy=420 score=27 weak=False.
 [Destruction] Garden Gnome/Torso broke via collapse energy=231 score=53 weak=False.
 [Destruction] Garden Gnome/Head broke via collapse energy=231 score=40 weak=False.
-[Destruction] Garden Gnome/Beard broke via collapse energy=231 score=31 weak=False.
-[Destruction] Garden Gnome/Hat broke via collapse energy=231 score=44 weak=False.
+[Destruction] Garden Gnome/Beard detached intact (support lost).
+[Destruction] Garden Gnome/Hat detached intact (support lost).
 [Destruction] Garden Gnome/LeftArm broke via collapse energy=231 score=22 weak=False.
 [Destruction] Garden Gnome/RightArm broke via collapse energy=231 score=22 weak=False.
 [PASS] challenge 1 'First Crash' is completable from real part breaks
@@ -85,8 +89,8 @@ Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
 [Destruction] Garden Gnome/RightLeg broke via direct energy=420 score=27 weak=False.
 [Destruction] Garden Gnome/Torso broke via collapse energy=231 score=53 weak=False.
 [Destruction] Garden Gnome/Head broke via collapse energy=231 score=40 weak=False.
-[Destruction] Garden Gnome/Beard broke via collapse energy=231 score=31 weak=False.
-[Destruction] Garden Gnome/Hat broke via collapse energy=231 score=44 weak=False.
+[Destruction] Garden Gnome/Beard detached intact (support lost).
+[Destruction] Garden Gnome/Hat detached intact (support lost).
 [Destruction] Garden Gnome/LeftArm broke via collapse energy=231 score=22 weak=False.
 [Destruction] Garden Gnome/RightArm broke via collapse energy=231 score=22 weak=False.
 [PASS] challenge 3 'Gnome Down' is completable from real part breaks
@@ -100,7 +104,7 @@ Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
 [Destruction] Iron Knight/Head broke via collapse energy=231 score=48 weak=False.
 [Destruction] Iron Knight/LeftArm broke via collapse energy=231 score=31 weak=False.
 [Destruction] Iron Knight/RightArm broke via collapse energy=231 score=31 weak=False.
-[Destruction] Iron Knight/Shield broke via collapse energy=231 score=62 weak=False.
+[Destruction] Iron Knight/Shield detached intact (support lost).
 [PASS] challenge 5 'Knee Trouble' is completable from real part breaks
 [Statue] Iron Knight: 7 authored parts, graph valid=True.
 [Destruction] Iron Knight/LeftLeg broke via direct energy=420 score=37 weak=False.
@@ -109,7 +113,7 @@ Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
 [Destruction] Iron Knight/Head broke via collapse energy=231 score=48 weak=False.
 [Destruction] Iron Knight/LeftArm broke via collapse energy=231 score=31 weak=False.
 [Destruction] Iron Knight/RightArm broke via collapse energy=231 score=31 weak=False.
-[Destruction] Iron Knight/Shield broke via collapse energy=231 score=62 weak=False.
+[Destruction] Iron Knight/Shield detached intact (support lost).
 [PASS] challenge 6 'Knightfall' is completable from real part breaks
 [Statue] Reactor Robot: 8 authored parts, graph valid=True.
 [Destruction] Reactor Robot/Armour broke via direct energy=420 score=96 weak=False.
@@ -126,7 +130,7 @@ Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
 [Destruction] Reactor Robot/LeftArm broke via collapse energy=231 score=44 weak=False.
 [Destruction] Reactor Robot/RightArm broke via collapse energy=231 score=44 weak=False.
 [Destruction] Reactor Robot/Core detached intact (support lost).
-[Destruction] Reactor Robot/Armour broke via collapse energy=231 score=79 weak=False.
+[Destruction] Reactor Robot/Armour detached intact (support lost).
 [PASS] challenge 9 'Robot Wreck' is completable from real part breaks
 [Statue] Reactor Robot: 8 authored parts, graph valid=True.
 [Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
@@ -227,6 +231,7 @@ Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
 [PASS] empty save recovers to a safe default profile
 [PASS] invalid save data is refused with honest feedback
 [PASS] write failure is reported, not claimed as success
+[PASS] a v0.1.0 version-1 save file still loads unchanged
 [PASS] first challenge clear awards coins once
 [PASS] challenge replay improves medal but cannot duplicate coins
 [PASS] profile coins reflect the single reward exactly
@@ -252,8 +257,8 @@ Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
 [Destruction] Garden Gnome/RightLeg broke via direct energy=500 score=29 weak=False.
 [Destruction] Garden Gnome/Torso broke via collapse energy=275 score=55 weak=False.
 [Destruction] Garden Gnome/Head broke via collapse energy=275 score=42 weak=False.
-[Destruction] Garden Gnome/Beard broke via collapse energy=275 score=32 weak=False.
-[Destruction] Garden Gnome/Hat broke via collapse energy=275 score=46 weak=False.
+[Destruction] Garden Gnome/Beard detached intact (support lost).
+[Destruction] Garden Gnome/Hat detached intact (support lost).
 [Destruction] Garden Gnome/LeftArm broke via collapse energy=275 score=23 weak=False.
 [Destruction] Garden Gnome/RightArm broke via collapse energy=275 score=23 weak=False.
 [PASS] Free Smash destruction cannot grant campaign coins or corrupt rewards
@@ -262,52 +267,197 @@ Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
 [Save] Progress loaded.
 [Catalog] 9 authored challenges validated against statue part inventories.
 [Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[Statue] Iron Knight: 7 authored parts, graph valid=True.
+[PASS] progress display test spawns the kneed statue
+[Destruction] Iron Knight/Torso broke via direct energy=700 score=108 weak=False.
+[Destruction] Iron Knight/Head broke via collapse energy=385 score=57 weak=False.
+[Destruction] Iron Knight/LeftArm broke via collapse energy=385 score=36 weak=False.
+[Destruction] Iron Knight/RightArm broke via collapse energy=385 score=36 weak=False.
+[Destruction] Iron Knight/Shield detached intact (support lost).
+[PASS] Knee Trouble HUD shows 0/2 required knees despite unrelated pieces breaking
+[Statue] Reactor Robot: 8 authored parts, graph valid=True.
+[Destruction] Reactor Robot/Armour broke via direct energy=500 score=104 weak=False.
+[PASS] Core Shot HUD stays at 0/1 while only armour is gone
+[Destruction] Reactor Robot/Core broke via direct energy=500 score=267 weak=True.
+[CHALLENGE] Core Shot complete? broken=Armour,Core required=Core min=1
+[PASS] Core Shot HUD reaches 1/1 only after the core breaks
+[Save] Progress loaded.
+[Catalog] 9 authored challenges validated against statue part inventories.
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[Statue] Iron Knight: 7 authored parts, graph valid=True.
+[PASS] collision presentation test spawns the knight
+[PASS] knight shield is an ornament hit volume, not a false wall
+[PASS] intact knight legs are solid world obstacles
+[Destruction] Iron Knight/LeftLeg broke via direct energy=900 score=54 weak=False.
+[PASS] broken leg leaves the world layer and becomes debris
+[Save] Progress loaded.
+[Catalog] 9 authored challenges validated against statue part inventories.
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[PASS] contact aggregation test has a statue and vehicle
+[PASS] contact aggregation test has both legs
+[Destruction] Garden Gnome/LeftLeg broke via direct energy=40000 score=46 weak=False.
+[Destruction] Garden Gnome/RightLeg broke via direct energy=40000 score=46 weak=False.
+[CHALLENGE] First Crash complete? broken=LeftLeg,RightLeg required= min=2
+[Destruction] Garden Gnome/Torso broke via collapse energy=22000 score=111 weak=False.
+[Destruction] Garden Gnome/Head broke via collapse energy=22000 score=83 weak=False.
+[Destruction] Garden Gnome/Beard detached intact (support lost).
+[Destruction] Garden Gnome/Hat detached intact (support lost).
+[Destruction] Garden Gnome/LeftArm broke via collapse energy=22000 score=46 weak=False.
+[Destruction] Garden Gnome/RightArm broke via collapse energy=22000 score=46 weak=False.
+[PASS] same-step contacts retain every contacted part in the impact group
+[Save] Progress loaded.
+[Catalog] 9 authored challenges validated against statue part inventories.
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[Statue] Reactor Robot: 8 authored parts, graph valid=True.
+[PASS] core sequencing test has a statue and vehicle
+[PASS] core sequencing test has armour and core
+[Destruction] Reactor Robot/Armour broke via direct energy=40000 score=166 weak=False.
+[PASS] protected core contact cannot break the core in the armour group
+[Destruction] Reactor Robot/Core broke via direct energy=40000 score=429 weak=True.
+[CHALLENGE] Core Shot complete? broken=Armour,Core required=Core min=1
+[PASS] a fresh contact after armour destruction breaks the exposed core
+[Save] Progress loaded.
+[Catalog] 9 authored challenges validated against statue part inventories.
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
 [PASS] vehicle 0 spawned for route test
-[Destruction] Garden Gnome/Beard broke via direct energy=267 score=32 weak=False.
-[Destruction] Garden Gnome/Torso broke via direct energy=268 score=55 weak=False.
-[CHALLENGE] First Crash complete? broken=Beard,Torso required= min=2
-[Destruction] Garden Gnome/Head broke via collapse energy=147 score=36 weak=False.
-[Destruction] Garden Gnome/Hat broke via collapse energy=147 score=40 weak=False.
-[Destruction] Garden Gnome/LeftArm broke via collapse energy=147 score=20 weak=False.
-[Destruction] Garden Gnome/RightArm broke via collapse energy=147 score=20 weak=False.
-[Destruction] Garden Gnome/RightLeg broke via direct energy=56 score=18 weak=False.
-[Destruction] Garden Gnome/LeftLeg broke via direct energy=57 score=18 weak=False.
-[PASS] vehicle 0 physically travelled more than 30 m (z 34 -> -21)
+[Destruction] Garden Gnome/Hat broke via direct energy=264 score=73 weak=True.
+[PASS] vehicle 0 physically travelled more than 30 m (z 34 -> -17)
 [PASS] vehicle 0 reached a usable launch speed (97 km/h)
 [PASS] vehicle 0 became airborne from the ramp
-[PASS] vehicle 0 damaged the statue through ordinary driving (score 32)
+[PASS] vehicle 0 damaged the statue through ordinary driving (score 73)
 [PASS] campaign route completes First Crash and saves the first-clear reward
-[ROUTE] vehicle=0 z=34->-21 maxY=5.5 maxSpeed=97 score=32
+[ROUTE] vehicle=0 z=34->-17 maxY=5.5 maxSpeed=97 score=73
 [PASS] vehicle 1 spawned for route test
-[Destruction] Garden Gnome/Beard broke via direct energy=407 score=37 weak=False.
-[Destruction] Garden Gnome/Torso broke via direct energy=409 score=64 weak=False.
-[CHALLENGE] First Crash complete? broken=Beard,Torso required= min=2
-[Destruction] Garden Gnome/Head broke via collapse energy=225 score=39 weak=False.
-[Destruction] Garden Gnome/Hat broke via collapse energy=225 score=44 weak=False.
-[Destruction] Garden Gnome/LeftArm broke via collapse energy=225 score=22 weak=False.
-[Destruction] Garden Gnome/RightArm broke via collapse energy=225 score=22 weak=False.
-[Destruction] Garden Gnome/RightLeg broke via direct energy=409 score=26 weak=False.
-[Destruction] Garden Gnome/LeftLeg broke via direct energy=409 score=26 weak=False.
-[PASS] vehicle 1 physically travelled more than 30 m (z 34 -> -20)
+[Destruction] Garden Gnome/Hat broke via direct energy=397 score=84 weak=True.
+[Destruction] Garden Gnome/Beard broke via direct energy=397 score=37 weak=False.
+[CHALLENGE] First Crash complete? broken=Hat,Beard required= min=2
+[PASS] vehicle 1 physically travelled more than 30 m (z 34 -> -17)
 [PASS] vehicle 1 reached a usable launch speed (91 km/h)
 [PASS] vehicle 1 became airborne from the ramp
-[PASS] vehicle 1 damaged the statue through ordinary driving (score 37)
-[ROUTE] vehicle=1 z=34->-20 maxY=5.6 maxSpeed=91 score=37
+[PASS] vehicle 1 damaged the statue through ordinary driving (score 121)
+[ROUTE] vehicle=1 z=34->-17 maxY=5.6 maxSpeed=91 score=121
 [PASS] vehicle 2 spawned for route test
-[Destruction] Garden Gnome/Torso broke via direct energy=165 score=49 weak=False.
-[Destruction] Garden Gnome/Head broke via collapse energy=91 score=33 weak=False.
+[Destruction] Garden Gnome/Torso broke via direct energy=171 score=49 weak=False.
+[Destruction] Garden Gnome/Head broke via collapse energy=94 score=33 weak=False.
 [CHALLENGE] First Crash complete? broken=Torso,Head required= min=2
-[Destruction] Garden Gnome/Beard broke via collapse energy=91 score=26 weak=False.
-[Destruction] Garden Gnome/Hat broke via collapse energy=91 score=37 weak=False.
-[Destruction] Garden Gnome/LeftArm broke via collapse energy=91 score=19 weak=False.
-[Destruction] Garden Gnome/RightArm broke via collapse energy=91 score=19 weak=False.
-[Destruction] Garden Gnome/RightLeg broke via direct energy=157 score=20 weak=False.
-[Destruction] Garden Gnome/LeftLeg broke via direct energy=157 score=20 weak=False.
-[PASS] vehicle 2 physically travelled more than 30 m (z 34 -> -20)
+[Destruction] Garden Gnome/Beard detached intact (support lost).
+[Destruction] Garden Gnome/Hat detached intact (support lost).
+[Destruction] Garden Gnome/LeftArm broke via collapse energy=94 score=19 weak=False.
+[Destruction] Garden Gnome/RightArm broke via collapse energy=94 score=19 weak=False.
+[PASS] vehicle 2 physically travelled more than 30 m (z 34 -> -17)
 [PASS] vehicle 2 reached a usable launch speed (68 km/h)
 [PASS] vehicle 2 became airborne from the ramp
-[PASS] vehicle 2 damaged the statue through ordinary driving (score 183)
-[ROUTE] vehicle=2 z=34->-20 maxY=5.4 maxSpeed=68 score=183
+[PASS] vehicle 2 damaged the statue through ordinary driving (score 120)
+[ROUTE] vehicle=2 z=34->-17 maxY=5.4 maxSpeed=68 score=120
+[Save] Progress loaded.
+[Catalog] 9 authored challenges validated against statue part inventories.
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[PASS] route 1 has a real vehicle and statue
+[Destruction] Garden Gnome/Torso broke via direct energy=465 score=67 weak=False.
+[Destruction] Garden Gnome/Head broke via collapse energy=256 score=41 weak=False.
+[CHALLENGE] First Crash complete? broken=Torso,Head required= min=2
+[Destruction] Garden Gnome/Beard detached intact (support lost).
+[Destruction] Garden Gnome/Hat detached intact (support lost).
+[Destruction] Garden Gnome/LeftArm broke via collapse energy=256 score=23 weak=False.
+[Destruction] Garden Gnome/RightArm broke via collapse energy=256 score=23 weak=False.
+[PASS] challenge 1 'First Crash' completes through real driving
+[PASS] challenge 1 scored a real component impact
+[ROUTE] challenge=1 First Crash vehicle=1 ramp=10 passes=0 score=154 broken=Torso,Head,LeftArm,RightArm complete=True
+[PASS] route 2 has a real vehicle and statue
+[Destruction] Garden Gnome/Hat broke via direct energy=182 score=67 weak=True.
+[CHALLENGE] Hat Trick complete? broken=Hat required=Hat min=1
+[PASS] challenge 2 'Hat Trick' completes through real driving
+[PASS] challenge 2 scored a real component impact
+[PASS] challenge 2 broke required component Hat
+[ROUTE] challenge=2 Hat Trick vehicle=0 ramp=27 passes=0 score=67 broken=Hat complete=True
+[PASS] route 3 has a real vehicle and statue
+[Destruction] Garden Gnome/Torso broke via direct energy=462 score=67 weak=False.
+[Destruction] Garden Gnome/Head broke via collapse energy=254 score=41 weak=False.
+[Destruction] Garden Gnome/Beard detached intact (support lost).
+[Destruction] Garden Gnome/Hat detached intact (support lost).
+[Destruction] Garden Gnome/LeftArm broke via collapse energy=254 score=23 weak=False.
+[Destruction] Garden Gnome/RightArm broke via collapse energy=254 score=23 weak=False.
+[CHALLENGE] Gnome Down complete? broken=Torso,Head,LeftArm,RightArm required= min=4
+[PASS] challenge 3 'Gnome Down' completes through real driving
+[PASS] challenge 3 scored a real component impact
+[ROUTE] challenge=3 Gnome Down vehicle=1 ramp=10 passes=0 score=154 broken=Torso,Head,LeftArm,RightArm complete=True
+[Statue] Iron Knight: 7 authored parts, graph valid=True.
+[PASS] route 4 has a real vehicle and statue
+[Destruction] Iron Knight/Shield broke via direct energy=378 score=115 weak=True.
+[CHALLENGE] Shield Breaker complete? broken=Shield required=Shield min=1
+[PASS] challenge 4 'Shield Breaker' completes through real driving
+[PASS] challenge 4 scored a real component impact
+[PASS] challenge 4 broke required component Shield
+[ROUTE] challenge=4 Shield Breaker vehicle=1 ramp=18 passes=0 score=115 broken=Shield complete=True
+[PASS] route 5 has a real vehicle and statue
+[Destruction] Iron Knight/LeftLeg broke via direct energy=307 score=33 weak=False.
+[Destruction] Iron Knight/RightLeg broke via direct energy=307 score=33 weak=False.
+[CHALLENGE] Knee Trouble complete? broken=LeftLeg,RightLeg required=LeftLeg,RightLeg min=2
+[Destruction] Iron Knight/Torso broke via collapse energy=169 score=66 weak=False.
+[Destruction] Iron Knight/Head broke via collapse energy=169 score=45 weak=False.
+[Destruction] Iron Knight/LeftArm broke via collapse energy=169 score=29 weak=False.
+[Destruction] Iron Knight/RightArm broke via collapse energy=169 score=29 weak=False.
+[Destruction] Iron Knight/Shield detached intact (support lost).
+[PASS] challenge 5 'Knee Trouble' completes through real driving
+[PASS] challenge 5 scored a real component impact
+[PASS] challenge 5 broke required component LeftLeg
+[PASS] challenge 5 broke required component RightLeg
+[ROUTE] challenge=5 Knee Trouble vehicle=0 ramp=10 passes=0 score=235 broken=LeftLeg,RightLeg,Torso,Head,LeftArm,RightArm complete=True
+[PASS] route 6 has a real vehicle and statue
+[Destruction] Iron Knight/LeftLeg broke via direct energy=334 score=34 weak=False.
+[Destruction] Iron Knight/RightLeg broke via direct energy=334 score=34 weak=False.
+[Destruction] Iron Knight/Torso broke via collapse energy=183 score=67 weak=False.
+[Destruction] Iron Knight/Head broke via collapse energy=183 score=46 weak=False.
+[Destruction] Iron Knight/LeftArm broke via collapse energy=183 score=29 weak=False.
+[CHALLENGE] Knightfall complete? broken=LeftLeg,RightLeg,Torso,Head,LeftArm required= min=5
+[Destruction] Iron Knight/RightArm broke via collapse energy=183 score=29 weak=False.
+[Destruction] Iron Knight/Shield detached intact (support lost).
+[Destruction] Iron Knight/Shield broke via direct energy=334 score=110 weak=True.
+[PASS] challenge 6 'Knightfall' completes through real driving
+[PASS] challenge 6 scored a real component impact
+[ROUTE] challenge=6 Knightfall vehicle=1 ramp=10 passes=0 score=349 broken=LeftLeg,RightLeg,Torso,Head,LeftArm,RightArm,Shield complete=True
+[Statue] Reactor Robot: 8 authored parts, graph valid=True.
+[PASS] route 7 has a real vehicle and statue
+[Destruction] Reactor Robot/Armour broke via direct energy=135 score=71 weak=False.
+[CHALLENGE] Peel the Armour complete? broken=Armour required=Armour min=1
+[PASS] challenge 7 'Peel the Armour' completes through real driving
+[PASS] challenge 7 scored a real component impact
+[PASS] challenge 7 broke required component Armour
+[ROUTE] challenge=7 Peel the Armour vehicle=2 ramp=10 passes=0 score=71 broken=Armour complete=True
+[PASS] route 8 has a real vehicle and statue
+[Destruction] Reactor Robot/Armour broke via direct energy=134 score=71 weak=False.
+[Destruction] Reactor Robot/Core broke via direct energy=134 score=182 weak=True.
+[CHALLENGE] Core Shot complete? broken=Armour,Core required=Core min=1
+[PASS] challenge 8 'Core Shot' completes through real driving
+[PASS] challenge 8 scored a real component impact
+[PASS] challenge 8 broke required component Core
+[PASS] Core Shot route peeled armour first and then broke the exposed core
+[ROUTE] challenge=8 Core Shot vehicle=2 ramp=10 passes=0 score=253 broken=Armour,Core complete=True
+[PASS] route 9 has a real vehicle and statue
+[Destruction] Reactor Robot/LeftLeg broke via direct energy=307 score=48 weak=False.
+[Destruction] Reactor Robot/RightLeg broke via direct energy=307 score=48 weak=False.
+[Destruction] Reactor Robot/Torso broke via collapse energy=169 score=90 weak=False.
+[Destruction] Reactor Robot/Head broke via collapse energy=169 score=61 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via collapse energy=169 score=41 weak=False.
+[Destruction] Reactor Robot/RightArm broke via collapse energy=169 score=41 weak=False.
+[CHALLENGE] Robot Wreck complete? broken=LeftLeg,RightLeg,Torso,Head,LeftArm,RightArm required= min=6
+[Destruction] Reactor Robot/Core detached intact (support lost).
+[Destruction] Reactor Robot/Armour detached intact (support lost).
+[PASS] challenge 9 'Robot Wreck' completes through real driving
+[PASS] challenge 9 scored a real component impact
+[ROUTE] challenge=9 Robot Wreck vehicle=0 ramp=10 passes=0 score=329 broken=LeftLeg,RightLeg,Torso,Head,LeftArm,RightArm complete=True
+[Save] Progress loaded.
+[Catalog] 9 authored challenges validated against statue part inventories.
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[Statue] Iron Knight: 7 authored parts, graph valid=True.
+[PASS] camera test has a vehicle
+[Destruction] Iron Knight/Shield broke via direct energy=378 score=115 weak=True.
+[CHALLENGE] Shield Breaker complete? broken=Shield required=Shield min=1
+[PASS] impact effects stay within authored bounds
+[PASS] camera never drops below the arena after an impact
+[PASS] C skips the impact close-up immediately
+[PASS] camera recovers to a usable chase distance (10.1 m)
+[PASS] dust, chips, sparks and flashes all clean themselves up
 [Save] Progress loaded.
 [Catalog] 9 authored challenges validated against statue part inventories.
 [Statue] Garden Gnome: 8 authored parts, graph valid=True.
@@ -321,5 +471,7 @@ Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
 [Statue] Reactor Robot: 8 authored parts, graph valid=True.
 [Statue] Garden Gnome: 8 authored parts, graph valid=True.
 [PASS] 30 retries keep statue/vehicle state bounded and intact
-[PASS] 30 retries complete quickly (994 ms total)
-=== RESULT: 90 passed, 0 failed ===
+[PASS] 30 retries do not accumulate scene nodes (402->402)
+[PASS] retry restores normal time scale
+[PASS] 30 retries complete quickly (992 ms total)
+=== RESULT: 152 passed, 0 failed ===

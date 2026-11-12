@@ -13,7 +13,7 @@
 [ext_resource type="PackedScene" path="res://art/meshes/statues/robot/Armour.glb" id="11"]
 
 [sub_resource type="BoxShape3D" id="PedestalShape"]
-size = Vector3(4.8, 0.64, 4.4)
+size = Vector3(4.8, 0.64, 2.4)
 
 [sub_resource type="BoxShape3D" id="ShapeLeftLeg"]
 size = Vector3(1.44, 2.31, 1.46)
@@ -36,6 +36,9 @@ size = Vector3(1.06, 1.86, 1.07)
 [sub_resource type="BoxShape3D" id="ShapeCore"]
 size = Vector3(1.64, 1.26, 0.74)
 
+[sub_resource type="BoxShape3D" id="ShapeCoreHit"]
+size = Vector3(2.2, 2.0, 0.4)
+
 [sub_resource type="BoxShape3D" id="ShapeArmour"]
 size = Vector3(2.16, 1.6, 0.36)
 
@@ -43,6 +46,15 @@ size = Vector3(2.16, 1.6, 0.36)
 script = ExtResource("1")
 RequiredBrokenParts = 6
 DisplayName = "Reactor Robot"
+
+[node name="RobotAccent" type="SpotLight3D" parent="."]
+position = Vector3(0, 7.2, 4.2)
+rotation = Vector3(-0.785, 0, 0)
+light_color = Color(0.05, 0.9, 0.8, 1)
+light_energy = 2.3
+shadow_enabled = false
+spot_range = 14.0
+spot_angle = 38.0
 
 [node name="Pedestal" type="StaticBody3D" parent="."]
 position = Vector3(0, 0.48, 0)
@@ -68,6 +80,8 @@ PartId = "LeftLeg"
 BreakThreshold = 120.0
 ScoreValue = 50
 IsSupport = true
+CountsAsBrokenWhenUnsupported = false
+
 
 [node name="Collision" type="CollisionShape3D" parent="LeftLeg"]
 shape = SubResource("ShapeLeftLeg")
@@ -96,6 +110,8 @@ PartId = "RightLeg"
 BreakThreshold = 120.0
 ScoreValue = 50
 IsSupport = true
+CountsAsBrokenWhenUnsupported = false
+
 
 [node name="Collision" type="CollisionShape3D" parent="RightLeg"]
 shape = SubResource("ShapeRightLeg")
@@ -152,7 +168,9 @@ PartId = "Head"
 BreakThreshold = 125.0
 ScoreValue = 75
 SupportedByCsv = "Torso"
+CountsAsBrokenWhenUnsupported = true
 WeakPointMultiplier = 1.2
+
 
 [node name="Collision" type="CollisionShape3D" parent="Head"]
 shape = SubResource("ShapeHead")
@@ -181,6 +199,8 @@ PartId = "LeftArm"
 BreakThreshold = 105.0
 ScoreValue = 50
 SupportedByCsv = "Torso"
+CountsAsBrokenWhenUnsupported = true
+
 
 [node name="Collision" type="CollisionShape3D" parent="LeftArm"]
 shape = SubResource("ShapeLeftArm")
@@ -209,6 +229,8 @@ PartId = "RightArm"
 BreakThreshold = 105.0
 ScoreValue = 50
 SupportedByCsv = "Torso"
+CountsAsBrokenWhenUnsupported = true
+
 
 [node name="Collision" type="CollisionShape3D" parent="RightArm"]
 shape = SubResource("ShapeRightArm")
@@ -234,7 +256,7 @@ max_contacts_reported = 16
 continuous_cd = true
 script = ExtResource("2")
 PartId = "Core"
-BreakThreshold = 90.0
+BreakThreshold = 20.0
 ScoreValue = 145
 SupportedByCsv = "Torso"
 ProtectedByCsv = "Armour"
@@ -242,10 +264,16 @@ WeakPointMultiplier = 2.4
 CountsAsBrokenWhenUnsupported = false
 
 [node name="Collision" type="CollisionShape3D" parent="Core"]
-position = Vector3(0, 0, 1.0)
+position = Vector3(0, 0, 1.35)
 shape = SubResource("ShapeCore")
 
 [node name="Art" parent="Core" instance=ExtResource("10")]
+
+[node name="CoreGlow" type="OmniLight3D" parent="Core"]
+light_color = Color(0.03, 1.0, 0.85, 1)
+light_energy = 0.8
+omni_range = 3.0
+shadow_enabled = false
 
 [node name="HitArea" type="Area3D" parent="Core"]
 collision_layer = 4
@@ -253,8 +281,8 @@ collision_mask = 2
 monitorable = false
 
 [node name="HitShape" type="CollisionShape3D" parent="Core/HitArea"]
-position = Vector3(0, 0, 1.0)
-shape = SubResource("ShapeCore")
+position = Vector3(0, 0, 1.62)
+shape = SubResource("ShapeCoreHit")
 
 [node name="Armour" type="RigidBody3D" parent="."]
 position = Vector3(0, 4.54, 1.22)
@@ -270,6 +298,8 @@ PartId = "Armour"
 BreakThreshold = 75.0
 ScoreValue = 90
 SupportedByCsv = "Torso"
+CountsAsBrokenWhenUnsupported = false
+
 
 [node name="Collision" type="CollisionShape3D" parent="Armour"]
 shape = SubResource("ShapeArmour")

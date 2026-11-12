@@ -35,18 +35,29 @@ public partial class GameRoot : Node3D
     private AudioStreamPlayer _rewardAudio = null!;
     private AudioStreamPlayer _launchAudio = null!;
     private AudioStreamPlayer _engineAudio = null!;
+    private OmniLight3D _statueLight = null!;
     private ImpactEffects _effects = null!;
     private Label _modeLabel = null!;
     private Label _challengeLabel = null!;
     private Label _goalLabel = null!;
-    private Label _progressLabel = null!;
+    private Label _recommendLabel = null!;
+    private Label _requiredLabel = null!;
+    private Label _totalLabel = null!;
+    private ProgressBar _requiredBar = null!;
+    private ProgressBar _totalBar = null!;
     private Label _statsLabel = null!;
     private Label _statusLabel = null!;
     private Label _speedLabel = null!;
     private Label _gearLabel = null!;
+    private ProgressBar _speedBar = null!;
     private Label _bannerLabel = null!;
+    private Control _bannerPanel = null!;
     private Label _saveBanner = null!;
     private Control _garage = null!;
+    private Control _helpPanel = null!;
+    private Button _helpClose = null!;
+    private ColorRect _modalBackdrop = null!;
+    private bool _helpOpen;
     private Label _garageCoins = null!;
     private Button _rallyButton = null!;
     private Button _pickupButton = null!;
@@ -55,6 +66,7 @@ public partial class GameRoot : Node3D
     private Button _gripButton = null!;
     private Button _paintButton = null!;
     private Label _garageHint = null!;
+    private string _garageNotice = string.Empty;
     private Button _qualityButton = null!;
     private Button _volumeButton = null!;
 
@@ -78,6 +90,7 @@ public partial class GameRoot : Node3D
     private float _bannerTimer;
     private float _saveBannerTimer;
     private bool _saveBannerSticky;
+    private bool _audioAvailable;
 
     private int _cameraPreset;
     private float _camYaw;
@@ -85,10 +98,12 @@ public partial class GameRoot : Node3D
     private float _camDistanceFactor = 1f;
     private bool _orbiting;
     private bool _cameraInitialized;
+    private bool _showcaseCamera;
     private float _shake;
     private float _slowmoTimer;
     private float _cinematicTimer;
     private bool _firstBreakCamera;
+    private bool _cinematicSnap;
     private float _hudRefreshTimer;
     private Vector3 _impactFocus;
 
@@ -111,19 +126,29 @@ public partial class GameRoot : Node3D
         _rewardAudio = GetNode<AudioStreamPlayer>("RewardAudio");
         _launchAudio = GetNode<AudioStreamPlayer>("LaunchAudio");
         _engineAudio = GetNode<AudioStreamPlayer>("EngineAudio");
+        _statueLight = GetNode<OmniLight3D>("StatueLight");
         _effects = GetNode<ImpactEffects>("Effects");
 
-        _modeLabel = GetNode<Label>("Hud/InfoPanel/InfoVBox/Mode");
-        _challengeLabel = GetNode<Label>("Hud/InfoPanel/InfoVBox/Challenge");
-        _goalLabel = GetNode<Label>("Hud/InfoPanel/InfoVBox/Goal");
-        _progressLabel = GetNode<Label>("Hud/InfoPanel/InfoVBox/Progress");
-        _statsLabel = GetNode<Label>("Hud/InfoPanel/InfoVBox/Stats");
-        _statusLabel = GetNode<Label>("Hud/InfoPanel/InfoVBox/Status");
+        _modeLabel = GetNode<Label>("Hud/ObjectivePanel/ObjectiveVBox/ModeRow/Mode");
+        _challengeLabel = GetNode<Label>("Hud/ObjectivePanel/ObjectiveVBox/Challenge");
+        _goalLabel = GetNode<Label>("Hud/ObjectivePanel/ObjectiveVBox/Goal");
+        _recommendLabel = GetNode<Label>("Hud/ObjectivePanel/ObjectiveVBox/Recommendation");
+        _requiredLabel = GetNode<Label>("Hud/ObjectivePanel/ObjectiveVBox/Required");
+        _requiredBar = GetNode<ProgressBar>("Hud/ObjectivePanel/ObjectiveVBox/RequiredBar");
+        _totalLabel = GetNode<Label>("Hud/ObjectivePanel/ObjectiveVBox/Total");
+        _totalBar = GetNode<ProgressBar>("Hud/ObjectivePanel/ObjectiveVBox/TotalBar");
+        _statsLabel = GetNode<Label>("Hud/StatsPanel/StatsHBox/Stats");
+        _statusLabel = GetNode<Label>("Hud/ObjectivePanel/ObjectiveVBox/Status");
         _speedLabel = GetNode<Label>("Hud/SpeedPanel/SpeedVBox/Speed");
         _gearLabel = GetNode<Label>("Hud/SpeedPanel/SpeedVBox/Gear");
-        _bannerLabel = GetNode<Label>("Hud/Banner");
+        _speedBar = GetNode<ProgressBar>("Hud/SpeedPanel/SpeedVBox/SpeedBar");
+        _bannerPanel = GetNode<Control>("Hud/Banner");
+        _bannerLabel = GetNode<Label>("Hud/Banner/BannerLabel");
         _saveBanner = GetNode<Label>("Hud/SaveBanner");
         _garage = GetNode<Control>("Hud/Garage");
+        _helpPanel = GetNode<Control>("Hud/HelpPanel");
+        _helpClose = GetNode<Button>("Hud/HelpPanel/HelpVBox/HelpClose");
+        _modalBackdrop = GetNode<ColorRect>("Hud/ModalBackdrop");
         _garageCoins = GetNode<Label>("Hud/Garage/GarageVBox/GarageCoins");
         _rallyButton = GetNode<Button>("Hud/Garage/GarageVBox/VehicleRow/RallyButton");
         _pickupButton = GetNode<Button>("Hud/Garage/GarageVBox/VehicleRow/PickupButton");
@@ -156,9 +181,13 @@ public partial class GameRoot : Node3D
         if (catalogErrors.Count == 0)
             GD.Print("[Catalog] 9 authored challenges validated against statue part inventories.");
 
+        _audioAvailable = !string.Equals(AudioServer.GetDriverName(), "Dummy",
+            StringComparison.OrdinalIgnoreCase);
         ConfigureEngineAudio();
         ApplySettings();
         _garage.Visible = false;
+        _helpPanel.Visible = false;
+        _modalBackdrop.Visible = false;
         ConnectGarageButtons();
         UpdateRamp();
         SpawnVehicle(reset: false);
@@ -218,6 +247,11 @@ public partial class GameRoot : Node3D
 
     private void HandleGameplayInput()
     {
+        if (Input.IsActionJustPressed("help"))
+        {
+            ToggleHelp();
+            return;
+        }
         if (Input.IsActionJustPressed("garage"))
         {
             ToggleGarage();
@@ -225,11 +259,13 @@ public partial class GameRoot : Node3D
         }
         if (Input.IsActionJustPressed("pause"))
         {
-            if (_garageOpen)
-                ToggleGarage();
+            if (_helpOpen)
+                ToggleHelp(false);
+            else if (_garageOpen)
+                ToggleGarage(false);
             return;
         }
-        if (_garageOpen)
+        if (_garageOpen || _helpOpen)
             return;
 
         if (Input.IsActionJustPressed("retry"))
@@ -258,22 +294,26 @@ public partial class GameRoot : Node3D
             _profile.TrySave();
             _message = $"Camera: {CameraName(_cameraPreset)}";
         }
-        if (Input.IsActionJustPressed("paint") && _profile.Data.PaintUnlocked)
+        if (Input.IsActionJustPressed("paint"))
         {
-            _profile.Data.PaintIndex = (_profile.Data.PaintIndex + 1) % 6;
-            _vehicle?.ApplyProfile(_profile.Data.EngineLevel, _profile.Data.GripLevel,
-                _profile.Data.PaintIndex, true);
-            _profile.TrySave();
-            _message = "Paint: " + VehicleController.PaintName(_profile.Data.PaintIndex);
+            if (_profile.Data.PaintUnlocked)
+            {
+                _profile.Data.PaintIndex = (_profile.Data.PaintIndex + 1) % 6;
+                _vehicle?.ApplyProfile(_profile.Data.EngineLevel, _profile.Data.GripLevel,
+                    _profile.Data.PaintIndex, true);
+                _profile.TrySave();
+                _message = "Paint: " + VehicleController.PaintName(_profile.Data.PaintIndex);
+            }
+            else
+            {
+                _message = $"Paint is locked — unlock it in the garage (G) for {GameProfile.PaintCost} Wreck Coins.";
+            }
         }
         if (Input.IsActionJustPressed("quality_toggle"))
             CycleQuality();
         if (Input.IsActionJustPressed("volume_toggle"))
             CycleVolume();
-        if (Input.IsActionJustPressed("help"))
-        {
-            _message = "W/S drive  A/D steer  SPACE brake  R retry  C camera  G garage  F free smash";
-        }
+
     }
 
     private void UpdateTimers(float dt)
@@ -282,7 +322,7 @@ public partial class GameRoot : Node3D
         {
             _bannerTimer -= dt;
             if (_bannerTimer <= 0f)
-                _bannerLabel.Visible = false;
+                _bannerPanel.Visible = false;
         }
         if (_saveBannerTimer > 0f && !_saveBannerSticky)
         {
@@ -310,7 +350,7 @@ public partial class GameRoot : Node3D
 
     private void UpdateAudio(float dt)
     {
-        if (_vehicle == null)
+        if (_vehicle == null || !_audioAvailable)
             return;
         float speed = Mathf.Abs(_vehicle.ForwardSpeed);
         float throttle = Input.GetActionStrength("drive_forward");
@@ -329,6 +369,8 @@ public partial class GameRoot : Node3D
 
     private void UpdateCamera(float dt)
     {
+        if (_showcaseCamera)
+            return;
         VehicleController? vehicle = _vehicle;
         if (vehicle == null)
             return;
@@ -349,12 +391,12 @@ public partial class GameRoot : Node3D
                 _impactFocus = _statueAnchor.GlobalPosition + Vector3.Up * 3.2f;
             Vector3[] candidates =
             {
-                new(0f, 9.5f, 17f),
-                new(7.5f, 8.5f, 15f),
-                new(-7.5f, 8.5f, 15f),
-                new(0f, 12f, 12f),
-                new(8f, 9f, -7f),
-                new(-8f, 9f, -7f),
+                new(7.8f, 7.4f, 4.0f),
+                new(-7.8f, 7.4f, 4.0f),
+                new(0f, 8.5f, 5.0f),
+                new(0f, 10.0f, 9.0f),
+                new(6.5f, 7.2f, -6.0f),
+                new(-6.5f, 7.2f, -6.0f),
             };
             desired = _impactFocus + candidates[0];
             bool found = false;
@@ -362,7 +404,7 @@ public partial class GameRoot : Node3D
             foreach (Vector3 candidate in candidates)
             {
                 Vector3 tryPosition = _impactFocus + candidate;
-                var probe = PhysicsRayQueryParameters3D.Create(_impactFocus, tryPosition, 0x15);
+                using var probe = PhysicsRayQueryParameters3D.Create(_impactFocus, tryPosition, 0x15);
                 probe.CollideWithAreas = false;
                 probe.CollideWithBodies = true;
                 var probeHit = spaceCinematic.IntersectRay(probe);
@@ -406,7 +448,7 @@ public partial class GameRoot : Node3D
 
         // Pull the camera in front of arena / statue geometry rather than clipping.
         var space = GetWorld3D().DirectSpaceState;
-        var query = PhysicsRayQueryParameters3D.Create(focus, desired, 0x15);
+        using var query = PhysicsRayQueryParameters3D.Create(focus, desired, 0x15);
         query.CollideWithAreas = false;
         query.CollideWithBodies = true;
         query.Exclude = new Godot.Collections.Array<Rid> { vehicle.GetRid() };
@@ -417,6 +459,17 @@ public partial class GameRoot : Node3D
             desired = hitPosition + (focus - desired).Normalized() * 0.45f;
         }
 
+        // Never let a chase camera end up inside the car, the statue platform or
+        // below the arena. A short pull-in ray used to collapse the camera onto
+        // the focus point when the vehicle was wedged against the pedestal.
+        if (desired.DistanceTo(focus) < 3.0f)
+            desired = focus + Vector3.Up * 6.2f - forward * 9.0f;
+        desired.Y = Mathf.Max(desired.Y, 2.35f);
+        desired.X = Mathf.Clamp(desired.X, -48f, 48f);
+        desired.Z = Mathf.Clamp(desired.Z, -70f, 70f);
+        if (desired.DistanceTo(lookAt) < 1.0f)
+            desired = lookAt + Vector3.Up * 5.5f - forward * 7.0f;
+
         if (_shake > 0.001f)
         {
             float shake = _shake * 0.5f;
@@ -425,7 +478,12 @@ public partial class GameRoot : Node3D
                 (float)GD.RandRange(-shake, shake));
         }
 
-        float smoothing = _cameraInitialized ? 1f - Mathf.Exp(-dt * 7.0f) : 1f;
+        float smoothing = _cameraInitialized ? 1f - Mathf.Exp(-dt * 4.5f) : 1f;
+        if (cinematic && _cinematicSnap)
+        {
+            smoothing = 1f;
+            _cinematicSnap = false;
+        }
         _camera.GlobalPosition = _camera.GlobalPosition.Lerp(desired, smoothing);
         _camera.LookAt(lookAt, Vector3.Up);
         float targetFov = 72f + Mathf.Clamp(vehicle.SpeedKph / 140f, 0f, 1f) * 6f;
@@ -522,6 +580,15 @@ public partial class GameRoot : Node3D
         int statueIndex = _freeSmash ? _statueIndex : ChallengeCatalog.All[_challengeIndex].StatueIndex;
         if (!force && _statue != null && _spawnedStatueIndex == statueIndex)
         {
+            _statue.SetPriorityParts(_freeSmash
+                ? Array.Empty<string>()
+                : ChallengeCatalog.All[_challengeIndex].RequiredParts);
+            _statueLight.LightColor = statueIndex switch
+            {
+                0 => new Color(1.0f, 0.56f, 0.26f),
+                1 => new Color(0.38f, 0.66f, 1.0f),
+                _ => new Color(0.12f, 0.92f, 0.82f),
+            };
             _statue.ResetStatue();
             return;
         }
@@ -532,6 +599,15 @@ public partial class GameRoot : Node3D
         PackedScene scene = GD.Load<PackedScene>(StatueScenes[statueIndex]);
         _statue = scene.Instantiate<StatueController>();
         _statueAnchor.AddChild(_statue);
+        _statue.SetPriorityParts(_freeSmash
+            ? Array.Empty<string>()
+            : ChallengeCatalog.All[_challengeIndex].RequiredParts);
+        _statueLight.LightColor = statueIndex switch
+        {
+            0 => new Color(1.0f, 0.56f, 0.26f),
+            1 => new Color(0.38f, 0.66f, 1.0f),
+            _ => new Color(0.12f, 0.92f, 0.82f),
+        };
         _spawnedStatueIndex = statueIndex;
         _statue.PartBroken += OnPartBroken;
         _statue.PartBlocked += OnPartBlocked;
@@ -562,13 +638,15 @@ public partial class GameRoot : Node3D
         _slowmoTimer = 0f;
         _cinematicTimer = 0f;
         _firstBreakCamera = false;
+        _cinematicSnap = false;
+        _showcaseCamera = false;
         Engine.TimeScale = 1.0;
         _shake = 0f;
         _impactFocus = Vector3.Zero;
-        _bannerLabel.Visible = false;
+        _bannerPanel.Visible = false;
         _message = _freeSmash
             ? "Free Smash — no rewards, unlimited retries. Go wild!"
-            : "Ready! Hold W to launch.";
+            : "Ready! " + ChallengeCatalog.All[_challengeIndex].Hint;
         RefreshHud(force: true);
     }
 
@@ -584,11 +662,14 @@ public partial class GameRoot : Node3D
         }
         _challengeIndex = (_challengeIndex + direction + ChallengeCatalog.All.Length) %
                           ChallengeCatalog.All.Length;
+        WreckChallenge selected = ChallengeCatalog.All[_challengeIndex];
+        _rampDegrees = selected.RecommendedRampDegrees;
+        UpdateRamp();
         _runScore = 0;
         _runTime = 0f;
         _attempts = 0;
         ResetRun(true, true, true);
-        _message = $"Challenge {_challengeIndex + 1}/9 — {ChallengeCatalog.All[_challengeIndex].Name}";
+        _message = $"Challenge {_challengeIndex + 1}/9 — {selected.Name}. Suggested ramp {_rampDegrees:0}°.";
         RefreshHud(force: true);
     }
 
@@ -630,24 +711,34 @@ public partial class GameRoot : Node3D
     {
         _runScore += points;
         Vector3 partPosition = _statue?.GetPart(partId)?.GlobalPosition ?? _statueAnchor.GlobalPosition;
-        float strength = Mathf.Clamp(points / 110f, 0.7f, 2.2f);
-        _effects.SpawnDust(partPosition, strength, weakPoint ? 5 : 3);
-        _effects.SpawnChips(partPosition, strength, weakPoint ? 4 : 2);
+        // Push the burst toward the chase camera so the car cannot hide the
+        // contact completely, while keeping it near the broken component.
+        Vector3 effectPosition = partPosition + Vector3.Up * 0.75f + Vector3.Back * 1.1f;
+        float strength = Mathf.Clamp(points / 110f, 0.65f, 1.8f);
+        _effects.SpawnDust(effectPosition, strength * 0.85f, weakPoint ? 3 : 3);
+        _effects.SpawnChips(effectPosition, strength * 0.9f, weakPoint ? 6 : 4);
+        _effects.SpawnSparks(effectPosition,
+            weakPoint ? new Color(0.35f, 1.0f, 1.0f) : new Color(1.0f, 0.72f, 0.28f),
+            weakPoint ? 5 : 2);
+        _effects.SpawnFlash(effectPosition,
+            weakPoint ? new Color(0.15f, 0.95f, 1.0f) : new Color(1.0f, 0.62f, 0.18f),
+            weakPoint ? 5.0f : 2.5f);
         if (!_firstBreakCamera)
         {
             _firstBreakCamera = true;
-            _impactFocus = _statueAnchor.GlobalPosition + Vector3.Up * 3.2f;
-            _cinematicTimer = Mathf.Max(_cinematicTimer, 0.72f);
+            _impactFocus = partPosition.Lerp(_statueAnchor.GlobalPosition + Vector3.Up * 3.0f, 0.35f);
+            _cinematicTimer = Mathf.Max(_cinematicTimer, 0.5f);
+            _cinematicSnap = true;
         }
-        _shake = Mathf.Max(_shake, weakPoint ? 0.55f : 0.32f);
+        _shake = Mathf.Max(_shake, weakPoint ? 0.38f : 0.24f);
         _crashAudio.PitchScale = (float)GD.RandRange(0.82, 1.12);
         _crashAudio.VolumeDb = -5f;
         _crashAudio.Play();
 
         if (weakPoint)
         {
-            _slowmoTimer = 0.62f;
-            _cinematicTimer = 0.95f;
+            _slowmoTimer = 0.45f;
+            _cinematicTimer = 0.7f;
             _message = $"WEAK POINT! {partId} shattered for {points} points. C skips the close-up.";
         }
         else
@@ -690,7 +781,9 @@ public partial class GameRoot : Node3D
     private void OnPartBlocked(string partId, string protectorId)
     {
         _message = $"{protectorId} absorbed the hit — the {partId} is still protected!";
-        _effects.SpawnChips(_statueAnchor.GlobalPosition + Vector3.Up * 4.2f, 0.7f, 2);
+        _effects.SpawnChips(_statueAnchor.GlobalPosition + Vector3.Up * 4.2f, 0.55f, 3);
+        _effects.SpawnFlash(_statueAnchor.GlobalPosition + Vector3.Up * 4.2f,
+            new Color(1.0f, 0.55f, 0.15f), 1.6f);
         _crashAudio.Play();
         RefreshHud(force: true);
     }
@@ -698,7 +791,10 @@ public partial class GameRoot : Node3D
     private void OnPartResisted(string partId, float energy)
     {
         if (energy > 18f)
+        {
             _message = $"{partId} held firm ({energy:0} impact). Hit it harder!";
+            _effects.SpawnChips(_statueAnchor.GlobalPosition + Vector3.Up * 3.6f, 0.45f, 2);
+        }
         RefreshHud(force: true);
     }
 
@@ -714,7 +810,13 @@ public partial class GameRoot : Node3D
             _message = "TOTAL COLLAPSE! Free Smash keeps going.";
         else
             _message = "The statue collapsed! R retries instantly.";
-        _shake = Mathf.Max(_shake, 0.8f);
+        _shake = Mathf.Max(_shake, 0.55f);
+        _effects.SpawnDust(_statueAnchor.GlobalPosition + Vector3.Up * 2.4f, 1.35f, 3);
+        _effects.SpawnChips(_statueAnchor.GlobalPosition + Vector3.Up * 2.4f, 1.2f, 7);
+        Vector3 collapsePosition = _statueAnchor.GlobalPosition + Vector3.Up * 2.6f +
+                                    Vector3.Back * 1.0f;
+        _effects.SpawnSparks(collapsePosition, new Color(1.0f, 0.78f, 0.35f), 6);
+        _effects.SpawnFlash(collapsePosition, new Color(1.0f, 0.62f, 0.18f), 5.2f);
         _rewardAudio.Play();
         RefreshHud(force: true);
     }
@@ -730,9 +832,9 @@ public partial class GameRoot : Node3D
     {
         if (speed < 13f)
             return;
-        float strength = Mathf.Clamp(speed / 22f, 0.6f, 1.8f);
-        _effects.SpawnDust(position, strength, 2);
-        _shake = Mathf.Max(_shake, 0.22f);
+        float strength = Mathf.Clamp(speed / 22f, 0.55f, 1.5f);
+        _effects.SpawnDust(position, strength * 0.7f, 1);
+        _shake = Mathf.Max(_shake, 0.16f);
         _crashAudio.PitchScale = (float)GD.RandRange(0.7, 0.95);
         _crashAudio.VolumeDb = -12f;
         _crashAudio.Play();
@@ -762,14 +864,47 @@ public partial class GameRoot : Node3D
             _modeLabel.Text = "FREE SMASH";
             _challengeLabel.Text = $"Target: {StatueCatalog.Names[_statueIndex]}";
             _goalLabel.Text = "Smash everything. No rewards, no pressure. J/K changes statue.";
-            _progressLabel.Text = $"Parts broken: {_statue.BrokenCount}   |   Detached: {_statue.LoosePartIds.Count}";
+            _recommendLabel.Visible = false;
+            _requiredLabel.Text = $"PARTS BROKEN   {_statue.BrokenCount}";
+            _requiredBar.MaxValue = Mathf.Max(1, _statue.PartCount);
+            _requiredBar.Value = _statue.BrokenCount;
+            _requiredBar.Visible = true;
+            _totalLabel.Visible = false;
+            _totalBar.Visible = false;
         }
         else
         {
             _modeLabel.Text = $"CAMPAIGN  {_challengeIndex + 1}/9";
             _challengeLabel.Text = $"{challenge.Name}  —  {challenge.StatueName}";
             _goalLabel.Text = challenge.Goal;
-            _progressLabel.Text = _statue.ProgressFor(challenge);
+            _recommendLabel.Visible = true;
+            _recommendLabel.Text =
+                $"Recommended: {challenge.RecommendedVehicleName} · {challenge.RecommendedRampDegrees:0}° ramp" +
+                (!_profile.Data.VehiclesUnlocked[challenge.RecommendedVehicle]
+                    ? $"  (buy it in the garage, G)"
+                    : "");
+            ObjectiveProgress progress = _statue.GetObjectiveProgress(challenge);
+            if (progress.RequiredTotal > 0)
+            {
+                _requiredLabel.Text = progress.RequiredLabel;
+                _requiredBar.MaxValue = Mathf.Max(1, progress.RequiredTotal);
+                _requiredBar.Value = progress.RequiredBroken;
+                _requiredBar.Visible = true;
+                _totalLabel.Visible = challenge.MinimumBrokenParts > challenge.RequiredParts.Length;
+                _totalBar.Visible = _totalLabel.Visible;
+                _totalLabel.Text = progress.TotalLabel;
+                _totalBar.MaxValue = Mathf.Max(1, challenge.MinimumBrokenParts);
+                _totalBar.Value = progress.TotalBroken;
+            }
+            else
+            {
+                _requiredLabel.Text = progress.TotalLabel;
+                _requiredBar.MaxValue = Mathf.Max(1, challenge.MinimumBrokenParts);
+                _requiredBar.Value = progress.TotalBroken;
+                _requiredBar.Visible = true;
+                _totalLabel.Visible = false;
+                _totalBar.Visible = false;
+            }
         }
 
         int best = _profile.Data.BestMedals[_challengeIndex];
@@ -782,20 +917,21 @@ public partial class GameRoot : Node3D
             _ => "☆☆☆",
         };
         _statsLabel.Text =
-            $"Coins {_profile.Data.Coins}   |   Best {stars} {medal}   |   " +
-            $"Score {_runScore}   |   Time {_runTime:0.0}s   |   Ramp {_rampDegrees:0}°";
+            $"{_profile.Data.Coins} coins   ·   {stars} {medal}   ·   Ramp {_rampDegrees:0}°" +
+            $"   ·   ~{EstimatedLaunch():0.0} m launch";
         _statusLabel.Text = _message;
 
         if (_vehicle != null)
         {
             _speedLabel.Text = $"{_vehicle.SpeedKph:0}";
+            _speedBar.Value = Mathf.Clamp(_vehicle.SpeedKph, 0f, 200f);
             string gear = _vehicle.IsGrounded
                 ? (_vehicle.ForwardSpeed < -0.4f ? "R" : "D")
                 : "AIR";
             if (Input.IsActionPressed("brake") && _vehicle.IsGrounded)
                 gear = "BRAKE";
-            _gearLabel.Text = $"{gear}   |   {Mathf.Abs(_vehicle.ForwardSpeed):0} m/s" +
-                              (_vehicle.IsGrounded ? "" : "   |   FLYING");
+            _gearLabel.Text = $"{gear}   ·   {Mathf.Abs(_vehicle.ForwardSpeed):0} M/S" +
+                              (_vehicle.IsGrounded ? "" : "   ·   FLYING");
         }
         _garageCoins.Text = $"Wreck Coins: {_profile.Data.Coins}";
 
@@ -807,30 +943,47 @@ public partial class GameRoot : Node3D
     {
         if (_profile == null)
             return;
-        bool[] unlocked = _profile.Data.VehiclesUnlocked;
-        _rallyButton.Text = (unlocked[0] ? "1  Rally Car" : "1  Rally (locked)") +
-                            (_vehicleIndex == 0 ? "  ✓" : "");
-        _pickupButton.Text = (unlocked[1] ? "2  Pickup" : "2  Pickup (locked)") +
-                             (_vehicleIndex == 1 ? "  ✓" : "");
+        bool[] unlocked = _profile.Data.VehiclesUnlocked;        _rallyButton.Text = unlocked[0]
+            ? (_vehicleIndex == 0 ? "Rally Car  ·  SELECTED" : "Rally Car")
+            : "Rally Car  ·  LOCKED";
+        _pickupButton.Text = unlocked[1]
+            ? (_vehicleIndex == 1 ? "Pickup Truck  ·  SELECTED" : "Pickup Truck")
+            : "Pickup Truck  ·  LOCKED";
         _monsterButton.Text = unlocked[2]
-            ? "3  Monster Truck" + (_vehicleIndex == 2 ? "  ✓" : "")
-            : $"3  Buy Monster ({GameProfile.MonsterTruckCost})";
+            ? (_vehicleIndex == 2 ? "Monster Truck  ·  SELECTED" : "Monster Truck")
+            : $"Monster Truck  ·  BUY {GameProfile.MonsterTruckCost}";
         _engineButton.Text = _profile.Data.EngineLevel >= 1
-            ? "Engine: upgraded"
-            : $"Engine upgrade ({GameProfile.EngineUpgradeCost})";
+            ? "Engine  ·  OWNED"
+            : $"Engine upgrade  ·  {GameProfile.EngineUpgradeCost}";
         _gripButton.Text = _profile.Data.GripLevel >= 1
-            ? "Tyres: upgraded"
-            : $"Tyre upgrade ({GameProfile.GripUpgradeCost})";
+            ? "Tyres  ·  OWNED"
+            : $"Tyre upgrade  ·  {GameProfile.GripUpgradeCost}";
         _paintButton.Text = _profile.Data.PaintUnlocked
-            ? $"Paint: {VehicleController.PaintName(_profile.Data.PaintIndex)}"
-            : $"Unlock paint ({GameProfile.PaintCost})";
+            ? $"Paint  ·  {VehicleController.PaintName(_profile.Data.PaintIndex)}"
+            : $"Unlock paint  ·  {GameProfile.PaintCost}";
+        var selectedColor = new Color(0.13f, 0.86f, 0.93f);
+        var normalColor = new Color(0.82f, 0.92f, 0.96f);
+        _rallyButton.AddThemeColorOverride("font_color", _vehicleIndex == 0 ? selectedColor : normalColor);
+        _pickupButton.AddThemeColorOverride("font_color", _vehicleIndex == 1 ? selectedColor : normalColor);
+        _monsterButton.AddThemeColorOverride("font_color", _vehicleIndex == 2 ? selectedColor : normalColor);
+        _engineButton.Disabled = _profile.Data.EngineLevel >= 1;
+        _gripButton.Disabled = _profile.Data.GripLevel >= 1;
+        _paintButton.Disabled = _profile.Data.PaintUnlocked;
         _qualityButton.Text = _profile.Data.QualityPreset == 0
-            ? "Quality: High"
-            : "Quality: Performance";
-        _volumeButton.Text = $"Volume: {VolumePercent()}%";
-        _garageHint.Text =
-            "Click a vehicle or use 1–3. Free Smash never grants coins. " +
-            "Engine and tyre upgrades change handling permanently.";
+            ? "Quality  ·  HIGH"
+            : "Quality  ·  PERFORMANCE";
+        _volumeButton.Text = $"Volume  ·  {VolumePercent()}%";
+        _garageCoins.Text = $"WRECK COINS   {_profile.Data.Coins}";
+        // Purchase notices must survive HUD refreshes so insufficient-coin
+        // feedback is actually visible. Clearing happens when the garage opens.
+        _garageHint.Text = string.IsNullOrEmpty(_garageNotice)
+            ? $"This run: {_runScore} score  ·  {_runTime:0.0}s  ·  ramp {_rampDegrees:0}°.  " +
+              "Use the mouse or 1–3 to choose a vehicle. Free Smash never grants coins."
+            : _garageNotice;
+        _garageHint.AddThemeColorOverride("font_color",
+            string.IsNullOrEmpty(_garageNotice)
+                ? new Color(0.82f, 0.92f, 0.96f)
+                : new Color(1.0f, 0.62f, 0.42f));
     }
 
     private void ConnectGarageButtons()
@@ -855,6 +1008,7 @@ public partial class GameRoot : Node3D
         };
         _qualityButton.Pressed += CycleQuality;
         _volumeButton.Pressed += CycleVolume;
+        _helpClose.Pressed += () => ToggleHelp(false);
         _garage.GetNode<Button>("GarageVBox/CloseButton").Pressed += () => ToggleGarage(false);
     }
 
@@ -867,7 +1021,7 @@ public partial class GameRoot : Node3D
             return;
         }
         PurchaseResult result = _profile.TryUnlockMonster();
-        _garageHint.Text = result.Message;
+        _garageNotice = result.Message;
         if (result.Success)
         {
             bool saved = _profile.TrySave();
@@ -887,7 +1041,7 @@ public partial class GameRoot : Node3D
     private void OnEngineButton()
     {
         PurchaseResult result = _profile.TryUpgradeEngine();
-        _garageHint.Text = result.Message;
+        _garageNotice = result.Message;
         if (result.Success)
         {
             bool saved = _profile.TrySave();
@@ -903,7 +1057,7 @@ public partial class GameRoot : Node3D
     private void OnGripButton()
     {
         PurchaseResult result = _profile.TryUpgradeGrip();
-        _garageHint.Text = result.Message;
+        _garageNotice = result.Message;
         if (result.Success)
         {
             bool saved = _profile.TrySave();
@@ -919,7 +1073,7 @@ public partial class GameRoot : Node3D
     private void OnPaintButton()
     {
         PurchaseResult result = _profile.TryUnlockPaint();
-        _garageHint.Text = result.Message;
+        _garageNotice = result.Message;
         if (result.Success)
         {
             bool saved = _profile.TrySave();
@@ -979,22 +1133,46 @@ public partial class GameRoot : Node3D
 
     private void ToggleGarage(bool open)
     {
+        if (open && _helpOpen)
+            ToggleHelp(false);
         _garageOpen = open;
         _garage.Visible = open;
+        _modalBackdrop.Visible = open || _helpOpen;
         if (_vehicle != null)
-            _vehicle.ControlsEnabled = !open;
+            _vehicle.ControlsEnabled = !(open || _helpOpen);
         if (open)
         {
             Input.MouseMode = Input.MouseModeEnum.Visible;
             _orbiting = false;
+            _garageNotice = string.Empty;
             RefreshGarage();
         }
+    }
+
+    private void ToggleHelp() => ToggleHelp(!_helpOpen);
+
+    private void ToggleHelp(bool open)
+    {
+        _helpOpen = open;
+        _helpPanel.Visible = open;
+        _modalBackdrop.Visible = open || _garageOpen;
+        if (open)
+        {
+            if (_garageOpen)
+                ToggleGarage(false);
+            Input.MouseMode = Input.MouseModeEnum.Visible;
+            _orbiting = false;
+        }
+        if (_vehicle != null)
+            _vehicle.ControlsEnabled = !(open || _garageOpen);
+        if (open)
+            _helpClose.GrabFocus();
     }
 
     private void ShowBanner(string text, float seconds)
     {
         _bannerLabel.Text = text;
-        _bannerLabel.Visible = true;
+        _bannerPanel.Visible = true;
         _bannerTimer = seconds;
     }
 
@@ -1026,15 +1204,17 @@ public partial class GameRoot : Node3D
 
     private void ConfigureEngineAudio()
     {
-        if (_engineAudio.Stream is AudioStreamWav source)
+        if (_engineAudio.Stream is AudioStreamWav wav)
         {
-            var wav = (AudioStreamWav)source.Duplicate();
+            // Configure the imported resource in place. Duplicating it left an
+            // AudioStreamWAV/playback pair alive when the dummy audio driver
+            // shut down, even though the player had been stopped and released.
             wav.LoopMode = AudioStreamWav.LoopModeEnum.Forward;
             wav.LoopBegin = 0;
             wav.LoopEnd = (int)(wav.GetLength() * wav.MixRate);
-            _engineAudio.Stream = wav;
         }
-        _engineAudio.Play();
+        if (_audioAvailable)
+            _engineAudio.Play();
     }
 
     private static void ConfigureInput()
@@ -1130,6 +1310,8 @@ public partial class GameRoot : Node3D
     public void TestSelectChallenge(int index)
     {
         _challengeIndex = Mathf.Clamp(index, 0, ChallengeCatalog.All.Length - 1);
+        _rampDegrees = ChallengeCatalog.All[_challengeIndex].RecommendedRampDegrees;
+        UpdateRamp();
         ResetRun(true, true, true);
     }
     public void TestSetRampDegrees(float degrees)
@@ -1150,8 +1332,30 @@ public partial class GameRoot : Node3D
     public bool TestChallengeCompleted => _challengeCompletedThisRun;
     public string TestStatus => _message;
     public void TestRetry() => ResetRun(true, true, true);
+    public Camera3D TestCamera => _camera;
+    public void TestShowcaseStatue()
+    {
+        _showcaseCamera = true;
+        GetNode<CanvasLayer>("Hud").Visible = false;
+        Vector3 focus = _statueAnchor.GlobalPosition + Vector3.Up * 3.2f;
+        _camera.GlobalPosition = focus + new Vector3(6.0f, 3.8f, 10.0f);
+        _camera.LookAt(focus, Vector3.Up);
+        _camera.Fov = 42f;
+    }
+    public float TestCinematicTimer => _cinematicTimer;
+    public ImpactEffects TestEffects => _effects;
+    public string TestProgressText => _requiredLabel.Text;
+    public string TestTotalProgressText => _totalLabel.Text;
     public void TestSetGarage(bool open) => ToggleGarage(open);
     public bool TestGarageOpen => _garageOpen;
+    public bool TestHelpOpen => _helpOpen;
+    public void TestSetHelp(bool open) => ToggleHelp(open);
+    public void TestRefreshHud() => RefreshHud(force: true);
+    public void TestSetQuality(int preset)
+    {
+        _profile.Data.QualityPreset = Mathf.Clamp(preset, 0, 1);
+        ApplySettings();
+    }
     public void TestStopControls()
     {
         if (_vehicle != null)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3]
+[gd_scene load_steps=25 format=3]
 
 [ext_resource type="Script" path="res://src/GameRoot.cs" id="1"]
 [ext_resource type="PackedScene" path="res://art/meshes/environment/Arena.glb" id="2"]
@@ -31,16 +31,36 @@ size = Vector3(0.9, 1.4, 89)
 [sub_resource type="BoxShape3D" id="RampRailShape"]
 size = Vector3(0.2, 0.8, 12)
 
+[sub_resource type="ProceduralSkyMaterial" id="ArenaSkyMaterial"]
+sky_top_color = Color(0.025, 0.07, 0.15, 1)
+sky_horizon_color = Color(0.34, 0.62, 0.72, 1)
+sky_curve = 0.18
+ground_bottom_color = Color(0.025, 0.045, 0.07, 1)
+ground_horizon_color = Color(0.20, 0.34, 0.42, 1)
+ground_curve = 0.12
+sun_angle_max = 28.0
+sun_curve = 0.12
+
+[sub_resource type="Sky" id="ArenaSky"]
+sky_material = SubResource("ArenaSkyMaterial")
+
 [sub_resource type="Environment" id="ArenaEnvironment"]
-background_mode = 1
-background_color = Color(0.52, 0.73, 0.83, 1)
-ambient_light_source = 1
-ambient_light_color = Color(0.68, 0.8, 0.89, 1)
-ambient_light_energy = 0.75
-tonemap_mode = 2
+background_mode = 2
+sky = SubResource("ArenaSky")
+ambient_light_source = 2
+ambient_light_color = Color(0.38, 0.52, 0.68, 1)
+ambient_light_energy = 0.28
+tonemap_mode = 3
+tonemap_exposure = 0.82
 fog_enabled = true
-fog_light_color = Color(0.58, 0.72, 0.82, 1)
-fog_density = 0.0035
+fog_light_color = Color(0.07, 0.11, 0.16, 1)
+fog_light_energy = 0.5
+fog_sky_affect = 0.0
+fog_density = 0.0008
+adjustment_enabled = true
+adjustment_brightness = 1.0
+adjustment_contrast = 1.1
+adjustment_saturation = 1.22
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1")
@@ -113,7 +133,7 @@ position = Vector3(5, 0, 12)
 [node name="Actors" type="Node3D" parent="."]
 
 [node name="StatueAnchor" type="Node3D" parent="."]
-position = Vector3(0, 0.25, -23)
+position = Vector3(0, 0.25, -20.5)
 
 [node name="VehicleSpawn" type="Marker3D" parent="."]
 position = Vector3(0, 0.05, 34)
@@ -125,16 +145,20 @@ fov = 72.0
 near = 0.15
 
 [node name="StatueLight" type="OmniLight3D" parent="."]
-position = Vector3(0, 9.5, -20)
-light_color = Color(1, 0.9, 0.74, 1)
-light_energy = 2.1
-omni_range = 25.0
-shadow_enabled = true
+position = Vector3(0, 8.5, -18.5)
+light_color = Color(0.95, 0.82, 0.62, 1)
+light_energy = 1.05
+omni_range = 20.0
+shadow_enabled = false
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
-rotation = Vector3(-0.854, -0.62, 0)
+rotation = Vector3(-0.95, -0.55, 0)
+light_color = Color(1, 0.9, 0.76, 1)
 light_energy = 1.15
 shadow_enabled = true
+shadow_bias = 0.3
+shadow_normal_bias = 8.0
+directional_shadow_max_distance = 90.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("ArenaEnvironment")

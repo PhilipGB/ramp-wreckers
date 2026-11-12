@@ -23,9 +23,18 @@ public sealed record WreckChallenge(
     int SilverScore,
     int GoldScore,
     float GoldSeconds,
+    int RecommendedRampDegrees,
+    int RecommendedVehicle,
     string Hint)
 {
     public string StatueName => StatueCatalog.Names[StatueIndex];
+    public string RecommendedVehicleName => VehicleCatalog.Names[RecommendedVehicle];
+}
+
+/// <summary>Vehicle display names shared with the HUD recommendation line.</summary>
+public static class VehicleCatalog
+{
+    public static readonly string[] Names = { "Rally Car", "Pickup Truck", "Monster Truck" };
 }
 
 /// <summary>The authored statue part inventories. Challenge validation uses these.</summary>
@@ -58,31 +67,31 @@ public static class ChallengeCatalog
     {
         new("First Crash", "Break any 2 gnome pieces", 0,
             Array.Empty<string>(), 2, 100, 240, 620, 24f,
-            "Aim for the legs or belly at full speed."),
+            10, 1, "Hold W and launch straight into the legs or belly. The pickup truck is forgiving."),
         new("Hat Trick", "Knock the gnome's hat off", 0,
             new[] { "Hat" }, 1, 150, 300, 700, 26f,
-            "Raise the ramp and strike high. The hat is the top target."),
+            27, 0, "Use the suggested 27° ramp: the fast rally car flies highest and clips the hat."),
         new("Gnome Down", "Break 4 gnome pieces", 0,
             Array.Empty<string>(), 4, 200, 600, 1400, 28f,
-            "Take out a leg, then hit the leaning body."),
+            10, 1, "Aim low and smash both legs with the pickup to bring the gnome down. Retry resets it."),
         new("Shield Breaker", "Detach the knight's shield", 1,
             new[] { "Shield" }, 1, 200, 320, 760, 26f,
-            "The shield hangs on the knight's left, toward your right."),
+            18, 1, "The shield hangs on the knight's left arm, just left of your straight run. Launch the pickup at 18° without steering and it clips the shield."),
         new("Knee Trouble", "Break both knight legs", 1,
             new[] { "LeftLeg", "RightLeg" }, 2, 250, 700, 1500, 32f,
-            "Aim low, then retry to finish the other knee."),
+            10, 0, "Aim low at both knees with the rally car — it sits lowest. Retry resets the statue."),
         new("Knightfall", "Break 5 knight pieces", 1,
             Array.Empty<string>(), 5, 300, 1000, 2200, 34f,
-            "Destroy one knee and the armoured body comes down."),
+            10, 1, "Smash both legs with the pickup and the armoured body comes down with them."),
         new("Peel the Armour", "Remove the robot's chest armour", 2,
-            new[] { "Armour" }, 1, 250, 420, 950, 28f,
-            "Hit the glowing chest plate squarely."),
+            new[] { "Armour" }, 1, 250, 75, 85, 28f,
+            20, 0, "The chest plate sits high: the rally car at 20° flies straight into it. Ground traffic only breaks the legs."),
         new("Core Shot", "Break the exposed reactor core", 2,
-            new[] { "Core" }, 1, 350, 900, 1900, 40f,
-            "Peel the armour first. A second strike can reach the core."),
+            new[] { "Core" }, 1, 350, 200, 260, 40f,
+            20, 0, "Rally at 20°: the first strike peels the chest armour, then reverse and ram the exposed core. Retry resets the statue."),
         new("Robot Wreck", "Break 6 robot pieces", 2,
             Array.Empty<string>(), 6, 500, 1700, 3400, 44f,
-            "The robot is tough: use the monster truck or a high ramp."),
+            16, 2, "The monster truck's weight smashes the robot apart at 16°. Retry resets it."),
     };
 
     public static bool StatueCatalogHasAllParts() => StatueCatalog.StatueCatalogHasAllParts();
@@ -123,6 +132,8 @@ public static class ChallengeCatalog
                 errors.Add($"Challenge {i + 1} targets unknown statue {challenge.StatueIndex}.");
                 continue;
             }
+            if (challenge.RecommendedVehicle < 0 || challenge.RecommendedVehicle > 2)
+                errors.Add($"Challenge {i + 1} ({challenge.Name}) recommends unknown vehicle {challenge.RecommendedVehicle}.");
             if (challenge.Reward <= 0)
                 errors.Add($"Challenge {i + 1} ({challenge.Name}) has no reward.");
             if (challenge.MinimumBrokenParts <= 0 ||

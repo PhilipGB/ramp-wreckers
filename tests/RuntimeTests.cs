@@ -42,7 +42,14 @@ public partial class RuntimeTests : Node
             TestSaveSystem();
             await TestRampGeometry();
             await TestInputSmoke();
+            await TestFeedbackPersistence();
+            await TestProgressDisplay();
+            await TestSolidCollisionPresentation();
+            await TestContactAggregation();
+            await TestCoreRequiresSecondContact();
             await TestEndToEndDrive();
+            await TestPhysicalChallengeRoutes();
+            await TestCameraAndEffects();
             await TestRetryBounds();
         }
         catch (Exception ex)
@@ -106,6 +113,22 @@ public partial class RuntimeTests : Node
         Medal medal = ChallengeCatalog.MedalFor(ChallengeCatalog.All[0],
             new HashSet<string> { "LeftLeg", "RightLeg" }, 1000, 12f);
         Check(medal == Medal.Gold, "medal calc returns Gold for high score and fast time");
+        Check(ChallengeCatalog.All.All(c => c.RecommendedRampDegrees is >= 10 and <= 27),
+            "every challenge has an authored 10-27 degree suggested ramp");
+
+        var unrelated = new HashSet<string> { "Torso", "Head", "LeftArm", "RightArm", "Hat" };
+        ObjectiveProgress knee = ObjectiveProgressRules.Evaluate(ChallengeCatalog.All[4], unrelated);
+        Check(knee.RequiredBroken == 0 && knee.RequiredTotal == 2 &&
+              !knee.RequiredComplete && !knee.Complete &&
+              knee.RequiredLabel.Contains("BOTH KNEES") && knee.RequiredLabel.Contains("0 / 2"),
+            "Knee Trouble progress never counts unrelated broken pieces as knees");
+        ObjectiveProgress core = ObjectiveProgressRules.Evaluate(ChallengeCatalog.All[7],
+            new HashSet<string> { "Armour" });
+        Check(core.RequiredBroken == 0 && !core.RequiredComplete && !core.Complete,
+            "Core Shot remains incomplete while only the chest armour is broken");
+        ObjectiveProgress hat = ObjectiveProgressRules.Evaluate(ChallengeCatalog.All[1],
+            new HashSet<string> { "Hat" });
+        Check(hat.RequiredBroken == 1 && hat.Complete, "Hat Trick progress completes on the hat");
     }
 
     private void TestAudioAssets()
@@ -167,8 +190,7 @@ public partial class RuntimeTests : Node
         bool restored = gnome.SnapshotParts().All(p =>
             !p.IsBroken && p.Transform.IsEqualApprox(p.InitialLocalTransform));
         Check(restored && gnome.BrokenCount == 0, "statue reset restores every authored pose");
-        gnome.GetParent().QueueFree();
-        await WaitPhysics(1);
+        await RemoveNode(gnome.GetParent());
 
         StatueController knight = await SpawnStatue<StatueController>("res://scenes/statues/Knight.tscn", new Vector3(20, 0, 0));
         Check(knight.PartCount == 7 && knight.DebugGraphValid, "knight has seven valid parts");
@@ -179,8 +201,7 @@ public partial class RuntimeTests : Node
         knight.ResolveImpact("RightLeg", 500f, 20f, Vector3.Back);
         Check(knight.BrokenPartIds.Contains("Torso"),
             "knight torso collapses after both legs");
-        knight.GetParent().QueueFree();
-        await WaitPhysics(1);
+        await RemoveNode(knight.GetParent());
 
         StatueController robot = await SpawnStatue<StatueController>("res://scenes/statues/Robot.tscn", new Vector3(40, 0, 0));
         Check(robot.PartCount == 8 && robot.DebugGraphValid, "robot has eight valid parts");
@@ -199,10 +220,9 @@ public partial class RuntimeTests : Node
         StatuePart detachedCore = robot.GetPart("Core")!;
         Check(!detachedCore.IsBroken && detachedCore.IsLoose,
             "robot core detaches intact when its torso collapses");
-        Check(robot.BrokenPartIds.Contains("Torso") && robot.BrokenPartIds.Contains("Armour"),
-            "robot torso and armour break in the collapse");
-        robot.GetParent().QueueFree();
-        await WaitPhysics(1);
+        Check(robot.BrokenPartIds.Contains("Torso") && armour.IsLoose,
+            "robot torso breaks and armour detaches intact in the collapse");
+        await RemoveNode(robot.GetParent());
     }
 
     private async Task TestChallengeFeasibility()
@@ -240,8 +260,7 @@ public partial class RuntimeTests : Node
             }
             Check(ChallengeCatalog.IsComplete(challenge, statue.BrokenPartIds),
                 $"challenge {i + 1} '{challenge.Name}' is completable from real part breaks");
-            statue.GetParent().QueueFree();
-            await WaitPhysics(1);
+            await RemoveNode(statue.GetParent());
         }
     }
 
@@ -268,8 +287,7 @@ public partial class RuntimeTests : Node
             }
         }
         Check(allEqual, "30 break/reset cycles restore exact part transforms and state");
-        statue.GetParent().QueueFree();
-        await WaitPhysics(1);
+        await RemoveNode(statue.GetParent());
     }
 
     private void TestSaveSystem()
@@ -316,6 +334,29 @@ public partial class RuntimeTests : Node
               brokenStore.LastError.Contains("Could not save", StringComparison.OrdinalIgnoreCase),
             "write failure is reported, not claimed as success");
 
+        string legacyPath = Path.Combine(dir, "legacy-v1.json");
+        File.WriteAllText(legacyPath, """
+{
+  "format": "RampWreckersSave",
+  "version": 1,
+  "coins": 777,
+  "vehiclesUnlocked": [true, true, false],
+  "bestMedals": [1, 0, 0, 0, 0, 0, 0, 0, 0],
+  "rewardClaimed": [true, false, false, false, false, false, false, false, false],
+  "paintUnlocked": false,
+  "paintIndex": 0,
+  "engineLevel": 0,
+  "gripLevel": 0,
+  "cameraPreset": 0,
+  "qualityPreset": 0,
+  "masterVolumeDb": 0,
+  "showHelp": true
+}
+""");
+        SaveLoadResult legacy = new SaveStore(legacyPath).Load();
+        Check(legacy.LoadedFromDisk && !legacy.HadProblem && legacy.Data.Coins == 777,
+            "a v0.1.0 version-1 save file still loads unchanged");
+
         var profile = new GameProfile(store);
         profile.Data.Coins = 5000;
         RewardResult first = profile.RecordChallenge(0, Medal.Bronze);
@@ -351,8 +392,7 @@ public partial class RuntimeTests : Node
             Check(Mathf.Abs((farTop.Y - nearTop.Y) - expectedRise) < 0.35f,
                 $"ramp {angle}° collider slope matches the authored deck");
         }
-        main.QueueFree();
-        await WaitPhysics(1);
+        await RemoveNode(main);
     }
 
     private async Task TestInputSmoke()
@@ -382,8 +422,80 @@ public partial class RuntimeTests : Node
         await TapKey(Key.C);
         Check(main.Profile.Data.CameraPreset != before, "C key cycles the camera preset");
 
-        main.QueueFree();
-        await WaitPhysics(1);
+        await RemoveNode(main);
+    }
+
+    private async Task TestFeedbackPersistence()
+    {
+        GameRoot main = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameRoot>();
+        AddChild(main);
+        await WaitPhysics(4);
+
+        // Broke profile: locked monster truck, no paint, far too few coins.
+        main.Profile.Data.Coins = 50;
+        main.Profile.Data.VehiclesUnlocked[2] = false;
+        main.Profile.Data.PaintUnlocked = false;
+        main.Profile.Data.EngineLevel = 0;
+
+        await TapKey(Key.G);
+        Check(main.TestGarageOpen, "garage opens for feedback tests");
+        Label hint = main.GetNode<Label>("Hud/Garage/GarageVBox/GarageHint");
+
+        main.GetNode<Button>("Hud/Garage/GarageVBox/VehicleRow/MonsterButton")
+            .EmitSignal(BaseButton.SignalName.Pressed);
+        Check(hint.Text.Contains("Need 600"),
+            $"failed monster purchase names the missing coins (\"{hint.Text.Trim()}\")");
+
+        // The original bug: RefreshGarage() overwrote the purchase notice on
+        // the next forced HUD refresh. SelectVehicle on a locked vehicle is
+        // exactly that path.
+        main.TestSelectVehicle(2);
+        Check(hint.Text.Contains("Need 600"),
+            "failed-purchase feedback survives a forced HUD refresh");
+        Check(main.Profile.Data.Coins == 50, "no coins were charged for a failed purchase");
+
+        main.GetNode<Button>("Hud/Garage/GarageVBox/UpgradeRow/EngineButton")
+            .EmitSignal(BaseButton.SignalName.Pressed);
+        Check(hint.Text.Contains("Need 350"),
+            $"failed engine upgrade names the missing coins (\"{hint.Text.Trim()}\")");
+
+        // Reopening the garage clears the stale notice instead of keeping it forever.
+        await TapKey(Key.G);
+        await TapKey(Key.G);
+        Check(!hint.Text.Contains("Need 350"),
+            "stale purchase notice clears when the garage reopens");
+
+        // Close the garage again: gameplay keys are gated while it is open.
+        await TapKey(Key.G);
+        Check(!main.TestGarageOpen, "garage closed for gameplay feedback tests");
+
+        // Locked paint: pressing P must explain how to unlock it.
+        await TapKey(Key.P);
+        Check(main.TestStatus.Contains("Paint is locked"),
+            $"locked paint explains how to unlock (\"{main.TestStatus}\")");
+
+        // Recommendation line is visible in campaign and names vehicle + ramp.
+        main.TestSelectChallenge(1);
+        await WaitPhysics(6);
+        Label recommend = main.GetNode<Label>("Hud/ObjectivePanel/ObjectiveVBox/Recommendation");
+        Check(recommend.Visible, "recommendation line is visible in campaign");
+        Check(recommend.Text.Contains("Rally Car") && recommend.Text.Contains("27"),
+            $"recommendation names vehicle and ramp (\"{recommend.Text}\")");
+
+        // A locked recommended vehicle tells the player how to get it.
+        // Robot Wreck (index 8) is the challenge that recommends the monster.
+        main.TestSelectChallenge(8);
+        await WaitPhysics(6);
+        Check(recommend.Visible && recommend.Text.Contains("Monster Truck") &&
+              recommend.Text.Contains("garage"),
+            $"locked recommendation points at the garage (\"{recommend.Text}\")");
+
+        // Free Smash hides the recommendation.
+        await TapKey(Key.F);
+        Check(!recommend.Visible, "recommendation line hides in Free Smash");
+        await TapKey(Key.F);
+
+        await RemoveNode(main);
     }
 
     private async Task TapKey(Key key)
@@ -394,14 +506,153 @@ public partial class RuntimeTests : Node
             Keycode = key,
             Pressed = true,
         });
-        await WaitPhysics(2);
+        await WaitPhysics(6);
         Input.ParseInputEvent(new InputEventKey
         {
             PhysicalKeycode = key,
             Keycode = key,
             Pressed = false,
         });
-        await WaitPhysics(2);
+        await WaitPhysics(6);
+    }
+
+
+    private async Task TestProgressDisplay()
+    {
+        GameRoot main = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameRoot>();
+        AddChild(main);
+        await WaitPhysics(4);
+        main.TestSelectChallenge(4);
+        await WaitPhysics(8);
+        StatueController? knee = main.CurrentStatue;
+        Check(knee != null, "progress display test spawns the kneed statue");
+        if (knee != null)
+        {
+            knee.ResolveImpact("Torso", 700f, 20f, Vector3.Back);
+            knee.ResolveImpact("Hat", 700f, 20f, Vector3.Back);
+            knee.ResolveImpact("Beard", 700f, 20f, Vector3.Back);
+            main.TestRefreshHud();
+            Check(main.TestProgressText.Contains("BOTH KNEES") &&
+                  main.TestProgressText.Contains("0 / 2") &&
+                  !main.TestProgressText.Contains("5 / 2"),
+                "Knee Trouble HUD shows 0/2 required knees despite unrelated pieces breaking");
+        }
+
+        main.TestSelectChallenge(7);
+        await WaitPhysics(8);
+        StatueController? core = main.CurrentStatue;
+        if (core != null)
+        {
+            core.ResolveImpact("Armour", 500f, 20f, Vector3.Back);
+            main.TestRefreshHud();
+            Check(main.TestProgressText.Contains("REACTOR CORE") &&
+                  main.TestProgressText.Contains("0 / 1"),
+                "Core Shot HUD stays at 0/1 while only armour is gone");
+            core.ResolveImpact("Core", 500f, 20f, Vector3.Back);
+            main.TestRefreshHud();
+            Check(main.TestProgressText.Contains("1 / 1"),
+                "Core Shot HUD reaches 1/1 only after the core breaks");
+        }
+        await RemoveNode(main);
+    }
+
+
+    private async Task TestSolidCollisionPresentation()
+    {
+        GameRoot main = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameRoot>();
+        AddChild(main);
+        await WaitPhysics(4);
+        main.TestSelectChallenge(4);
+        await WaitPhysics(8);
+        StatueController? statue = main.CurrentStatue;
+        Check(statue != null, "collision presentation test spawns the knight");
+        if (statue != null)
+        {
+            StatuePart? shield = statue.GetPart("Shield");
+            StatuePart? leftLeg = statue.GetPart("LeftLeg");
+            Check(shield != null && shield.CollisionLayer == 0,
+                "knight shield is an ornament hit volume, not a false wall");
+            Check(leftLeg != null && leftLeg.CollisionLayer == 1,
+                "intact knight legs are solid world obstacles");
+            statue.ResolveImpact("LeftLeg", 900f, 28f, Vector3.Back);
+            await WaitPhysics(2);
+            Check(leftLeg != null && leftLeg.CollisionLayer == 4,
+                "broken leg leaves the world layer and becomes debris");
+        }
+        await RemoveNode(main);
+    }
+
+
+    private async Task TestContactAggregation()
+    {
+        GameRoot main = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameRoot>();
+        AddChild(main);
+        await WaitPhysics(4);
+        main.TestSelectChallenge(0);
+        await WaitPhysics(8);
+        StatueController? statue = main.CurrentStatue;
+        VehicleController? car = main.CurrentVehicle;
+        Check(statue != null && car != null, "contact aggregation test has a statue and vehicle");
+        if (statue != null && car != null)
+        {
+            StatuePart? left = statue.GetPart("LeftLeg");
+            StatuePart? right = statue.GetPart("RightLeg");
+            Check(left != null && right != null, "contact aggregation test has both legs");
+            if (left != null && right != null)
+            {
+                // Both reports happen in the same physics step. The second must
+                // join the pending group instead of being rejected by cooldown.
+                statue.ReportVehicleContact(left, car, 40000f, 30f,
+                    Vector3.Back, left.GlobalPosition);
+                statue.ReportVehicleContact(right, car, 40000f, 30f,
+                    Vector3.Back, right.GlobalPosition);
+                await WaitPhysics(4);
+                Check(statue.BrokenPartIds.Contains("LeftLeg") &&
+                      statue.BrokenPartIds.Contains("RightLeg"),
+                    "same-step contacts retain every contacted part in the impact group");
+            }
+        }
+        await RemoveNode(main);
+    }
+
+
+    private async Task TestCoreRequiresSecondContact()
+    {
+        GameRoot main = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameRoot>();
+        AddChild(main);
+        await WaitPhysics(4);
+        main.TestSelectChallenge(7);
+        await WaitPhysics(8);
+        StatueController? statue = main.CurrentStatue;
+        VehicleController? car = main.CurrentVehicle;
+        Check(statue != null && car != null, "core sequencing test has a statue and vehicle");
+        if (statue != null && car != null)
+        {
+            StatuePart? armour = statue.GetPart("Armour");
+            StatuePart? core = statue.GetPart("Core");
+            Check(armour != null && core != null, "core sequencing test has armour and core");
+            if (armour != null && core != null)
+            {
+                // The first group touches both volumes while the armour is still
+                // intact: only the armour may peel.
+                statue.ReportVehicleContact(armour, car, 40000f, 30f,
+                    Vector3.Back, armour.GlobalPosition);
+                statue.ReportVehicleContact(core, car, 40000f, 30f,
+                    Vector3.Back, core.GlobalPosition);
+                await WaitPhysics(40);
+                Check(armour.IsBroken && !core.IsBroken,
+                    "protected core contact cannot break the core in the armour group");
+                // The cooldown is wall-clock based; a frame-count wait can race
+                // it when physics pacing jitters. Wait real time explicitly.
+                await ToSignal(GetTree().CreateTimer(0.7), SceneTreeTimer.SignalName.Timeout);
+                statue.ReportVehicleContact(core, car, 40000f, 30f,
+                    Vector3.Back, core.GlobalPosition);
+                await WaitPhysics(5);
+                Check(core.IsBroken,
+                    "a fresh contact after armour destruction breaks the exposed core");
+            }
+        }
+        await RemoveNode(main);
     }
 
     private async Task TestEndToEndDrive()
@@ -470,8 +721,148 @@ public partial class RuntimeTests : Node
             main.TestRetry();
             await WaitPhysics(8);
         }
-        main.QueueFree();
-        await WaitPhysics(1);
+        await RemoveNode(main);
+    }
+
+
+    /// <summary>
+    /// All nine objectives through ordinary driving only: spawn, throttle,
+    /// ramp, real Area3D/impact contacts, reverse for a second pass where the
+    /// objective needs it. No ResolveImpact, teleport or forced impulse.
+    /// The vehicle comes from the catalog itself, so this test also proves the
+    /// in-game recommendation is a route that genuinely works.
+    /// </summary>
+    private async Task TestPhysicalChallengeRoutes()
+    {
+        GameRoot main = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameRoot>();
+        AddChild(main);
+        await WaitPhysics(4);
+        main.Profile.Data.VehiclesUnlocked[2] = true;
+
+        for (int challengeIndex = 0; challengeIndex < ChallengeCatalog.All.Length; challengeIndex++)
+        {
+            WreckChallenge challenge = ChallengeCatalog.All[challengeIndex];
+            int recommendedVehicle = challenge.RecommendedVehicle;
+            main.TestSelectVehicle(recommendedVehicle);
+            main.TestSelectChallenge(challengeIndex);
+            await WaitPhysics(18);
+            VehicleController? car = main.CurrentVehicle;
+            StatueController? statue = main.CurrentStatue;
+            Check(car != null && statue != null,
+                $"route {challengeIndex + 1} has a real vehicle and statue");
+            if (car == null || statue == null)
+                continue;
+
+            main.TestSetRampDegrees(challenge.RecommendedRampDegrees);
+            bool complete = false;
+            int passes = 0;
+            for (; passes < 5 && !complete; passes++)
+            {
+                complete = await DriveRoutePass(main, car, 9.5f);
+                if (complete)
+                    break;
+                if (passes < 4)
+                {
+                    await ReverseRoutePass(car, 3.2f);
+                    await WaitPhysics(24);
+                }
+            }
+            await WaitPhysics(30);
+            Check(complete, $"challenge {challengeIndex + 1} '{challenge.Name}' completes through real driving");
+            Check(main.TestRunScore > 0,
+                $"challenge {challengeIndex + 1} scored a real component impact");
+            foreach (string required in challenge.RequiredParts)
+                Check(statue.BrokenPartIds.Contains(required),
+                    $"challenge {challengeIndex + 1} broke required component {required}");
+            if (challenge.Name == "Core Shot")
+                Check(statue.BrokenPartIds.Contains("Armour") &&
+                      statue.BrokenPartIds.Contains("Core"),
+                    "Core Shot route peeled armour first and then broke the exposed core");
+            GD.Print($"[ROUTE] challenge={challengeIndex + 1} {challenge.Name} " +
+                     $"vehicle={challenge.RecommendedVehicle} ramp={challenge.RecommendedRampDegrees} " +
+                     $"passes={passes} score={main.TestRunScore} " +
+                     $"broken={string.Join(",", statue.BrokenPartIds)} complete={complete}");
+        }
+        await RemoveNode(main);
+    }
+
+    private async Task<bool> DriveRoutePass(GameRoot main, VehicleController car, float seconds)
+    {
+        Input.ActionPress("drive_forward");
+        float elapsed = 0f;
+        for (int frame = 0; frame < 1200; frame++)
+        {
+            await WaitPhysics(1);
+            elapsed += (float)GetPhysicsProcessDeltaTime();
+            if (!GodotObject.IsInstanceValid(car))
+                break;
+            if (main.TestChallengeCompleted)
+                break;
+            if (elapsed > seconds || car.GlobalPosition.Z < -52f)
+                break;
+        }
+        Input.ActionRelease("drive_forward");
+        await WaitPhysics(5);
+        return main.TestChallengeCompleted;
+    }
+
+    private async Task ReverseRoutePass(VehicleController car, float seconds)
+    {
+        Input.ActionPress("drive_reverse");
+        float elapsed = 0f;
+        for (int frame = 0; frame < 700; frame++)
+        {
+            await WaitPhysics(1);
+            elapsed += (float)GetPhysicsProcessDeltaTime();
+            if (!GodotObject.IsInstanceValid(car) || elapsed > seconds)
+                break;
+            if (car.GlobalPosition.Z > -10f)
+                break;
+        }
+        Input.ActionRelease("drive_reverse");
+        await WaitPhysics(8);
+    }
+
+    private async Task TestCameraAndEffects()
+    {
+        GameRoot main = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameRoot>();
+        AddChild(main);
+        await WaitPhysics(4);
+        main.TestSelectChallenge(3);
+        await WaitPhysics(15);
+        VehicleController? car = main.CurrentVehicle;
+        Check(car != null, "camera test has a vehicle");
+        if (car == null)
+        {
+            await RemoveNode(main);
+            return;
+        }
+        Input.ActionPress("drive_forward");
+        for (int i = 0; i < 600 && main.TestRunScore == 0; i++)
+            await WaitPhysics(1);
+        Input.ActionRelease("drive_forward");
+        await WaitPhysics(8);
+        Check(main.TestEffects.ActivePuffs <= main.TestEffects.MaxActivePuffs &&
+              main.TestEffects.ActiveChips <= main.TestEffects.MaxActiveChips &&
+              main.TestEffects.ActiveFlashes <= main.TestEffects.MaxActiveFlashes &&
+              main.TestEffects.ActiveSparks <= main.TestEffects.MaxActiveSparks,
+            "impact effects stay within authored bounds");
+        Check(main.TestCamera.GlobalPosition.Y > 2.3f,
+            "camera never drops below the arena after an impact");
+        if (main.TestCinematicTimer > 0f)
+        {
+            await TapKey(Key.C);
+            Check(main.TestCinematicTimer <= 0f,
+                "C skips the impact close-up immediately");
+        }
+        await WaitPhysics(140);
+        float distance = main.TestCamera.GlobalPosition.DistanceTo(car.GlobalPosition);
+        Check(distance < 32f && main.TestCamera.GlobalPosition.Y > 2.3f,
+            $"camera recovers to a usable chase distance ({distance:0.0} m)");
+        Check(main.TestEffects.ActivePuffs == 0 && main.TestEffects.ActiveChips == 0 &&
+              main.TestEffects.ActiveFlashes == 0 && main.TestEffects.ActiveSparks == 0,
+            "dust, chips, sparks and flashes all clean themselves up");
+        await RemoveNode(main);
     }
 
     private async Task TestRetryBounds()
@@ -480,6 +871,7 @@ public partial class RuntimeTests : Node
         AddChild(main);
         await WaitPhysics(4);
         bool stable = true;
+        int nodesBefore = (int)Performance.GetMonitor(Performance.Monitor.ObjectNodeCount);
         ulong start = Time.GetTicksMsec();
         for (int i = 0; i < 30; i++)
         {
@@ -493,10 +885,26 @@ public partial class RuntimeTests : Node
                 stable = false;
         }
         ulong elapsed = Time.GetTicksMsec() - start;
+        int nodesAfter = (int)Performance.GetMonitor(Performance.Monitor.ObjectNodeCount);
         Check(stable, "30 retries keep statue/vehicle state bounded and intact");
+        Check(nodesAfter - nodesBefore < 60,
+            $"30 retries do not accumulate scene nodes ({nodesBefore}->{nodesAfter})");
+        Check(Engine.TimeScale == 1.0, "retry restores normal time scale");
         Check(elapsed < 2000, $"30 retries complete quickly ({elapsed} ms total)");
-        main.QueueFree();
-        await WaitPhysics(1);
+        await RemoveNode(main);
+    }
+
+
+    private async Task RemoveNode(Node node)
+    {
+        if (GodotObject.IsInstanceValid(node))
+            node.QueueFree();
+        // Let both the idle tree and the physics server finish disposing before
+        // a later test instantiates another Main scene. This keeps the Godot
+        // ScriptManagerBridge from racing a freed script handle.
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
     }
 
     private static void TryDeleteDirectory(string path)

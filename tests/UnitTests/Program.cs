@@ -31,6 +31,7 @@ internal static class Program
     {
         Console.WriteLine("=== RAMP WRECKERS CORE UNIT TESTS ===");
         TestCatalog();
+        TestObjectiveProgress();
         TestImpactModel();
         TestSaveSystem();
         Console.WriteLine($"=== RESULT: {_passed} passed, {_failed} failed ===");
@@ -54,6 +55,55 @@ internal static class Program
                 new HashSet<string> { "Beard" }), "Hat Trick rejects a non-hat part");
         Check(ChallengeCatalog.IsComplete(ChallengeCatalog.All[1],
                 new HashSet<string> { "Hat" }), "Hat Trick accepts the hat");
+    }
+
+
+    private static void TestObjectiveProgress()
+    {
+        WreckChallenge hat = ChallengeCatalog.All[1];
+        WreckChallenge knee = ChallengeCatalog.All[4];
+        WreckChallenge core = ChallengeCatalog.All[7];
+
+        ObjectiveProgress hatOk = ObjectiveProgressRules.Evaluate(hat,
+            new HashSet<string> { "Hat" });
+        Check(hatOk.RequiredBroken == 1 && hatOk.RequiredTotal == 1 && hatOk.Complete,
+            "named hat progress is complete only with Hat");
+
+        var unrelated = new HashSet<string> { "Torso", "Head", "LeftArm", "RightArm", "Hat" };
+        ObjectiveProgress kneeWrong = ObjectiveProgressRules.Evaluate(knee, unrelated);
+        Check(kneeWrong.RequiredBroken == 0 && kneeWrong.RequiredTotal == 2 &&
+              !kneeWrong.RequiredComplete && !kneeWrong.Complete &&
+              kneeWrong.RequiredLabel.Contains("BOTH KNEES") &&
+              kneeWrong.RequiredLabel.Contains("0 / 2"),
+            "five unrelated breaks never display as knee progress");
+
+        ObjectiveProgress kneeOk = ObjectiveProgressRules.Evaluate(knee,
+            new HashSet<string> { "LeftLeg", "RightLeg" });
+        Check(kneeOk.RequiredBroken == 2 && kneeOk.Complete,
+            "both named knees complete Knee Trouble");
+
+        ObjectiveProgress coreArmour = ObjectiveProgressRules.Evaluate(core,
+            new HashSet<string> { "Armour" });
+        Check(coreArmour.RequiredBroken == 0 && !coreArmour.RequiredComplete &&
+              !coreArmour.Complete && coreArmour.RequiredLabel.Contains("0 / 1"),
+            "chest armour alone does not masquerade as reactor-core progress");
+
+        var mixed = new WreckChallenge("Mixed", "Break the hat and three parts", 0,
+            new[] { "Hat" }, 3, 1, 1, 2, 10f, 16, 0, "test");
+        ObjectiveProgress mixedProgress = ObjectiveProgressRules.Evaluate(mixed,
+            new HashSet<string> { "Hat", "Torso" });
+        Check(mixedProgress.RequiredComplete && !mixedProgress.TotalComplete &&
+              !mixedProgress.Complete && mixedProgress.RequiredTotal == 1 &&
+              mixedProgress.MinimumTotal == 3,
+            "named and total thresholds are reported independently");
+
+        Check(ChallengeCatalog.All.All(c => c.RecommendedRampDegrees is >= 10 and <= 27),
+            "all authored suggested ramps stay in the physical 10-27 range");
+        Check(ChallengeCatalog.All.All(c => c.RecommendedVehicle is >= 0 and <= 2),
+            "all authored recommended vehicles name a real vehicle");
+        Check(ChallengeCatalog.TryValidate(out List<string> catalogErrors),
+            "challenge catalog validates vehicle, ramp and part references ("
+            + string.Join("; ", catalogErrors) + ")");
     }
 
     private static void TestImpactModel()

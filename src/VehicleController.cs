@@ -137,6 +137,13 @@ public partial class VehicleController : RigidBody3D
                          Input.GetActionStrength("drive_reverse");
         float steer = Input.GetActionStrength("steer_right") -
                       Input.GetActionStrength("steer_left");
+
+        // A sleeping RigidBody ignores ApplyCentralForce, so a wedged car that
+        // dozed off with the throttle held would stay stuck forever. Any active
+        // driver input wakes the body again.
+        if (Sleeping && (MathF.Abs(throttle) > 0.01f || MathF.Abs(steer) > 0.01f))
+            Sleeping = false;
+
         float engine = 1f + UpgradeEngineLevel * 0.14f;
         float grip = Grip * (1f + UpgradeGripLevel * 0.22f);
 
@@ -312,8 +319,32 @@ public partial class VehicleController : RigidBody3D
         UpgradeEngineLevel = Math.Clamp(engineLevel, 0, 1);
         UpgradeGripLevel = Math.Clamp(gripLevel, 0, 1);
         PaintIndex = Math.Clamp(paintIndex, 0, PaintColors.Length - 1);
-        if (paintUnlocked)
-            ApplyPaint(PaintColors[PaintIndex]);
+        // Locked paint still needs a readable authored body colour: each vehicle
+        // gets its own base colour until the player unlocks the paint palette.
+        ApplyPaint(paintUnlocked ? PaintColors[PaintIndex] : PaintColors[VehicleIndex]);
+    }
+
+    /// <summary>Small arcade recoil when a statue component gives way.</summary>
+    public void RegisterStatueSmash(float energy, Vector3 direction)
+    {
+        if (energy <= 0f)
+            return;
+        // A statue is a solid obstacle, not a hologram. Kill most of the
+        // forward speed at contact and add a short rebound so the car does not
+        // visually sit inside the model while the component is detaching.
+        float retention = Mathf.Clamp(1f - energy / 60000f, 0.08f, 0.92f);
+        LinearVelocity *= retention;
+        Vector3 flat = direction;
+        flat.Y = 0f;
+        if (flat.LengthSquared() > 0.001f)
+            flat = flat.Normalized();
+        else
+            flat = -GlobalTransform.Basis.Z;
+        ApplyCentralImpulse(-flat * (Mass * Mathf.Clamp(energy / 12000f, 0.4f, 8f)));
+        Vector3 side = GlobalTransform.Basis.X.Normalized();
+        float bump = Mathf.Clamp(energy / 24000f, 0.02f, 0.22f);
+        AngularVelocity += side * bump + Vector3.Up * bump * 0.25f;
+        ApplyCentralImpulse(Vector3.Up * (Mass * Mathf.Clamp(energy / 9000f, 0.15f, 0.9f)));
     }
 
     public void ApplyPaint(Color color)

@@ -26,6 +26,7 @@ public partial class StatuePart : RigidBody3D
     [Export] public string ProtectedByCsv { get; set; } = "";
     [Export] public float WeakPointMultiplier { get; set; } = 1f;
     [Export] public bool CountsAsBrokenWhenUnsupported { get; set; } = true;
+    [Export] public bool SolidWhenIntact { get; set; } = true;
 
     public bool IsBroken { get; private set; }
     public bool IsLoose { get; private set; }
@@ -47,10 +48,11 @@ public partial class StatuePart : RigidBody3D
         SupportedBy = SplitCsv(SupportedByCsv);
         ProtectedBy = SplitCsv(ProtectedByCsv);
 
-        // Intact statues use authored invisible Area3D hit volumes so a fast
-        // vehicle can smash through and break several components. The rigid body
-        // becomes solid only when it turns into debris.
-        CollisionLayer = 0;
+        // Intact statues are real obstacles (world layer 1) so the car cannot
+        // visually pass through them. The authored Area3D hit volume still
+        // starts the arcade smash-through; once a component fails its rigid
+        // body moves to the debris layer and the car can follow through.
+        CollisionLayer = SolidWhenIntact ? 1u : 0u;
         CollisionMask = 0;
         _hitArea = GetNodeOrNull<Area3D>("HitArea");
         if (_hitArea == null)
@@ -121,7 +123,18 @@ public partial class StatuePart : RigidBody3D
         Vector3 direction = velocity.Normalized();
         Vector3 hitPoint = contactPoint ?? GlobalPosition.Lerp(vehicle.GlobalPosition, 0.25f);
         if (GetParent() is StatueController owner)
-            owner.ScheduleImpact(this, energy, speed, direction, hitPoint);
+            owner.ReportVehicleContact(this, vehicle, energy, speed, direction, hitPoint);
+    }
+
+    /// <summary>True when the authored hit volume currently overlaps the vehicle.</summary>
+    public bool IsVehicleOverlapping(VehicleController vehicle)
+    {
+        if (_hitArea == null || !_hitArea.Monitoring)
+            return false;
+        foreach (Node3D body in _hitArea.GetOverlappingBodies())
+            if (body == vehicle)
+                return true;
+        return false;
     }
 
     public void Release(Vector3 impulse, Vector3 torqueImpulse, bool loose)
@@ -152,7 +165,7 @@ public partial class StatuePart : RigidBody3D
         IsLoose = false;
         Sleeping = false;
         Visible = true;
-        CollisionLayer = 0;
+        CollisionLayer = SolidWhenIntact ? 1u : 0u;
         CollisionMask = 0;
         if (_hitArea != null)
             _hitArea.Monitoring = true;

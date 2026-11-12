@@ -22,8 +22,8 @@ fi
 cp build/linux/RampWreckers.x86_64 "$LINUX_DIR/"
 cp build/windows/RampWreckers.exe "$WIN_DIR/"
 
-cat > "$LINUX_DIR/README.txt" <<'EOF'
-Ramp Wreckers v0.1.0
+cat > "$LINUX_DIR/README.txt" <<EOF
+Ramp Wreckers v${VERSION}
 ====================
 
 Run:
@@ -53,8 +53,8 @@ Requirements: Linux x86_64 with a working OpenGL 3.3+ driver. Fully offline.
 Progress is stored in Godot's user directory, not beside this executable.
 EOF
 
-cat > "$WIN_DIR/README.txt" <<'EOF'
-Ramp Wreckers v0.1.0
+cat > "$WIN_DIR/README.txt" <<EOF
+Ramp Wreckers v${VERSION}
 ====================
 
 Run:

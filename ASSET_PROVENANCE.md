@@ -27,6 +27,14 @@ assets from asset stores.
   offline by `tools/make_assets.py`.
 - All gameplay code, scene hierarchy, collision layout, UI and tests in this
   repository were written for Ramp Wreckers.
+- The supplied/imported GLBs had POSITION data but no NORMAL attributes.
+  `tools/add_normals_to_glb.py` computes authored smooth-angle normals (45° hard-edge
+  threshold) offline and writes POSITION+NORMAL accessors. It does not change vertex
+  positions, triangles, node transforms or materials. All 34 runtime GLBs pass its
+  `--check`.
+- `tools/restyle_materials.py` applies the authored arcade palette (sRGB→linear) and
+  material response. It changes material factors only; it does not add geometry. All
+  34 GLBs pass its `--check`.
 
 ## Geometry policy
 

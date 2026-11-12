@@ -27,6 +27,10 @@ public partial class StatueController : Node3D
     private readonly HashSet<string> _loose = new(StringComparer.Ordinal);
     private readonly List<StatuePart> _debris = new();
     private readonly HashSet<string> _pending = new(StringComparer.Ordinal);
+    private readonly Dictionary<ulong, PendingVehicleContact> _pendingContacts = new();
+    private readonly HashSet<string> _priorityParts = new(StringComparer.Ordinal);
+    private readonly Dictionary<ulong, ulong> _lastVehicleImpactMsec = new();
+    private readonly Dictionary<ulong, ulong> _lastBlockedCoreMsec = new();
     private bool _collapsed;
     private float _lean;
     private bool _graphValidated;
@@ -138,17 +142,179 @@ public partial class StatueController : Node3D
         }
     }
 
-    public void ScheduleImpact(StatuePart part, float energy, float speed,
-        Vector3 direction, Vector3 hitPoint)
+    /// <summary>
+    /// Authored hit volumes overlap during a fast arcade pass. Collect every
+    /// candidate from this physics step and resolve one coherent contact region
+    /// (both knees, the hat, the shield, or the chest) rather than breaking the
+    /// whole statue through unrelated overlaps.
+    /// </summary>
+    public void ReportVehicleContact(StatuePart part, VehicleController vehicle,
+        float energy, float speed, Vector3 direction, Vector3 hitPoint)
     {
-        if (!_parts.ContainsKey(part.PartId) || _pending.Contains(part.PartId))
+        if (!_parts.ContainsKey(part.PartId) || part.IsBroken)
             return;
-        _pending.Add(part.PartId);
-        Callable.From(() =>
+        ulong id = vehicle.GetInstanceId();
+        bool hasPending = _pendingContacts.TryGetValue(id, out PendingVehicleContact? pending);
+        if (!hasPending)
         {
-            _pending.Remove(part.PartId);
-            ResolveImpact(part.PartId, energy, speed, direction, hitPoint);
-        }).CallDeferred();
+            // The cooldown gates new impact groups, not the other contacts that
+            // arrive in the same physics step. All of those must be accumulated
+            // before the deferred grouped resolution runs.
+            ulong now = Time.GetTicksMsec();
+            if (_lastVehicleImpactMsec.TryGetValue(id, out ulong last) && now - last < 550)
+            {
+                // A genuine follow-through strike on the exposed core right
+                // after its protector peeled is still that same crash, not a
+                // new run. Let the physically-overlapping core contact resolve
+                // immediately with its own (second) impact energy.
+                bool exposedCoreFollowThrough =
+                    part.PartId == "Core" && now - last < 220 &&
+                    _parts.TryGetValue("Armour", out StatuePart? peeled) &&
+                    peeled.IsBroken && part.IsVehicleOverlapping(vehicle);
+                // The bumper usually clips the (slightly taller) core volume a
+                // frame or two before it reaches the chest plate, and that
+                // blocked bounce must not mask the plate strike that follows.
+                // The plate contact itself already comes from the armour's own
+                // physical hit volume, so no extra overlap query is needed.
+                bool plateAfterBlockedCore =
+                    part.PartId == "Armour" &&
+                    _lastBlockedCoreMsec.TryGetValue(id, out ulong blockedAt) &&
+                    now - blockedAt < 220;
+                if (!exposedCoreFollowThrough && !plateAfterBlockedCore)
+                    return;
+            }
+            pending = new PendingVehicleContact(vehicle, energy, speed, direction, hitPoint);
+            _pendingContacts[id] = pending;
+            Callable.From(() => ResolveVehicleContact(id)).CallDeferred();
+        }
+        pending!.Add(part);
+    }
+
+    private void ResolveVehicleContact(ulong vehicleId)
+    {
+        if (!_pendingContacts.Remove(vehicleId, out PendingVehicleContact? pending))
+            return;
+        List<StatuePart> candidates = pending.Candidates
+            .Where(p => !p.IsBroken && !p.IsLoose)
+            .Distinct()
+            .ToList();
+        if (candidates.Count == 0)
+            return;
+
+        // Only components whose authored hit volumes actually overlapped this
+        // bumper are candidates. Support collapse remains a separate authored
+        // propagation after a direct break; challenges never target a part by
+        // proximity or by a large rectangular area around the vehicle.
+        List<StatuePart> selected = candidates;
+        if (_priorityParts.Count > 0)
+        {
+            List<StatuePart> required = candidates
+                .Where(p => _priorityParts.Contains(p.PartId))
+                .ToList();
+            // The armour is a physically contacted protector of the core, not a
+            // free secondary target. Other unrelated parts hit by the bumper are
+            // ignored for a named-target challenge.
+            if (_priorityParts.Contains("Core"))
+            {
+                foreach (StatuePart candidate in candidates)
+                {
+                    if (candidate.PartId == "Armour" && !required.Contains(candidate))
+                        required.Add(candidate);
+                }
+            }
+            selected = required;
+        }
+
+        // When the bumper genuinely overlaps both the chest armour and the
+        // exposed core, resolve the authored protector first so the core cannot
+        // be destroyed before the armour rule has run.
+        selected = selected
+            .OrderBy(p => p.PartId == "Armour" ? 0 : p.PartId == "Core" ? 2 : 1)
+            .ToList();
+
+        // A core contact that arrives while the armour is still intact is a
+        // blocked contact, not a free break-through. Armour can peel in this
+        // group, but the core must be contacted again after it is exposed.
+        bool armourAlreadyBroken = !_parts.TryGetValue("Armour", out StatuePart? armourPart) ||
+                                armourPart.IsBroken || armourPart.IsLoose;
+        int brokenBefore = _broken.Count;
+        bool coreContacted = candidates.Any(c => c.PartId == "Core");
+        foreach (StatuePart part in selected)
+        {
+            if (part.IsBroken)
+                continue;
+            if (part.PartId == "Core" && !armourAlreadyBroken)
+            {
+                PartBlocked?.Invoke("Core", "Armour");
+                continue;
+            }
+            ResolveImpact(part.PartId, pending.Energy, pending.Speed,
+                pending.Direction, pending.HitPoint);
+        }
+
+        // If the armour peeled in this group and the authored core hit volume is
+        // still physically overlapping the bumper, that is a real follow-through
+        // contact. Never break the core by proximity or by challenge identity.
+        if (_priorityParts.Contains("Core") && !armourAlreadyBroken &&
+            _parts.TryGetValue("Armour", out StatuePart? armour) && armour.IsBroken &&
+            _parts.TryGetValue("Core", out StatuePart? core) && !core.IsBroken &&
+            core.IsVehicleOverlapping(pending.Vehicle))
+        {
+            ResolveImpact("Core", pending.Energy, pending.Speed,
+                pending.Direction, pending.HitPoint);
+        }
+
+        // The cooldown starts after the grouped contact has resolved. The same
+        // physics step can still add all of its contacts to this group above.
+        // A group that only touched the still-armoured core (blocked by the
+        // protector, or filtered out by a named-target challenge) is not a
+        // resolved impact: no smash recoil (that would jolt the car away before
+        // it reaches the plate), the full gate stays so this contact cannot
+        // spam chips and flashes, and the plate strike that follows a frame or
+        // two later is explicitly allowed through below.
+        bool brokeAny = _broken.Count > brokenBefore;
+        if (!brokeAny && coreContacted)
+        {
+            _lastVehicleImpactMsec[vehicleId] = Time.GetTicksMsec();
+            _lastBlockedCoreMsec[vehicleId] = Time.GetTicksMsec();
+            return;
+        }
+        _lastVehicleImpactMsec[vehicleId] = Time.GetTicksMsec();
+        pending.Vehicle.RegisterStatueSmash(pending.Energy, pending.Direction);
+    }
+
+    public void SetPriorityParts(IEnumerable<string> partIds)
+    {
+        _priorityParts.Clear();
+        foreach (string id in partIds)
+            if (!string.IsNullOrWhiteSpace(id))
+                _priorityParts.Add(id);
+    }
+
+    private sealed class PendingVehicleContact
+    {
+        public readonly VehicleController Vehicle;
+        public readonly float Energy;
+        public readonly float Speed;
+        public readonly Vector3 Direction;
+        public readonly Vector3 HitPoint;
+        public readonly List<StatuePart> Candidates = new();
+
+        public PendingVehicleContact(VehicleController vehicle, float energy, float speed,
+            Vector3 direction, Vector3 hitPoint)
+        {
+            Vehicle = vehicle;
+            Energy = energy;
+            Speed = speed;
+            Direction = direction;
+            HitPoint = hitPoint;
+        }
+
+        public void Add(StatuePart part)
+        {
+            if (!Candidates.Contains(part))
+                Candidates.Add(part);
+        }
     }
 
     /// <summary>Public deterministic entry point used by gameplay and tests.</summary>
@@ -330,22 +496,18 @@ public partial class StatueController : Node3D
         _loose.Clear();
         _debris.Clear();
         _pending.Clear();
+        _pendingContacts.Clear();
+        _lastVehicleImpactMsec.Clear();
+        _lastBlockedCoreMsec.Clear();
         _lean = 0f;
         _collapsed = false;
     }
 
-    public string ProgressFor(WreckChallenge challenge)
-    {
-        var bits = new List<string>();
-        if (challenge.RequiredParts.Length > 0)
-        {
-            bits.Add(string.Join("  ",
-                challenge.RequiredParts.Select(p =>
-                    $"{p}: {(_broken.Contains(p) ? "BROKEN" : "intact")}")));
-        }
-        bits.Add($"broken {_broken.Count} (goal {challenge.MinimumBrokenParts})");
-        return string.Join("   |   ", bits);
-    }
+    public ObjectiveProgress GetObjectiveProgress(WreckChallenge challenge) =>
+        ObjectiveProgressRules.Evaluate(challenge, _broken);
+
+    public string ProgressFor(WreckChallenge challenge) =>
+        GetObjectiveProgress(challenge).CombinedLabel;
 
     public IReadOnlyList<StatuePart> SnapshotParts() => _parts.Values.ToList();
 
