@@ -27,6 +27,7 @@ echo "== Headless 60-second gameplay boot =="
 
 echo "== Deterministic runtime acceptance tests =="
 "$GODOT_BIN" --headless --path . res://tests/RuntimeTests.tscn 2>&1 | tee "$LOG_DIR/runtime-tests.log"
+python3 tools/check_test_log.py "$LOG_DIR/runtime-tests.log" | tee "$LOG_DIR/runtime-log-check.log"
 
 echo "ALL AUTOMATED CHECKS PASSED"
 echo "Logs: $LOG_DIR"

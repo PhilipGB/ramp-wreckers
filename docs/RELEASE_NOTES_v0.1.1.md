@@ -25,6 +25,9 @@ renderer now renders clean surfaces at both quality presets. See
   cleanup for every temporary effect.
 - Side-on impact cinematic with a one-frame camera snap so the hit and statue are
   visible; C still skips it. Camera clamp/recovery and reduced shake remain.
+- Same-physics-step contacts aggregate before the impact cooldown, so both knees cannot
+  lose the second report. Named targets only break physically overlapping hit volumes;
+  the core needs armour destruction plus a fresh/overlapping contact after exposure.
 
 ### Collision and destruction
 
@@ -52,11 +55,13 @@ renderer now renders clean surfaces at both quality presets. See
 - Static project contract: **1522 checks, 0 failures**.
 - Authored GLB normals: **34 / 34**; palette: **34 / 34**.
 - Release build with warnings as errors: 0 errors.
-- Pure .NET tests: **33 passed**. Godot runtime tests: **145 passed**.
+- Pure .NET tests: **33 passed**. Godot runtime tests: **152 passed**.
 - All nine challenges completed through ordinary driving in the runtime suite.
-- 60-second wall-clock headless boot: `ok=True`; no leaked audio resources.
-- Rendered performance at 1600×900: **55–60 FPS**, 402 nodes, ~810 draws (High);
-  **60 FPS**, 402 nodes, ~323 draws (Performance). Screenshot captures report 35–53 FPS.
+- 60-second wall-clock headless boot: `ok=True`; no leaked audio resources. Runtime log
+  check has no managed/unmanaged exception output.
+- Rendered performance at 1600×900: **55–60 FPS**, 402 nodes, ~549 draws (High);
+  **~60 FPS**, 402 nodes, ~114 draws (Performance). Profiling found a redundant statue
+  omni shadow (High 810→549, Performance 323→114). Screenshot captures report 35–53 FPS.
 - Linux export built and booted; Windows export built (not run on this Linux host).
 
 ### Known limitations

@@ -261,7 +261,7 @@ WeakPointMultiplier = 2.4
 CountsAsBrokenWhenUnsupported = false
 
 [node name="Collision" type="CollisionShape3D" parent="Core"]
-position = Vector3(0, 0, 1.0)
+position = Vector3(0, 0, 1.35)
 shape = SubResource("ShapeCore")
 
 [node name="Art" parent="Core" instance=ExtResource("10")]
@@ -278,7 +278,7 @@ collision_mask = 2
 monitorable = false
 
 [node name="HitShape" type="CollisionShape3D" parent="Core/HitArea"]
-position = Vector3(0, 0, 1.0)
+position = Vector3(0, 0, 1.35)
 shape = SubResource("ShapeCore")
 
 [node name="Armour" type="RigidBody3D" parent="."]

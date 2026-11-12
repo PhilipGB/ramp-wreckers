@@ -126,6 +126,17 @@ public partial class StatuePart : RigidBody3D
             owner.ReportVehicleContact(this, vehicle, energy, speed, direction, hitPoint);
     }
 
+    /// <summary>True when the authored hit volume currently overlaps the vehicle.</summary>
+    public bool IsVehicleOverlapping(VehicleController vehicle)
+    {
+        if (_hitArea == null || !_hitArea.Monitoring)
+            return false;
+        foreach (Node3D body in _hitArea.GetOverlappingBodies())
+            if (body == vehicle)
+                return true;
+        return false;
+    }
+
     public void Release(Vector3 impulse, Vector3 torqueImpulse, bool loose)
     {
         if (IsBroken)

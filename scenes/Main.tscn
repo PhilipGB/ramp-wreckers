@@ -149,7 +149,7 @@ position = Vector3(0, 8.5, -18.5)
 light_color = Color(0.95, 0.82, 0.62, 1)
 light_energy = 1.05
 omni_range = 20.0
-shadow_enabled = true
+shadow_enabled = false
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
 rotation = Vector3(-0.95, -0.55, 0)

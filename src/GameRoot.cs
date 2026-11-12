@@ -394,7 +394,7 @@ public partial class GameRoot : Node3D
             foreach (Vector3 candidate in candidates)
             {
                 Vector3 tryPosition = _impactFocus + candidate;
-                var probe = PhysicsRayQueryParameters3D.Create(_impactFocus, tryPosition, 0x15);
+                using var probe = PhysicsRayQueryParameters3D.Create(_impactFocus, tryPosition, 0x15);
                 probe.CollideWithAreas = false;
                 probe.CollideWithBodies = true;
                 var probeHit = spaceCinematic.IntersectRay(probe);
@@ -438,7 +438,7 @@ public partial class GameRoot : Node3D
 
         // Pull the camera in front of arena / statue geometry rather than clipping.
         var space = GetWorld3D().DirectSpaceState;
-        var query = PhysicsRayQueryParameters3D.Create(focus, desired, 0x15);
+        using var query = PhysicsRayQueryParameters3D.Create(focus, desired, 0x15);
         query.CollideWithAreas = false;
         query.CollideWithBodies = true;
         query.Exclude = new Godot.Collections.Array<Rid> { vehicle.GetRid() };

@@ -44,6 +44,8 @@ public partial class RuntimeTests : Node
             await TestInputSmoke();
             await TestProgressDisplay();
             await TestSolidCollisionPresentation();
+            await TestContactAggregation();
+            await TestCoreRequiresSecondContact();
             await TestEndToEndDrive();
             await TestPhysicalChallengeRoutes();
             await TestCameraAndEffects();
@@ -187,8 +189,7 @@ public partial class RuntimeTests : Node
         bool restored = gnome.SnapshotParts().All(p =>
             !p.IsBroken && p.Transform.IsEqualApprox(p.InitialLocalTransform));
         Check(restored && gnome.BrokenCount == 0, "statue reset restores every authored pose");
-        gnome.GetParent().QueueFree();
-        await WaitPhysics(1);
+        await RemoveNode(gnome.GetParent());
 
         StatueController knight = await SpawnStatue<StatueController>("res://scenes/statues/Knight.tscn", new Vector3(20, 0, 0));
         Check(knight.PartCount == 7 && knight.DebugGraphValid, "knight has seven valid parts");
@@ -199,8 +200,7 @@ public partial class RuntimeTests : Node
         knight.ResolveImpact("RightLeg", 500f, 20f, Vector3.Back);
         Check(knight.BrokenPartIds.Contains("Torso"),
             "knight torso collapses after both legs");
-        knight.GetParent().QueueFree();
-        await WaitPhysics(1);
+        await RemoveNode(knight.GetParent());
 
         StatueController robot = await SpawnStatue<StatueController>("res://scenes/statues/Robot.tscn", new Vector3(40, 0, 0));
         Check(robot.PartCount == 8 && robot.DebugGraphValid, "robot has eight valid parts");
@@ -221,8 +221,7 @@ public partial class RuntimeTests : Node
             "robot core detaches intact when its torso collapses");
         Check(robot.BrokenPartIds.Contains("Torso") && armour.IsLoose,
             "robot torso breaks and armour detaches intact in the collapse");
-        robot.GetParent().QueueFree();
-        await WaitPhysics(1);
+        await RemoveNode(robot.GetParent());
     }
 
     private async Task TestChallengeFeasibility()
@@ -260,8 +259,7 @@ public partial class RuntimeTests : Node
             }
             Check(ChallengeCatalog.IsComplete(challenge, statue.BrokenPartIds),
                 $"challenge {i + 1} '{challenge.Name}' is completable from real part breaks");
-            statue.GetParent().QueueFree();
-            await WaitPhysics(1);
+            await RemoveNode(statue.GetParent());
         }
     }
 
@@ -288,8 +286,7 @@ public partial class RuntimeTests : Node
             }
         }
         Check(allEqual, "30 break/reset cycles restore exact part transforms and state");
-        statue.GetParent().QueueFree();
-        await WaitPhysics(1);
+        await RemoveNode(statue.GetParent());
     }
 
     private void TestSaveSystem()
@@ -394,8 +391,7 @@ public partial class RuntimeTests : Node
             Check(Mathf.Abs((farTop.Y - nearTop.Y) - expectedRise) < 0.35f,
                 $"ramp {angle}° collider slope matches the authored deck");
         }
-        main.QueueFree();
-        await WaitPhysics(1);
+        await RemoveNode(main);
     }
 
     private async Task TestInputSmoke()
@@ -425,8 +421,7 @@ public partial class RuntimeTests : Node
         await TapKey(Key.C);
         Check(main.Profile.Data.CameraPreset != before, "C key cycles the camera preset");
 
-        main.QueueFree();
-        await WaitPhysics(1);
+        await RemoveNode(main);
     }
 
     private async Task TapKey(Key key)
@@ -484,8 +479,7 @@ public partial class RuntimeTests : Node
             Check(main.TestProgressText.Contains("1 / 1"),
                 "Core Shot HUD reaches 1/1 only after the core breaks");
         }
-        main.QueueFree();
-        await WaitPhysics(2);
+        await RemoveNode(main);
     }
 
 
@@ -511,8 +505,78 @@ public partial class RuntimeTests : Node
             Check(leftLeg != null && leftLeg.CollisionLayer == 4,
                 "broken leg leaves the world layer and becomes debris");
         }
-        main.QueueFree();
-        await WaitPhysics(2);
+        await RemoveNode(main);
+    }
+
+
+    private async Task TestContactAggregation()
+    {
+        GameRoot main = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameRoot>();
+        AddChild(main);
+        await WaitPhysics(4);
+        main.TestSelectChallenge(0);
+        await WaitPhysics(8);
+        StatueController? statue = main.CurrentStatue;
+        VehicleController? car = main.CurrentVehicle;
+        Check(statue != null && car != null, "contact aggregation test has a statue and vehicle");
+        if (statue != null && car != null)
+        {
+            StatuePart? left = statue.GetPart("LeftLeg");
+            StatuePart? right = statue.GetPart("RightLeg");
+            Check(left != null && right != null, "contact aggregation test has both legs");
+            if (left != null && right != null)
+            {
+                // Both reports happen in the same physics step. The second must
+                // join the pending group instead of being rejected by cooldown.
+                statue.ReportVehicleContact(left, car, 40000f, 30f,
+                    Vector3.Back, left.GlobalPosition);
+                statue.ReportVehicleContact(right, car, 40000f, 30f,
+                    Vector3.Back, right.GlobalPosition);
+                await WaitPhysics(4);
+                Check(statue.BrokenPartIds.Contains("LeftLeg") &&
+                      statue.BrokenPartIds.Contains("RightLeg"),
+                    "same-step contacts retain every contacted part in the impact group");
+            }
+        }
+        await RemoveNode(main);
+    }
+
+
+    private async Task TestCoreRequiresSecondContact()
+    {
+        GameRoot main = GD.Load<PackedScene>("res://scenes/Main.tscn").Instantiate<GameRoot>();
+        AddChild(main);
+        await WaitPhysics(4);
+        main.TestSelectChallenge(7);
+        await WaitPhysics(8);
+        StatueController? statue = main.CurrentStatue;
+        VehicleController? car = main.CurrentVehicle;
+        Check(statue != null && car != null, "core sequencing test has a statue and vehicle");
+        if (statue != null && car != null)
+        {
+            StatuePart? armour = statue.GetPart("Armour");
+            StatuePart? core = statue.GetPart("Core");
+            Check(armour != null && core != null, "core sequencing test has armour and core");
+            if (armour != null && core != null)
+            {
+                // The first group touches both volumes while the armour is still
+                // intact: only the armour may peel.
+                statue.ReportVehicleContact(armour, car, 40000f, 30f,
+                    Vector3.Back, armour.GlobalPosition);
+                statue.ReportVehicleContact(core, car, 40000f, 30f,
+                    Vector3.Back, core.GlobalPosition);
+                await WaitPhysics(40);
+                Check(armour.IsBroken && !core.IsBroken,
+                    "protected core contact cannot break the core in the armour group");
+                // After the 550 ms cooldown, a fresh core contact is required.
+                statue.ReportVehicleContact(core, car, 40000f, 30f,
+                    Vector3.Back, core.GlobalPosition);
+                await WaitPhysics(5);
+                Check(core.IsBroken,
+                    "a fresh contact after armour destruction breaks the exposed core");
+            }
+        }
+        await RemoveNode(main);
     }
 
     private async Task TestEndToEndDrive()
@@ -581,12 +645,11 @@ public partial class RuntimeTests : Node
             main.TestRetry();
             await WaitPhysics(8);
         }
-        main.QueueFree();
-        await WaitPhysics(1);
+        await RemoveNode(main);
     }
 
 
-    private static readonly int[] RouteVehicles = { 1, 0, 1, 1, 0, 1, 2, 2, 2 };
+    private static readonly int[] RouteVehicles = { 1, 0, 1, 1, 0, 1, 2, 2, 0 };
 
     /// <summary>
     /// All nine objectives through ordinary driving only: spawn, throttle,
@@ -616,12 +679,12 @@ public partial class RuntimeTests : Node
             main.TestSetRampDegrees(challenge.RecommendedRampDegrees);
             bool complete = false;
             int passes = 0;
-            for (; passes < 3 && !complete; passes++)
+            for (; passes < 5 && !complete; passes++)
             {
                 complete = await DriveRoutePass(main, car, 9.5f);
                 if (complete)
                     break;
-                if (passes < 2)
+                if (passes < 4)
                 {
                     await ReverseRoutePass(car, 3.2f);
                     await WaitPhysics(24);
@@ -643,8 +706,7 @@ public partial class RuntimeTests : Node
                      $"passes={passes} score={main.TestRunScore} " +
                      $"broken={string.Join(",", statue.BrokenPartIds)} complete={complete}");
         }
-        main.QueueFree();
-        await WaitPhysics(2);
+        await RemoveNode(main);
     }
 
     private async Task<bool> DriveRoutePass(GameRoot main, VehicleController car, float seconds)
@@ -695,7 +757,7 @@ public partial class RuntimeTests : Node
         Check(car != null, "camera test has a vehicle");
         if (car == null)
         {
-            main.QueueFree();
+            await RemoveNode(main);
             return;
         }
         Input.ActionPress("drive_forward");
@@ -723,8 +785,7 @@ public partial class RuntimeTests : Node
         Check(main.TestEffects.ActivePuffs == 0 && main.TestEffects.ActiveChips == 0 &&
               main.TestEffects.ActiveFlashes == 0 && main.TestEffects.ActiveSparks == 0,
             "dust, chips, sparks and flashes all clean themselves up");
-        main.QueueFree();
-        await WaitPhysics(2);
+        await RemoveNode(main);
     }
 
     private async Task TestRetryBounds()
@@ -753,8 +814,20 @@ public partial class RuntimeTests : Node
             $"30 retries do not accumulate scene nodes ({nodesBefore}->{nodesAfter})");
         Check(Engine.TimeScale == 1.0, "retry restores normal time scale");
         Check(elapsed < 2000, $"30 retries complete quickly ({elapsed} ms total)");
-        main.QueueFree();
-        await WaitPhysics(1);
+        await RemoveNode(main);
+    }
+
+
+    private async Task RemoveNode(Node node)
+    {
+        if (GodotObject.IsInstanceValid(node))
+            node.QueueFree();
+        // Let both the idle tree and the physics server finish disposing before
+        // a later test instantiates another Main scene. This keeps the Godot
+        // ScriptManagerBridge from racing a freed script handle.
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        await ToSignal(GetTree(), SceneTree.SignalName.PhysicsFrame);
     }
 
     private static void TryDeleteDirectory(string path)

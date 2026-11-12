@@ -293,100 +293,94 @@ Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
 [Save] Progress loaded.
 [Catalog] 9 authored challenges validated against statue part inventories.
 [Statue] Garden Gnome: 8 authored parts, graph valid=True.
-[PASS] vehicle 0 spawned for route test
-[Destruction] Garden Gnome/LeftLeg broke via direct energy=264 score=23 weak=False.
-[Destruction] Garden Gnome/RightLeg broke via direct energy=264 score=23 weak=False.
+[PASS] contact aggregation test has a statue and vehicle
+[PASS] contact aggregation test has both legs
+[Destruction] Garden Gnome/LeftLeg broke via direct energy=40000 score=46 weak=False.
+[Destruction] Garden Gnome/RightLeg broke via direct energy=40000 score=46 weak=False.
 [CHALLENGE] First Crash complete? broken=LeftLeg,RightLeg required= min=2
-[Destruction] Garden Gnome/Torso broke via collapse energy=145 score=48 weak=False.
-[Destruction] Garden Gnome/Head broke via collapse energy=145 score=36 weak=False.
+[Destruction] Garden Gnome/Torso broke via collapse energy=22000 score=111 weak=False.
+[Destruction] Garden Gnome/Head broke via collapse energy=22000 score=83 weak=False.
 [Destruction] Garden Gnome/Beard detached intact (support lost).
 [Destruction] Garden Gnome/Hat detached intact (support lost).
-[Destruction] Garden Gnome/LeftArm broke via collapse energy=145 score=20 weak=False.
-[Destruction] Garden Gnome/RightArm broke via collapse energy=145 score=20 weak=False.
-[Destruction] Garden Gnome/Beard broke via direct energy=264 score=32 weak=False.
+[Destruction] Garden Gnome/LeftArm broke via collapse energy=22000 score=46 weak=False.
+[Destruction] Garden Gnome/RightArm broke via collapse energy=22000 score=46 weak=False.
+[PASS] same-step contacts retain every contacted part in the impact group
+[Save] Progress loaded.
+[Catalog] 9 authored challenges validated against statue part inventories.
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[Statue] Reactor Robot: 8 authored parts, graph valid=True.
+[PASS] core sequencing test has a statue and vehicle
+[PASS] core sequencing test has armour and core
+[Destruction] Reactor Robot/Armour broke via direct energy=40000 score=166 weak=False.
+[PASS] protected core contact cannot break the core in the armour group
+[Destruction] Reactor Robot/Core broke via direct energy=40000 score=429 weak=True.
+[CHALLENGE] Core Shot complete? broken=Armour,Core required=Core min=1
+[PASS] a fresh contact after armour destruction breaks the exposed core
+[Save] Progress loaded.
+[Catalog] 9 authored challenges validated against statue part inventories.
+[Statue] Garden Gnome: 8 authored parts, graph valid=True.
+[PASS] vehicle 0 spawned for route test
 [Destruction] Garden Gnome/Hat broke via direct energy=264 score=73 weak=True.
 [PASS] vehicle 0 physically travelled more than 30 m (z 34 -> -17)
 [PASS] vehicle 0 reached a usable launch speed (97 km/h)
 [PASS] vehicle 0 became airborne from the ramp
-[PASS] vehicle 0 damaged the statue through ordinary driving (score 275)
+[PASS] vehicle 0 damaged the statue through ordinary driving (score 73)
 [PASS] campaign route completes First Crash and saves the first-clear reward
-[ROUTE] vehicle=0 z=34->-17 maxY=5.5 maxSpeed=97 score=275
+[ROUTE] vehicle=0 z=34->-17 maxY=5.5 maxSpeed=97 score=73
 [PASS] vehicle 1 spawned for route test
-[Destruction] Garden Gnome/LeftLeg broke via direct energy=397 score=26 weak=False.
-[Destruction] Garden Gnome/RightLeg broke via direct energy=397 score=26 weak=False.
-[CHALLENGE] First Crash complete? broken=LeftLeg,RightLeg required= min=2
-[Destruction] Garden Gnome/Torso broke via collapse energy=218 score=52 weak=False.
-[Destruction] Garden Gnome/Head broke via collapse energy=218 score=39 weak=False.
-[Destruction] Garden Gnome/Beard detached intact (support lost).
-[Destruction] Garden Gnome/Hat detached intact (support lost).
-[Destruction] Garden Gnome/LeftArm broke via collapse energy=218 score=22 weak=False.
-[Destruction] Garden Gnome/RightArm broke via collapse energy=218 score=22 weak=False.
-[Destruction] Garden Gnome/Beard broke via direct energy=397 score=37 weak=False.
 [Destruction] Garden Gnome/Hat broke via direct energy=397 score=84 weak=True.
+[Destruction] Garden Gnome/Beard broke via direct energy=397 score=37 weak=False.
+[CHALLENGE] First Crash complete? broken=Hat,Beard required= min=2
 [PASS] vehicle 1 physically travelled more than 30 m (z 34 -> -17)
 [PASS] vehicle 1 reached a usable launch speed (91 km/h)
 [PASS] vehicle 1 became airborne from the ramp
-[PASS] vehicle 1 damaged the statue through ordinary driving (score 308)
-[ROUTE] vehicle=1 z=34->-17 maxY=5.6 maxSpeed=91 score=308
+[PASS] vehicle 1 damaged the statue through ordinary driving (score 121)
+[ROUTE] vehicle=1 z=34->-17 maxY=5.6 maxSpeed=91 score=121
 [PASS] vehicle 2 spawned for route test
-[Destruction] Garden Gnome/LeftLeg broke via direct energy=171 score=21 weak=False.
-[Destruction] Garden Gnome/RightLeg broke via direct energy=171 score=21 weak=False.
-[CHALLENGE] First Crash complete? broken=LeftLeg,RightLeg required= min=2
-[Destruction] Garden Gnome/Torso broke via collapse energy=94 score=45 weak=False.
+[Destruction] Garden Gnome/Torso broke via direct energy=171 score=49 weak=False.
 [Destruction] Garden Gnome/Head broke via collapse energy=94 score=33 weak=False.
+[CHALLENGE] First Crash complete? broken=Torso,Head required= min=2
 [Destruction] Garden Gnome/Beard detached intact (support lost).
 [Destruction] Garden Gnome/Hat detached intact (support lost).
 [Destruction] Garden Gnome/LeftArm broke via collapse energy=94 score=19 weak=False.
 [Destruction] Garden Gnome/RightArm broke via collapse energy=94 score=19 weak=False.
-[Destruction] Garden Gnome/Beard broke via direct energy=171 score=29 weak=False.
-[Destruction] Garden Gnome/Hat broke via direct energy=171 score=66 weak=True.
 [PASS] vehicle 2 physically travelled more than 30 m (z 34 -> -17)
 [PASS] vehicle 2 reached a usable launch speed (68 km/h)
 [PASS] vehicle 2 became airborne from the ramp
-[PASS] vehicle 2 damaged the statue through ordinary driving (score 253)
-[ROUTE] vehicle=2 z=34->-17 maxY=5.4 maxSpeed=68 score=253
+[PASS] vehicle 2 damaged the statue through ordinary driving (score 120)
+[ROUTE] vehicle=2 z=34->-17 maxY=5.4 maxSpeed=68 score=120
 [Save] Progress loaded.
 [Catalog] 9 authored challenges validated against statue part inventories.
 [Statue] Garden Gnome: 8 authored parts, graph valid=True.
 [PASS] route 1 has a real vehicle and statue
-[Destruction] Garden Gnome/LeftLeg broke via direct energy=465 score=28 weak=False.
-[Destruction] Garden Gnome/RightLeg broke via direct energy=465 score=28 weak=False.
-[CHALLENGE] First Crash complete? broken=LeftLeg,RightLeg required= min=2
-[Destruction] Garden Gnome/Torso broke via collapse energy=256 score=54 weak=False.
+[Destruction] Garden Gnome/Torso broke via direct energy=465 score=67 weak=False.
 [Destruction] Garden Gnome/Head broke via collapse energy=256 score=41 weak=False.
+[CHALLENGE] First Crash complete? broken=Torso,Head required= min=2
 [Destruction] Garden Gnome/Beard detached intact (support lost).
 [Destruction] Garden Gnome/Hat detached intact (support lost).
 [Destruction] Garden Gnome/LeftArm broke via collapse energy=256 score=23 weak=False.
 [Destruction] Garden Gnome/RightArm broke via collapse energy=256 score=23 weak=False.
-[Destruction] Garden Gnome/Beard broke via direct energy=465 score=39 weak=False.
-[Destruction] Garden Gnome/Hat broke via direct energy=465 score=89 weak=True.
 [PASS] challenge 1 'First Crash' completes through real driving
 [PASS] challenge 1 scored a real component impact
-[ROUTE] challenge=1 First Crash vehicle=1 ramp=10 passes=0 score=325 broken=LeftLeg,RightLeg,Torso,Head,LeftArm,RightArm,Beard,Hat complete=True
+[ROUTE] challenge=1 First Crash vehicle=1 ramp=10 passes=0 score=154 broken=Torso,Head,LeftArm,RightArm complete=True
 [PASS] route 2 has a real vehicle and statue
-[Destruction] Garden Gnome/Hat broke via direct energy=185 score=67 weak=True.
+[Destruction] Garden Gnome/Hat broke via direct energy=182 score=67 weak=True.
 [CHALLENGE] Hat Trick complete? broken=Hat required=Hat min=1
-[Destruction] Garden Gnome/Head broke via direct energy=140 score=36 weak=False.
-[Destruction] Garden Gnome/Beard detached intact (support lost).
 [PASS] challenge 2 'Hat Trick' completes through real driving
 [PASS] challenge 2 scored a real component impact
 [PASS] challenge 2 broke required component Hat
-[ROUTE] challenge=2 Hat Trick vehicle=0 ramp=27 passes=0 score=103 broken=Hat,Head complete=True
+[ROUTE] challenge=2 Hat Trick vehicle=0 ramp=27 passes=0 score=67 broken=Hat complete=True
 [PASS] route 3 has a real vehicle and statue
-[Destruction] Garden Gnome/LeftLeg broke via direct energy=462 score=28 weak=False.
-[Destruction] Garden Gnome/RightLeg broke via direct energy=462 score=28 weak=False.
-[Destruction] Garden Gnome/Torso broke via collapse energy=254 score=54 weak=False.
+[Destruction] Garden Gnome/Torso broke via direct energy=462 score=67 weak=False.
 [Destruction] Garden Gnome/Head broke via collapse energy=254 score=41 weak=False.
-[CHALLENGE] Gnome Down complete? broken=LeftLeg,RightLeg,Torso,Head required= min=4
 [Destruction] Garden Gnome/Beard detached intact (support lost).
 [Destruction] Garden Gnome/Hat detached intact (support lost).
 [Destruction] Garden Gnome/LeftArm broke via collapse energy=254 score=23 weak=False.
 [Destruction] Garden Gnome/RightArm broke via collapse energy=254 score=23 weak=False.
-[Destruction] Garden Gnome/Beard broke via direct energy=462 score=39 weak=False.
-[Destruction] Garden Gnome/Hat broke via direct energy=462 score=89 weak=True.
+[CHALLENGE] Gnome Down complete? broken=Torso,Head,LeftArm,RightArm required= min=4
 [PASS] challenge 3 'Gnome Down' completes through real driving
 [PASS] challenge 3 scored a real component impact
-[ROUTE] challenge=3 Gnome Down vehicle=1 ramp=10 passes=0 score=325 broken=LeftLeg,RightLeg,Torso,Head,LeftArm,RightArm,Beard,Hat complete=True
+[ROUTE] challenge=3 Gnome Down vehicle=1 ramp=10 passes=0 score=154 broken=Torso,Head,LeftArm,RightArm complete=True
 [Statue] Iron Knight: 7 authored parts, graph valid=True.
 [PASS] route 4 has a real vehicle and statue
 [Destruction] Iron Knight/Shield broke via direct energy=378 score=115 weak=True.
@@ -396,9 +390,9 @@ Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
 [PASS] challenge 4 broke required component Shield
 [ROUTE] challenge=4 Shield Breaker vehicle=1 ramp=18 passes=0 score=115 broken=Shield complete=True
 [PASS] route 5 has a real vehicle and statue
-[Destruction] Iron Knight/RightLeg broke via direct energy=307 score=33 weak=False.
 [Destruction] Iron Knight/LeftLeg broke via direct energy=307 score=33 weak=False.
-[CHALLENGE] Knee Trouble complete? broken=RightLeg,LeftLeg required=LeftLeg,RightLeg min=2
+[Destruction] Iron Knight/RightLeg broke via direct energy=307 score=33 weak=False.
+[CHALLENGE] Knee Trouble complete? broken=LeftLeg,RightLeg required=LeftLeg,RightLeg min=2
 [Destruction] Iron Knight/Torso broke via collapse energy=169 score=66 weak=False.
 [Destruction] Iron Knight/Head broke via collapse energy=169 score=45 weak=False.
 [Destruction] Iron Knight/LeftArm broke via collapse energy=169 score=29 weak=False.
@@ -408,7 +402,7 @@ Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
 [PASS] challenge 5 scored a real component impact
 [PASS] challenge 5 broke required component LeftLeg
 [PASS] challenge 5 broke required component RightLeg
-[ROUTE] challenge=5 Knee Trouble vehicle=0 ramp=10 passes=0 score=235 broken=RightLeg,LeftLeg,Torso,Head,LeftArm,RightArm complete=True
+[ROUTE] challenge=5 Knee Trouble vehicle=0 ramp=10 passes=0 score=235 broken=LeftLeg,RightLeg,Torso,Head,LeftArm,RightArm complete=True
 [PASS] route 6 has a real vehicle and statue
 [Destruction] Iron Knight/LeftLeg broke via direct energy=334 score=34 weak=False.
 [Destruction] Iron Knight/RightLeg broke via direct energy=334 score=34 weak=False.
@@ -432,28 +426,26 @@ Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
 [ROUTE] challenge=7 Peel the Armour vehicle=2 ramp=10 passes=0 score=71 broken=Armour complete=True
 [PASS] route 8 has a real vehicle and statue
 [Destruction] Reactor Robot/Armour broke via direct energy=134 score=71 weak=False.
-[Destruction] Reactor Robot/Core broke via direct energy=120 score=179 weak=True.
+[Destruction] Reactor Robot/Core broke via direct energy=134 score=182 weak=True.
 [CHALLENGE] Core Shot complete? broken=Armour,Core required=Core min=1
 [PASS] challenge 8 'Core Shot' completes through real driving
 [PASS] challenge 8 scored a real component impact
 [PASS] challenge 8 broke required component Core
 [PASS] Core Shot route peeled armour first and then broke the exposed core
-[ROUTE] challenge=8 Core Shot vehicle=2 ramp=10 passes=0 score=250 broken=Armour,Core complete=True
+[ROUTE] challenge=8 Core Shot vehicle=2 ramp=10 passes=0 score=253 broken=Armour,Core complete=True
 [PASS] route 9 has a real vehicle and statue
-[Destruction] Reactor Robot/LeftLeg broke via direct energy=135 score=39 weak=False.
-[Destruction] Reactor Robot/RightLeg broke via direct energy=135 score=39 weak=False.
-[Destruction] Reactor Robot/Torso broke via collapse energy=74 score=80 weak=False.
-[Destruction] Reactor Robot/Head broke via collapse energy=74 score=54 weak=False.
-[Destruction] Reactor Robot/LeftArm broke via collapse energy=74 score=36 weak=False.
-[Destruction] Reactor Robot/RightArm broke via collapse energy=74 score=36 weak=False.
+[Destruction] Reactor Robot/LeftLeg broke via direct energy=307 score=48 weak=False.
+[Destruction] Reactor Robot/RightLeg broke via direct energy=307 score=48 weak=False.
+[Destruction] Reactor Robot/Torso broke via collapse energy=169 score=90 weak=False.
+[Destruction] Reactor Robot/Head broke via collapse energy=169 score=61 weak=False.
+[Destruction] Reactor Robot/LeftArm broke via collapse energy=169 score=41 weak=False.
+[Destruction] Reactor Robot/RightArm broke via collapse energy=169 score=41 weak=False.
 [CHALLENGE] Robot Wreck complete? broken=LeftLeg,RightLeg,Torso,Head,LeftArm,RightArm required= min=6
 [Destruction] Reactor Robot/Core detached intact (support lost).
 [Destruction] Reactor Robot/Armour detached intact (support lost).
-[Destruction] Reactor Robot/Core broke via direct energy=135 score=182 weak=True.
-[Destruction] Reactor Robot/Armour broke via direct energy=135 score=71 weak=False.
 [PASS] challenge 9 'Robot Wreck' completes through real driving
 [PASS] challenge 9 scored a real component impact
-[ROUTE] challenge=9 Robot Wreck vehicle=2 ramp=10 passes=0 score=537 broken=LeftLeg,RightLeg,Torso,Head,LeftArm,RightArm,Core,Armour complete=True
+[ROUTE] challenge=9 Robot Wreck vehicle=0 ramp=10 passes=0 score=329 broken=LeftLeg,RightLeg,Torso,Head,LeftArm,RightArm complete=True
 [Save] Progress loaded.
 [Catalog] 9 authored challenges validated against statue part inventories.
 [Statue] Garden Gnome: 8 authored parts, graph valid=True.
@@ -464,37 +456,8 @@ Godot Engine v4.7.2.stable.mono.official.ed1daf0bf - https://godotengine.org
 [PASS] impact effects stay within authored bounds
 [PASS] camera never drops below the arena after an impact
 [PASS] C skips the impact close-up immediately
-[PASS] camera recovers to a usable chase distance (9.8 m)
+[PASS] camera recovers to a usable chase distance (10.1 m)
 [PASS] dust, chips, sparks and flashes all clean themselves up
-ERROR: System.InvalidOperationException: Handle is not initialized.
-   at System.Runtime.InteropServices.GCHandle.FromIntPtr(IntPtr value)
-   at Godot.Bridge.ScriptManagerBridge.SwapGCHandleForType(IntPtr oldGCHandlePtr, IntPtr* outNewGCHandlePtr, godot_bool createWeak) in /root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/Bridge/ScriptManagerBridge.cs:line 1284
-   at: void Godot.NativeInterop.ExceptionUtils.LogException(System.Exception) (/root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/NativeInterop/ExceptionUtils.cs:113)
-   C# backtrace (most recent call first):
-       [0] void Godot.GD.PushError(string) (/root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/GD.cs:366)
-       [1] void Godot.NativeInterop.ExceptionUtils.LogException(System.Exception) (/root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/NativeInterop/ExceptionUtils.cs:113)
-       [2] Godot.NativeInterop.godot_bool Godot.Bridge.ScriptManagerBridge.SwapGCHandleForType(nint, System.IntPtr*, Godot.NativeInterop.godot_bool) (/root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/Bridge/ScriptManagerBridge.cs:1284)
-       [3] void Godot.NativeInterop.NativeFuncs.godotsharp_method_bind_ptrcall(nint, nint, System.Void**, System.Void*) (/root/godot/modules/mono/glue/GodotSharp/GodotSharp/Godot.SourceGenerators.Internal/Godot.SourceGenerators.Internal.UnmanagedCallbacksGenerator/Godot.NativeInterop.NativeFuncs.generated.cs:380)
-       [4] Godot.GodotObject Godot.NativeCalls.godot_icall_1_363(nint, nint, int) (/root/godot/modules/mono/glue/GodotSharp/GodotSharp/Generated/NativeCalls.cs:3348)
-       [5] Godot.Node Godot.PackedScene.Instantiate(Godot.PackedScene+GenEditState) (/root/godot/modules/mono/glue/GodotSharp/GodotSharp/Generated/GodotObjects/PackedScene.cs:132)
-       [6] T Godot.PackedScene.Instantiate<T>(Godot.PackedScene+GenEditState) (/root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/Extensions/PackedSceneExtensions.cs:20)
-       [7] void RampWreckers.Tests.RuntimeTests+<TestRetryBounds>d__28.MoveNext() (/home/philip/Projects/RampWreckers/tests/RuntimeTests.cs:732)
-       [8] void System.Runtime.CompilerServices.AsyncTaskMethodBuilder.Start<TStateMachine>(TStateMachine&)
-       [9] System.Threading.Tasks.Task RampWreckers.Tests.RuntimeTests.TestRetryBounds()
-       [10] void RampWreckers.Tests.RuntimeTests+<RunAll>d__5.MoveNext() (/home/philip/Projects/RampWreckers/tests/RuntimeTests.cs:50)
-       [11] void System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, object)
-       [12] void System.Threading.Tasks.AwaitTaskContinuation.RunCallback(System.Threading.ContextCallback, object, System.Threading.Tasks.Task&)
-       [13] void System.Threading.Tasks.Task.RunContinuations(object)
-       [14] void System.Runtime.CompilerServices.AsyncTaskMethodBuilder.SetResult()
-       [15] void RampWreckers.Tests.RuntimeTests+<TestCameraAndEffects>d__27.MoveNext() (/home/philip/Projects/RampWreckers/tests/RuntimeTests.cs:728)
-       [16] void System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, object)
-       [17] void System.Threading.Tasks.AwaitTaskContinuation.RunCallback(System.Threading.ContextCallback, object, System.Threading.Tasks.Task&)
-       [18] void System.Threading.Tasks.Task.RunContinuations(object)
-       [19] void System.Runtime.CompilerServices.AsyncTaskMethodBuilder.SetResult()
-       [20] void RampWreckers.Tests.RuntimeTests+<WaitPhysics>d__8.MoveNext() (/home/philip/Projects/RampWreckers/tests/RuntimeTests.cs:87)
-       [21] void System.Threading.ExecutionContext.RunInternal(System.Threading.ExecutionContext, System.Threading.ContextCallback, object)
-       [22] void System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1+AsyncStateMachineBox`1.MoveNext()
-       [23] void Godot.SignalAwaiter.SignalCallback(nint, Godot.NativeInterop.godot_variant**, int, Godot.NativeInterop.godot_bool*) (/root/godot/modules/mono/glue/GodotSharp/GodotSharp/Core/SignalAwaiter.cs:65)
 [Save] Progress loaded.
 [Catalog] 9 authored challenges validated against statue part inventories.
 [Statue] Garden Gnome: 8 authored parts, graph valid=True.
@@ -510,5 +473,5 @@ ERROR: System.InvalidOperationException: Handle is not initialized.
 [PASS] 30 retries keep statue/vehicle state bounded and intact
 [PASS] 30 retries do not accumulate scene nodes (402->402)
 [PASS] retry restores normal time scale
-[PASS] 30 retries complete quickly (1000 ms total)
-=== RESULT: 145 passed, 0 failed ===
+[PASS] 30 retries complete quickly (992 ms total)
+=== RESULT: 152 passed, 0 failed ===

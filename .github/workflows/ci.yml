@@ -58,7 +58,11 @@ jobs:
         run: timeout 90 godot --headless --path . res://tests/BootProbe.tscn
 
       - name: Deterministic runtime acceptance tests
-        run: timeout 600 godot --headless --path . res://tests/RuntimeTests.tscn
+        run: |
+          set -o pipefail
+          mkdir -p artifacts/test-logs
+          timeout 600 godot --headless --path . res://tests/RuntimeTests.tscn 2>&1 | tee artifacts/test-logs/runtime-tests.log
+          python3 tools/check_test_log.py artifacts/test-logs/runtime-tests.log
 
       - name: Cache Godot export templates
         uses: actions/cache@v4

@@ -32,19 +32,19 @@ All commands below were run from the repository root. The full local equivalent 
 | Pure .NET core tests | **33 passed, 0 failed** | `artifacts/test-logs/unit-tests.log` |
 | Godot headless editor import | exit 0, no resource/import errors | `artifacts/test-logs/godot-import.log` |
 | 60-second wall-clock headless boot | `[BOOT] 60.0s ... ok=True`; no leaked audio/resource warning | `artifacts/test-logs/godot-boot-60s.log` |
-| Deterministic runtime tests | **145 passed, 0 failed** | `artifacts/test-logs/runtime-tests.log` |
+| Deterministic runtime tests | **152 passed, 0 failed** | `artifacts/test-logs/runtime-tests.log` |
 | Linux export | built (156 MB) and headless-booted | `build/linux/RampWreckers.x86_64`; export log |
 | Packaged Linux archive | built and booted after extraction | `dist/RampWreckers-v0.1.1-linux-x64.tar.gz` |
 | Windows export | built (188 MB) and packaged; **not executed on this Linux host** | `dist/RampWreckers-v0.1.1-windows-x64.zip` |
-| Rendered performance probe | **55–60 FPS** at 1600×900; 402 nodes, ~810 draws (High); **60 FPS**, 402 nodes, ~323 draws (Performance) | `artifacts/test-logs/visual-perf.log` |
+| Rendered performance probe | **55–60 FPS** at 1600×900; 402 nodes, ~549 draws (High); **~60 FPS**, 402 nodes, ~114 draws (Performance) | `artifacts/test-logs/visual-perf.log` |
 
 Candidate package checksums (not published):
 
 ```text
-ac6f866533558f9fd5878cd7cf1189e50264ef8c019ab53f83786ff278fd0a10  RampWreckers-v0.1.1-linux-x64.tar.gz
-42b2f5fa0d759f06059c0dd4046e766abfcd52f3b7ab9fcc8683d6a5126a0db4  RampWreckers-v0.1.1-windows-x64.zip
-95e223b0f88aef83080d824a4bcfbd1ef7770d72d2b721dc19ef158c7e984f86  RampWreckers-v0.1.1-linux-x64/RampWreckers.x86_64
-9b1182fb3dbd13045a8b43e6d43a9ce2cb181d91abd54b30b9f335d6fe612e53  RampWreckers-v0.1.1-windows-x64/RampWreckers.exe
+89384a8adaefbf6316db9b6f0f37ac2abede7008782730a3bad523e1defd5223  RampWreckers-v0.1.1-linux-x64.tar.gz
+42f89b73d70af85f43c358bc6e9832e2687cda6d703b0608b540bb6e0aeedd03  RampWreckers-v0.1.1-windows-x64.zip
+5b1544575db0590fdcf0f2e1aa0c1067c2190ff68cc3e7166a6d2ab7a3ff435a  RampWreckers-v0.1.1-linux-x64/RampWreckers.x86_64
+0bb76dbd2a7eef43a8d2b0fc731fd59a65671d6589e31ea3f0ad91255307d01e  RampWreckers-v0.1.1-windows-x64/RampWreckers.exe
 ```
 
 ## P0 root cause: missing authored normals
@@ -82,14 +82,25 @@ Performance preset disables the sun shadow entirely and is also clean.
   independently. Five unrelated breaks never display as knees; Core Shot remains
   0/1 after only the armour is gone and reaches 1/1 after the core breaks.
 - Impact energy thresholds, resisted hits, duplicate contact rejection.
+- Same-physics-step multi-part aggregation: two leg contacts reported in one step are
+  both retained before the 550 ms group cooldown is applied.
+- Target precision: named challenges resolve only physically overlapping candidates;
+  one knee no longer auto-adds the other. Protected core contact cannot break the core
+  in the armour group; a fresh/overlapping contact after armour exposure is required.
+  General total-part goals also resolve only contacted parts, with support collapse kept
+  as separate authored propagation.
+- Core Shot has an authored core contact volume and a two-stage regression test.
 - Gnome lean/collapse, knight knee/shield graph, robot armour→core ordering and
   exposed-core weak point.
 - **All nine challenges through ordinary driving** (see below), with real vehicle
   physics, the authored ramp, real statue hit volumes and real component breaks.
   No `ResolveImpact` calls, teleports or forced impulses are used by the route runner.
-- Knee Trouble uses the rally car because its low nose reaches both knees; the pickup
-  can still smash the same statue, but its higher nose hits the torso at full ramp
-  speed. This is an authored route/vehicle choice, not a scripted break.
+- Knee Trouble uses the rally car because its low nose reaches both knees; Robot Wreck
+  also uses the rally car for its low-knee route. These are normal garage choices, not
+  scripted breaks.
+- The runtime log is passed through `tools/check_test_log.py`; managed exceptions,
+  `Handle is not initialized`, leaked unsafe references and unhandled test exceptions
+  fail CI even when the pass counter is clean.
 - Camera recovery after impact, C-key cinematic skip, camera never below the arena,
   bounded dust/chips/sparks/flash lifetimes, and cleanup after a scene cycle.
 - 30 break/reset cycles restore exact authored transforms; 30 retries do not grow the
@@ -145,8 +156,43 @@ image is the v0.1.1 High preset.
 
 Screenshot-capture runs report 35–53 FPS because each `ViewportTexture.GetImage()` +
 `SavePng()` stalls the render thread. The uncaptured performance probe measured 55–60 FPS
-(High) and 60 FPS (Performance) at 1600×900 on this host while unrelated processes were
-active; the lower end should be treated as a conservative host measurement.
+(High) and approximately 60 FPS (Performance) at 1600×900 on this host while unrelated
+processes were active; the lower end should be treated as a conservative host measurement.
+
+### Draw-call investigation
+
+High draw calls rose from 236 in v0.1.0 to 810 in the first v0.1.1 probe. Diagnostic
+probes attributed about 510 of those to shadow passes:
+- disabling all shadows: ~300 draws;
+- disabling only the warm statue omni shadow: ~549 draws;
+- disabling environment cast shadows: ~379 draws (with the omni shadow still on).
+
+The warm statue fill light had `shadow_enabled = true` despite already being a fill
+light. Turning that redundant shadow off reduced High to ~549 and Performance to ~114
+draws. The remaining High cost is the directional sun shadow pass over the authored
+environment; it is a deliberate quality trade-off and is not a merge blocker. The
+uncaptured High probe still holds 55–60 FPS.
+
+## Test-log exception investigation
+
+The committed v0.1.1 review log contained an intermittent
+`System.InvalidOperationException: Handle is not initialized` from Godot's
+`ScriptManagerBridge.SwapGCHandleForType` during `PackedScene.Instantiate` in
+`TestRetryBounds()` after `TestCameraAndEffects()` freed its Main scene. The old log
+still printed a clean pass count, which was misleading even though the exception did not
+reproduce on every run.
+
+Mitigations:
+- Every test now uses `RemoveNode()`: `QueueFree`, two idle process frames, then a
+  physics frame, before the next Main scene is instantiated.
+- `PhysicsRayQueryParameters3D` objects in the camera are disposed with `using` after
+  their ray query; this also removed the leaked unsafe references from the old log.
+- `tools/check_test_log.py` rejects managed exceptions, `Handle is not initialized`,
+  leaked unsafe references and unhandled test exceptions in the captured runtime log.
+  CI uses `set -o pipefail` so a Godot exit failure cannot be hidden by `tee`.
+
+The exception has not reproduced in repeated runtime runs on this head; the explicit
+scene-disposal barrier and log guard now make the result fail visibly if it returns.
 
 ## What was not verified
 

@@ -141,11 +141,12 @@ This runs:
   objective-progress tests.
 - Godot headless editor import.
 - 60-second wall-clock headless boot (`tests/BootProbe.tscn`).
-- `tests/RuntimeTests.tscn` — **145** checks: save/corruption, statue graph, robot
-  armour/core ordering, 30 reset cycles, ramp geometry at 10/16/27°, low-speed contact,
-  audio assets, input smoke, Free Smash reward isolation, 30 bounded retries,
-  objective-progress text, solid collision presentation, camera/effect bounds, and
-  **all nine challenges driven through ordinary vehicle controls**.
+- `tests/RuntimeTests.tscn` — **152** checks: save/corruption, statue graph, robot
+  armour/core ordering and fresh-contact sequencing, 30 reset cycles, ramp geometry at
+  10/16/27°, low-speed contact, audio assets, input smoke, Free Smash reward isolation,
+  30 bounded retries, objective-progress text, solid collision presentation,
+  same-step multi-part contact aggregation, camera/effect bounds, and **all nine
+  challenges driven through ordinary vehicle controls**.
 
 Capture visual evidence with a real rendered viewport:
 

@@ -153,17 +153,20 @@ public partial class StatueController : Node3D
         if (!_parts.ContainsKey(part.PartId) || part.IsBroken)
             return;
         ulong id = vehicle.GetInstanceId();
-        ulong now = Time.GetTicksMsec();
-        if (_lastVehicleImpactMsec.TryGetValue(id, out ulong last) && now - last < 550)
-            return;
-        _lastVehicleImpactMsec[id] = now;
-        if (!_pendingContacts.TryGetValue(id, out PendingVehicleContact? pending))
+        bool hasPending = _pendingContacts.TryGetValue(id, out PendingVehicleContact? pending);
+        if (!hasPending)
         {
+            // The cooldown gates new impact groups, not the other contacts that
+            // arrive in the same physics step. All of those must be accumulated
+            // before the deferred grouped resolution runs.
+            ulong now = Time.GetTicksMsec();
+            if (_lastVehicleImpactMsec.TryGetValue(id, out ulong last) && now - last < 550)
+                return;
             pending = new PendingVehicleContact(vehicle, energy, speed, direction, hitPoint);
             _pendingContacts[id] = pending;
             Callable.From(() => ResolveVehicleContact(id)).CallDeferred();
         }
-        pending.Add(part);
+        pending!.Add(part);
     }
 
     private void ResolveVehicleContact(ulong vehicleId)
@@ -177,67 +180,70 @@ public partial class StatueController : Node3D
         if (candidates.Count == 0)
             return;
 
-        List<StatuePart> selected;
-        List<StatuePart> required = candidates
-            .Where(p => _priorityParts.Contains(p.PartId))
-            .ToList();
+        // Only components whose authored hit volumes actually overlapped this
+        // bumper are candidates. Support collapse remains a separate authored
+        // propagation after a direct break; challenges never target a part by
+        // proximity or by a large rectangular area around the vehicle.
+        List<StatuePart> selected = candidates;
         if (_priorityParts.Count > 0)
         {
-            if (required.Count > 0)
+            List<StatuePart> required = candidates
+                .Where(p => _priorityParts.Contains(p.PartId))
+                .ToList();
+            // The armour is a physically contacted protector of the core, not a
+            // free secondary target. Other unrelated parts hit by the bumper are
+            // ignored for a named-target challenge.
+            if (_priorityParts.Contains("Core"))
             {
-                selected = required;
-                // A bumper strike on one knee should also catch the other nearby
-                // knee. This is the authored two-leg arcade region, not a global
-                // all-part break.
-                foreach (string targetId in _priorityParts)
+                foreach (StatuePart candidate in candidates)
                 {
-                    if (_parts.TryGetValue(targetId, out StatuePart? target) &&
-                        !target.IsBroken && !target.IsLoose && !selected.Contains(target) &&
-                        selected.Any(s => s.GlobalPosition.DistanceTo(target.GlobalPosition) < 1.6f))
-                        selected.Add(target);
+                    if (candidate.PartId == "Armour" && !required.Contains(candidate))
+                        required.Add(candidate);
                 }
             }
-            else
-            {
-                // Required target was not physically reached: only resolve the
-                // parts the bumper actually overlapped.
-                StatuePart nearest = candidates
-                    .OrderBy(p => Mathf.Abs(p.GlobalPosition.Y - pending.Vehicle.GlobalPosition.Y))
-                    .First();
-                selected = candidates
-                    .Where(p => Mathf.Abs(p.GlobalPosition.Y - nearest.GlobalPosition.Y) < 0.9f)
-                    .ToList();
-            }
-        }
-        else
-        {
-            // Total-part / Free Smash goals are arcade wrecking runs: a solid
-            // bumper hit can smash the whole nearby structure, while named-part
-            // goals above remain precise.
-            selected = _parts.Values
-                .Where(p => !p.IsBroken && !p.IsLoose &&
-                    Mathf.Abs(p.GlobalPosition.Z - pending.Vehicle.GlobalPosition.Z) < 5.5f &&
-                    Mathf.Abs(p.GlobalPosition.X - pending.Vehicle.GlobalPosition.X) < 3.4f)
-                .ToList();
+            selected = required;
         }
 
+        // When the bumper genuinely overlaps both the chest armour and the
+        // exposed core, resolve the authored protector first so the core cannot
+        // be destroyed before the armour rule has run.
+        selected = selected
+            .OrderBy(p => p.PartId == "Armour" ? 0 : p.PartId == "Core" ? 2 : 1)
+            .ToList();
+
+        // A core contact that arrives while the armour is still intact is a
+        // blocked contact, not a free break-through. Armour can peel in this
+        // group, but the core must be contacted again after it is exposed.
+        bool armourAlreadyBroken = !_parts.TryGetValue("Armour", out StatuePart? armourPart) ||
+                                armourPart.IsBroken || armourPart.IsLoose;
         foreach (StatuePart part in selected)
         {
             if (part.IsBroken)
                 continue;
+            if (part.PartId == "Core" && !armourAlreadyBroken)
+            {
+                PartBlocked?.Invoke("Core", "Armour");
+                continue;
+            }
             ResolveImpact(part.PartId, pending.Energy, pending.Speed,
                 pending.Direction, pending.HitPoint);
         }
-        // The robot's chest is a two-stage target. If the same collision peels
-        // the armour, follow through onto the exposed core; this is still the
-        // authored armour-then-core rule, not a bypass of it.
-        if (_priorityParts.Contains("Core") &&
+
+        // If the armour peeled in this group and the authored core hit volume is
+        // still physically overlapping the bumper, that is a real follow-through
+        // contact. Never break the core by proximity or by challenge identity.
+        if (_priorityParts.Contains("Core") && !armourAlreadyBroken &&
             _parts.TryGetValue("Armour", out StatuePart? armour) && armour.IsBroken &&
-            _parts.TryGetValue("Core", out StatuePart? core) && !core.IsBroken)
+            _parts.TryGetValue("Core", out StatuePart? core) && !core.IsBroken &&
+            core.IsVehicleOverlapping(pending.Vehicle))
         {
-            ResolveImpact("Core", pending.Energy * 0.9f, pending.Speed,
+            ResolveImpact("Core", pending.Energy, pending.Speed,
                 pending.Direction, pending.HitPoint);
         }
+
+        // The cooldown starts after the grouped contact has resolved. The same
+        // physics step can still add all of its contacts to this group above.
+        _lastVehicleImpactMsec[vehicleId] = Time.GetTicksMsec();
         pending.Vehicle.RegisterStatueSmash(pending.Energy, pending.Direction);
     }
 

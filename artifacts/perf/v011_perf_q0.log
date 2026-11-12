@@ -12,15 +12,11 @@ WARNING: All audio drivers failed, falling back to the dummy driver.
 [Catalog] 9 authored challenges validated against statue part inventories.
 [Statue] Garden Gnome: 8 authored parts, graph valid=True.
 [VISUAL] saved /home/philip/Projects/RampWreckers/artifacts/screenshots/v1_c0_01_start.png
-[Destruction] Garden Gnome/LeftLeg broke via direct energy=465 score=28 weak=False.
-[Destruction] Garden Gnome/RightLeg broke via direct energy=465 score=28 weak=False.
-[CHALLENGE] First Crash complete? broken=LeftLeg,RightLeg required= min=2
-[Destruction] Garden Gnome/Torso broke via collapse energy=256 score=54 weak=False.
+[Destruction] Garden Gnome/Torso broke via direct energy=465 score=67 weak=False.
 [Destruction] Garden Gnome/Head broke via collapse energy=256 score=41 weak=False.
+[CHALLENGE] First Crash complete? broken=Torso,Head required= min=2
 [Destruction] Garden Gnome/Beard detached intact (support lost).
 [Destruction] Garden Gnome/Hat detached intact (support lost).
 [Destruction] Garden Gnome/LeftArm broke via collapse energy=256 score=23 weak=False.
 [Destruction] Garden Gnome/RightArm broke via collapse energy=256 score=23 weak=False.
-[Destruction] Garden Gnome/Beard broke via direct energy=465 score=39 weak=False.
-[Destruction] Garden Gnome/Hat broke via direct energy=465 score=89 weak=True.
-[PERF] fps=55 objects=402 draws=810
+[PERF] fps=57 objects=402 draws=549

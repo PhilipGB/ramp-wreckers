@@ -5,10 +5,10 @@
   "baseline": "v0.1.0 (7aa507c)",
   "engine": "Godot 4.7.2 .NET",
   "dotnet_target": "net10.0",
-  "runtime_validation": "PASS on this host: docs/VERIFICATION.md (145 Godot runtime checks, 60 s boot, Linux export boot; Windows exported not run)",
+  "runtime_validation": "PASS on this host: docs/VERIFICATION.md (152 Godot runtime checks, clean runtime log, 60 s boot, Linux export boot; Windows exported not run)",
   "static_validation": "PASS: tools/validate_project.py (1522 checks) and tools/verify_bundle.py",
-  "rendered_performance": "55-60 FPS at 1600x900 (High, 402 nodes / ~810 draws); 60 FPS (Performance, 402 nodes / ~323 draws); screenshot capture runs lower",
-  "file_count": 212,
+  "rendered_performance": "55-60 FPS at 1600x900 (High, 402 nodes / ~549 draws); 55-60 FPS (Performance, 402 nodes / ~114 draws); screenshot capture runs lower",
+  "file_count": 213,
   "files": [
     {
       "path": ".gitattributes",
@@ -17,8 +17,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "bytes": 4177,
-      "sha256": "061c629ef132c4a6075e8d7d745141a6632d48312c14b04ebcf168e583120575"
+      "bytes": 4383,
+      "sha256": "7fe8fb94280bd4ac7b6b1f38915716c825927ec18aab2f8b51424879b4dad0af"
     },
     {
       "path": ".gitignore",
@@ -42,13 +42,13 @@
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 4993,
-      "sha256": "9f4719261b69db7b050f094ece0e98b59a4ed37975de7a8e841fd4ccc9f36d03"
+      "bytes": 5625,
+      "sha256": "fd5fdd129898c06d50779454376c42935e3d863793f2405f1421fad9f8c158f3"
     },
     {
       "path": "README.md",
-      "bytes": 8810,
-      "sha256": "b4b0c4bcf94120c83c9c0bae0ae20ecdfac4e2ab1520b6e83c386469368b19e2"
+      "bytes": 8883,
+      "sha256": "39948fea48dfc98e2ad13bc279f14761768339f8006ae947ba190f9a12dfd0f8"
     },
     {
       "path": "RampWreckers.csproj",
@@ -812,13 +812,13 @@
     },
     {
       "path": "docs/RELEASE_NOTES_v0.1.1.md",
-      "bytes": 3789,
-      "sha256": "f64edfe66dbd06317fcce7d2dbd640a0411b845304831e719f76f8339fbbceed"
+      "bytes": 4203,
+      "sha256": "b923e1ad02651a1af9e7faaf186792f4a8e601266202c9ebfcaae736dbc67a99"
     },
     {
       "path": "docs/VERIFICATION.md",
-      "bytes": 13178,
-      "sha256": "ca58a9bd4bf53e4e3452a7a06ddd8f523e49fb578aff241c76e3676af683c95e"
+      "bytes": 15898,
+      "sha256": "fbb2b09b899ca0c7eae1c72627951c829b78497cd427ee256471ef3aaeac1fd8"
     },
     {
       "path": "export_presets.cfg",
@@ -842,8 +842,8 @@
     },
     {
       "path": "scenes/Main.tscn",
-      "bytes": 6016,
-      "sha256": "cc7dd5c0969433cd2871307dd06ff3d16bc9d018eda487b6a0600ebc0df61e6f"
+      "bytes": 6017,
+      "sha256": "3fd2b62c2f67e6d1b9879abdefa56682e015afac4b7347307400f61355260bfa"
     },
     {
       "path": "scenes/statues/Gnome.tscn",
@@ -857,8 +857,8 @@
     },
     {
       "path": "scenes/statues/Robot.tscn",
-      "bytes": 8644,
-      "sha256": "d7d70b0be36030710a68dfe3ef20e887779b107caeb2835d7d663f70829b2a91"
+      "bytes": 8646,
+      "sha256": "ed3c1a2adf90c5f8b200e04db095832bdb1dc9aec6f2662c05da3017cdd8de03"
     },
     {
       "path": "scenes/vehicles/MonsterTruck.tscn",
@@ -887,8 +887,8 @@
     },
     {
       "path": "src/GameRoot.cs",
-      "bytes": 52048,
-      "sha256": "0fbc677b1d2bdebf5c4c7754270ec735d73544f623581579791832e0da3c578d"
+      "bytes": 52060,
+      "sha256": "e873a1b17bd162ec775f6ab18f447091e5890808bfdb72e5a8826920fb338d11"
     },
     {
       "path": "src/GameRoot.cs.uid",
@@ -937,8 +937,8 @@
     },
     {
       "path": "src/StatueController.cs",
-      "bytes": 18168,
-      "sha256": "4064aa1168599214818fba3b16269c4932c261f6db670a0c2e90e420f2bfaaab"
+      "bytes": 18747,
+      "sha256": "10d893639a2d15c574171beaead646b62a1a58245decd1c5cf41278310492afd"
     },
     {
       "path": "src/StatueController.cs.uid",
@@ -947,8 +947,8 @@
     },
     {
       "path": "src/StatuePart.cs",
-      "bytes": 5734,
-      "sha256": "2230f5e27f940a2a01940a912694b1c5c1bd98b43afd444348666045ccb80ad9"
+      "bytes": 6133,
+      "sha256": "c3bf531c35420bacbc356101285b8e1c9e2da375924004551efcf04d4c1f52e5"
     },
     {
       "path": "src/StatuePart.cs.uid",
@@ -982,8 +982,8 @@
     },
     {
       "path": "tests/RuntimeTests.cs",
-      "bytes": 34312,
-      "sha256": "abe16c3a8e9e1e1351d2c474190a3d3afb14c81b293dbf5f44a3cd5c25950604"
+      "bytes": 38017,
+      "sha256": "3797424167c3deb484925486b3327ce5a7340181e2f1e44f2201e8733833789d"
     },
     {
       "path": "tests/RuntimeTests.cs.uid",
@@ -1031,6 +1031,11 @@
       "sha256": "de1f74a67a0de9ddfc2f52b8cd4a54715d5e8b5d19ba258c9c00ecabaa89e84d"
     },
     {
+      "path": "tools/check_test_log.py",
+      "bytes": 993,
+      "sha256": "175e9a5fd4251b09b6b8bd51ec77bec1d6ca7d01d65cc16140afeea307523ebe"
+    },
+    {
       "path": "tools/export_game.sh",
       "bytes": 854,
       "sha256": "2633522af0d76314d33f00e54c6265ef3e1a9059a201a9fe9ddea7089e4e3872"
@@ -1052,8 +1057,8 @@
     },
     {
       "path": "tools/run_all_tests.sh",
-      "bytes": 1279,
-      "sha256": "b4cf81a00333ae60532aaa2cabcb8acdd3dc5a6f1803d8c98a4a25f92ecaff88"
+      "bytes": 1379,
+      "sha256": "8280e22ce1ba87b81baaf9359b2297d316a0038d4108f770e65ac2ec790ff9ec"
     },
     {
       "path": "tools/run_visual_evidence.sh",

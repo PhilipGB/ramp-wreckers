@@ -14,6 +14,11 @@ All notable changes to Ramp Wreckers are recorded here.
   bias/normal bias, a shorter shadow range and a darker sky-independent fog.
 - Corrected named-objective progress so unrelated breaks never appear as knee progress,
   and Core Shot stays incomplete until the reactor core itself breaks.
+- Fixed contact cooldown ordering: same-physics-step contacts now accumulate before
+  the cooldown is applied, so a two-knee impact cannot silently discard the second knee.
+- Removed proximity/area target destruction and the unconditional robot-core shortcut.
+  Only physically overlapping hit volumes are resolved; the core requires armour to be
+  destroyed and a fresh/overlapping contact afterward. Support collapse remains separate.
 - Corrected hints that implied damage persists across a retry.
 - Fixed the dummy-audio shutdown leak by configuring the imported stream in place and
   skipping playback when Godot reports the Dummy driver.
@@ -38,11 +43,13 @@ All notable changes to Ramp Wreckers are recorded here.
 - Static validation: **1522 checks, 0 failures**; bundle: 8 scenes, 34 GLBs.
 - Authored NORMALs: **34/34**; authored palette: **34/34**.
 - Release build with warnings as errors: 0 errors.
-- Pure .NET tests: **33 passed**; Godot runtime tests: **145 passed**.
+- Pure .NET tests: **33 passed**; Godot runtime tests: **152 passed**.
 - All nine challenges physically completed through ordinary vehicle controls.
-- 60-second wall-clock boot: `ok=True`; no leaked audio resources.
-- Rendered 1600×900 probe: **55–60 FPS**, 402 nodes, ~810 draws (High); **60 FPS**,
-  402 nodes, ~323 draws (Performance). Screenshot capture runs are lower.
+- 60-second wall-clock boot: `ok=True`; no leaked audio resources. The runtime log
+  contains no managed/unmanaged exception, and CI now fails on such output.
+- Rendered 1600×900 probe: **55–60 FPS**, 402 nodes, ~549 draws (High); **~60 FPS**,
+  402 nodes, ~114 draws (Performance). A redundant statue omni shadow was removed after
+  profiling (High 810→549; Performance 323→114). Screenshot capture runs are lower.
 - Linux export built, packaged and booted after extraction; Windows export built
   (not run on this Linux host).
 

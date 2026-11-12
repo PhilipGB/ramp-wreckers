@@ -1,6 +1,9 @@
 Ramp Wreckers v0.1.1 rendered performance probe (real 1600x900 viewport, AMD Radeon 890M)
-High preset:        [PERF] fps=55-60 objects=402 draws~810
-Performance preset: [PERF] fps=60 objects=402 draws~323
-Note: the host was also running unrelated processes; repeated probes varied between 55 and
-60 FPS. Screenshot-capture runs report 35-53 FPS because each SavePng() stalls the
-render thread; the uncaptured probe above is the performance measurement.
+High preset:        [PERF] fps=55-60 objects=402 draws~549
+Performance preset: [PERF] fps=55-60 objects=402 draws~114
+Profiling: disabling all shadows measured ~300 draws; disabling only the warm statue
+omni shadow measured ~549 draws; disabling environment cast shadows measured ~379 draws.
+The redundant statue fill-light shadow was removed (High 810->549, Performance 323->114).
+Screenshot-capture runs report 35-53 FPS because each SavePng() stalls the render
+thread. The uncaptured probe above is the performance measurement; host processes cause
+the lower end of the range.
