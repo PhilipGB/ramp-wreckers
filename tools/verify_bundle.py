@@ -14,8 +14,8 @@ source = (ROOT / 'src')
 
 if len(scene_files) != 8:
     errors.append(f'Expected 8 Godot scenes; found {len(scene_files)}')
-if len(models) != 32:
-    errors.append(f'Expected 32 authored GLB models; found {len(models)}')
+if len(models) != 34:
+    errors.append(f'Expected 34 authored GLB models; found {len(models)}')
 
 for scene in scene_files:
     data = scene.read_text(encoding='utf-8')

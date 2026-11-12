@@ -10,7 +10,9 @@ Run from the project root:
 """
 from __future__ import annotations
 
+import json
 import re
+import struct
 import sys
 from pathlib import Path
 
@@ -96,6 +98,69 @@ def validate_resources_and_instances() -> None:
     for source in ROOT.glob("art/source/**/*.obj"):
         glb = ROOT / "art" / "meshes" / str(source.relative_to(ROOT / "art" / "source")).replace(".obj", ".glb")
         check(glb.exists(), f"authored mesh source has no GLB output: {source.relative_to(ROOT)}")
+
+
+def glb_json(path: Path) -> dict:
+    raw = path.read_bytes()
+    magic, version, total = struct.unpack_from("<III", raw, 0)
+    check(magic == 0x46546C67 and version == 2 and total == len(raw),
+          f"{path.relative_to(ROOT)} is not a valid GLB 2.0 file")
+    offset = 12
+    while offset < len(raw):
+        length, kind = struct.unpack_from("<II", raw, offset)
+        data = raw[offset + 8:offset + 8 + length]
+        offset += 8 + length
+        if kind == 0x4E4F534A:
+            return json.loads(data.decode("utf-8").rstrip("\x00 "))
+    return {}
+
+
+def validate_glb_surface_data() -> None:
+    for glb in sorted(ROOT.glob("art/meshes/**/*.glb")):
+        js = glb_json(glb)
+        primitives = [p for m in js.get("meshes", []) for p in m.get("primitives", [])]
+        check(bool(primitives), f"{glb.relative_to(ROOT)} has no mesh primitives")
+        for primitive in primitives:
+            attrs = primitive.get("attributes", {})
+            check("POSITION" in attrs,
+                  f"{glb.relative_to(ROOT)} primitive has no POSITION")
+            # GL Compatibility self-shadow bias needs authored normals; dropping
+            # them caused the v0.1.0 concentric moire regression.
+            check("NORMAL" in attrs,
+                  f"{glb.relative_to(ROOT)} primitive has no NORMAL attribute")
+        check(len(js.get("materials", [])) > 0,
+              f"{glb.relative_to(ROOT)} has no authored materials")
+
+
+def validate_hud_contract() -> None:
+    hud = ROOT / "scenes/Hud.tscn"
+    check(hud.exists(), "missing redesigned HUD scene")
+    if not hud.exists():
+        return
+    text = hud.read_text()
+    for node in [
+        'name="ObjectivePanel"', 'name="Required"', 'name="RequiredBar"',
+        'name="Total"', 'name="TotalBar"', 'name="Status"', 'name="Speed"',
+        'name="SpeedBar"', 'name="Stats"', 'name="BannerLabel"',
+        'name="HelpPanel"', 'name="HelpClose"', 'name="Garage"',
+        'name="RallyButton"', 'name="PickupButton"', 'name="MonsterButton"',
+        'name="EngineButton"', 'name="GripButton"', 'name="PaintButton"',
+        'name="QualityButton"', 'name="VolumeButton"',
+    ]:
+        check(node in text, f"HUD is missing {node}")
+    game_root = (ROOT / "src/GameRoot.cs").read_text()
+    check("ObjectiveProgress progress = _statue.GetObjectiveProgress(challenge)" in game_root,
+          "HUD does not use the named ObjectiveProgress model")
+    check("ToggleHelp()" in game_root and '"help"' in game_root,
+          "H key control help is not wired")
+    check("CountsAsBrokenWhenUnsupported" in
+          (ROOT / "scenes/statues/Gnome.tscn").read_text(),
+          "statue collapse policy is not authored in scenes")
+    check("SolidWhenIntact" in (ROOT / "src/StatuePart.cs").read_text(),
+          "intact statue parts do not author a solid-vs-hit-volume choice")
+    knight = (ROOT / "scenes/statues/Knight.tscn").read_text()
+    check('PartId = "Shield"\nSolidWhenIntact = false' in knight,
+          "knight shield is not authored as a non-blocking ornament hit volume")
 
 
 def validate_no_visible_primitives() -> None:
@@ -197,13 +262,13 @@ def validate_challenges(inventories: dict[str, set[str]]) -> None:
     entries = re.findall(
         r'new\(\s*"([^"]+)",\s*"([^"]+)",\s*(\d+),\s*'
         r'(Array\.Empty<string>\(\)|new\[\]\s*\{([^}]*)\}),\s*'
-        r'(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)f?,',
+        r'(\d+),\s*(\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)f?,\s*(\d+),\s*"',
         source,
     )
     check(len(entries) == 9, f"expected 9 challenge records, found {len(entries)}")
     statues = ["scenes/statues/Gnome.tscn", "scenes/statues/Knight.tscn", "scenes/statues/Robot.tscn"]
     for entry in entries:
-        name, _goal, statue_index, required_token, required_csv, minimum, reward, silver, gold, seconds = entry
+        name, _goal, statue_index, required_token, required_csv, minimum, reward, silver, gold, seconds, ramp = entry
         statue_index = int(statue_index)
         check(0 <= statue_index < len(statues), f"challenge {name} has invalid statue index")
         if not (0 <= statue_index < len(statues)):
@@ -216,6 +281,7 @@ def validate_challenges(inventories: dict[str, set[str]]) -> None:
         check(int(reward) > 0, f"challenge {name} has no coin reward")
         check(int(gold) >= int(silver), f"challenge {name} has invalid medal scores")
         check(float(seconds) > 0, f"challenge {name} has an invalid gold time")
+        check(10 <= int(ramp) <= 27, f"challenge {name} has an out-of-range recommended ramp")
 
 
 def validate_policy_files() -> None:
@@ -233,9 +299,11 @@ def validate_policy_files() -> None:
 
 def main() -> int:
     validate_resources_and_instances()
+    validate_glb_surface_data()
     validate_no_visible_primitives()
     inventories = validate_statue_scenes()
     validate_challenges(inventories)
+    validate_hud_contract()
     validate_policy_files()
 
     print(f"Static validation: {CHECKS} checks, {len(ERRORS)} failure(s).")
@@ -243,7 +311,7 @@ def main() -> int:
         for error in ERRORS:
             print("FAIL:", error)
         return 1
-    print("PASS: resource references, model-driven art, statue graphs and nine challenges.")
+    print("PASS: resource references, normals, model-driven art, statue graphs, HUD and nine challenges.")
     return 0
 
 

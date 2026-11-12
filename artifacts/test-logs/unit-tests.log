@@ -6,6 +6,12 @@
 [PASS] First Crash accepts any two broken parts
 [PASS] Hat Trick rejects a non-hat part
 [PASS] Hat Trick accepts the hat
+[PASS] named hat progress is complete only with Hat
+[PASS] five unrelated breaks never display as knee progress
+[PASS] both named knees complete Knee Trouble
+[PASS] chest armour alone does not masquerade as reactor-core progress
+[PASS] named and total thresholds are reported independently
+[PASS] all authored suggested ramps stay in the physical 10-27 range
 [PASS] zero mass has no energy
 [PASS] energy rises with speed
 [PASS] heavier vehicle has more energy at the same speed
@@ -26,4 +32,4 @@
 [PASS] monster truck unlock works with enough coins
 [PASS] engine upgrade works with enough coins
 [PASS] grip upgrade works with enough coins
-=== RESULT: 27 passed, 0 failed ===
+=== RESULT: 33 passed, 0 failed ===

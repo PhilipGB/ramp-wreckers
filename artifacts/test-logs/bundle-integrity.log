@@ -1,0 +1,2 @@
+PASS: static assets and resource references; 8 scenes, 34 GLBs, 9 authored challenges
+NOTE: Godot import, C# build, gameplay and exports are NOT tested by this tool.

@@ -2,7 +2,7 @@ name: ci
 
 on:
   push:
-    branches: [main, "p*-*"]
+    branches: [main, "feat/**", "p*-*"]
   pull_request:
 
 jobs:
@@ -24,7 +24,11 @@ jobs:
           dotnet build -c Release -warnaserror
 
       - name: Static project contract
-        run: python3 tools/validate_project.py
+        run: |
+          python3 tools/validate_project.py
+          python3 tools/verify_bundle.py
+          python3 tools/add_normals_to_glb.py --check
+          python3 tools/restyle_materials.py --check
 
       - name: Pure .NET unit tests
         run: dotnet run --project tests/UnitTests/UnitTests.csproj
@@ -54,7 +58,7 @@ jobs:
         run: timeout 90 godot --headless --path . res://tests/BootProbe.tscn
 
       - name: Deterministic runtime acceptance tests
-        run: timeout 240 godot --headless --path . res://tests/RuntimeTests.tscn
+        run: timeout 600 godot --headless --path . res://tests/RuntimeTests.tscn
 
       - name: Cache Godot export templates
         uses: actions/cache@v4

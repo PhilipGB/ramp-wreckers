@@ -4,6 +4,10 @@
 
 A model-driven 3D arcade stunt/destruction game for Godot 4.7.2 .NET, C# and .NET 10.
 
+**Development:** the `feat/v0.1.1-visual-gameplay-polish` branch contains the v0.1.1
+visual/gameplay polish pass described below. The public download remains v0.1.0 until
+that branch is reviewed and released.
+
 Drive an authored rally car, pickup or monster truck down a runway, climb an adjustable
 ramp, and smash three towering statues into their individually modelled components.
 Nine authored campaign challenges and a Free Smash mode are included. No accounts,
@@ -22,6 +26,19 @@ The Linux export is a single self-contained executable. Extract the archive, the
 `RampWreckers.x86_64`. The Windows export is a single self-contained executable; extract
 the ZIP and run `RampWreckers.exe`. Windows startup is exported but not executed on the
 Linux build host.
+
+## v0.1.1 visual evidence
+
+The supplied GLBs lacked authored NORMAL attributes, which produced the dense
+concentric ripples on every large surface. The models now carry authored smooth-angle
+normals, an authored arcade palette and retuned lighting; no visible geometry was
+generated at runtime.
+
+![Before and after the normal/lighting fix](artifacts/screenshots/p0_before_after.png)
+
+More rendered evidence (start, ramp, impact, debris, 720p HUD, garage, help and statue
+close-ups) is in `artifacts/screenshots/` and documented in `docs/VERIFICATION.md`.
+The branch is not tagged or published.
 
 ## Play
 
@@ -66,10 +83,13 @@ X/B/LB select vehicles, D-pad changes challenge and ramp, F/Space toggles Free S
 - **Adjustable physical ramp:** authored GLB and its invisible collider rotate together.
   The collider foot is flush with the runway at 10°, 16° and 27°.
 - **Structural destruction:** each statue is built from separate authored GLB parts.
-  Intact parts use invisible `Area3D` hit volumes; broken parts become bounded rigid
-  body debris. Support/protection links are authored per scene. One support gone leans
-  the statue; both gone topples the upper body. The robot armour protects its core until
-  peeled, then a direct core strike gets a weak-point bonus and short slow motion.
+  Intact major parts are solid world obstacles with invisible authored colliders, while
+  authored `Area3D` hit volumes drive the smash-through; the knight shield is an
+  authored non-blocking ornament so a low route can reach both knees. Broken parts
+  become bounded rigid-body debris. Support/protection links are authored per scene.
+  One support gone leans the statue; both gone topples the upper body. The robot armour
+  protects its core until peeled, then a direct core strike gets a weak-point bonus and
+  short slow motion.
 - **Nine challenges + Free Smash** with progress, medals, first-clear coins, replay,
   unlocks and persistent progress. Free Smash never grants campaign rewards.
 - **Persistence:** versioned JSON at `user://ramp_wreckers_save.json`, atomic temp-file
@@ -77,7 +97,8 @@ X/B/LB select vehicles, D-pad changes challenge and ramp, F/Space toggles Free S
   back safely without overwriting a good backup.
 - **Presentation:** authored dust-puff and debris meshes, procedural-free debris,
   crash/launch/reward cues, looping engine sample with speed/throttle pitch, speedometer,
-  objective prompt, completion banner, camera shake and slow motion.
+  named objective progress, completion banner, side impact camera, camera shake and
+  slow motion. Dust, sparks, chips and flashes have strict caps and lifetimes.
 - **Performance option:** high quality (shadows, fog, 4× MSAA) or performance quality.
 
 ## Geometry policy
@@ -86,6 +107,11 @@ All visible 3D geometry is an authored GLB asset instantiated in an editable `.t
 There are no visible Godot primitive meshes, CSG meshes, `ArrayMesh`, `ImmediateMesh`
 or runtime mesh generators in the shipping scenes or game code. Invisible `Shape3D`
 colliders, raycasts, `Area3D` hit volumes, UI and particles are allowed.
+
+Every runtime GLB now carries authored POSITION and NORMAL attributes.
+`tools/add_normals_to_glb.py` computes smooth-angle normals offline (45° threshold)
+without changing positions, triangles, transforms or materials. `tools/restyle_materials.py`
+owns the arcade palette; both scripts have `--check` modes used by CI.
 
 `art/source/` contains editable OBJ authoring copies for every GLB. `mesh_sources.zip`
 is the original archived source bundle. `tools/make_assets.py` recreates the authored
@@ -106,16 +132,20 @@ Quick automated suite (requires Godot on PATH or set `GODOT_BIN`):
 
 This runs:
 
-- `tools/validate_project.py` — resource references, no visible primitives/CSG,
-  statue graph integrity, challenge part IDs, nine challenges, policy files.
-- `dotnet build -c Release` — C# compilation.
-- `dotnet run --project tests/UnitTests` — pure .NET catalog, impact and save tests.
+- `tools/validate_project.py` — **1522 checks**: resource references, no visible
+  primitives/CSG, authored POSITION+NORMAL data, statue graph integrity, HUD contract,
+  challenge part IDs, nine challenges and policy files.
+- `tools/verify_bundle.py` — bundle inventory: 8 scenes, 34 GLBs, 9 challenges.
+- `dotnet build -c Release -warnaserror` — C# compilation with warnings as errors.
+- `dotnet run --project tests/UnitTests` — **33** pure .NET catalog, impact, save and
+  objective-progress tests.
 - Godot headless editor import.
-- 60-second headless boot.
-- `tests/RuntimeTests.tscn` — save/corruption, statue graph, robot armour/core ordering,
-  30 reset cycles, ramp geometry at 10/16/27°, low-speed contact, audio assets,
-  input smoke, Free Smash reward isolation, 30 bounded retries, and a physics-driven
-  route that drives all three vehicles over the ramp into the gnome.
+- 60-second wall-clock headless boot (`tests/BootProbe.tscn`).
+- `tests/RuntimeTests.tscn` — **145** checks: save/corruption, statue graph, robot
+  armour/core ordering, 30 reset cycles, ramp geometry at 10/16/27°, low-speed contact,
+  audio assets, input smoke, Free Smash reward isolation, 30 bounded retries,
+  objective-progress text, solid collision presentation, camera/effect bounds, and
+  **all nine challenges driven through ordinary vehicle controls**.
 
 Capture visual evidence with a real rendered viewport:
 
@@ -134,10 +164,12 @@ Windows release: `build/windows/RampWreckers.exe` (exported; not executed on thi
 
 ## Known limitations
 
-See `docs/VERIFICATION.md` for the current verification record and known issues,
-including the intentional arcade choice to let fast vehicles pass through intact
-statue hit volumes in the impact frame, and the fact that the Windows export was
-not run on this host.
+See `docs/VERIFICATION.md` for the current verification record and known issues.
+Audible audio was not verified because the build host has no usable audio device;
+Godot used its dummy driver and engine playback is skipped. The Windows binary was
+exported and packaged but not executed on this Linux host. Major statue parts are now
+solid obstacles, with an authored non-blocking shield ornament; extreme-speed overlap
+is still possible for a frame before the part becomes debris.
 
 ## Project layout
 
